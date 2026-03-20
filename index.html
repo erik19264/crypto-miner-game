@@ -17,13 +17,17 @@
     }
 
     button {
-      padding: 20px;
-      font-size: 20px;
-      margin-top: 20px;
+      padding: 15px;
+      font-size: 18px;
+      margin: 10px;
       border-radius: 10px;
       border: none;
       background: #22c55e;
       color: white;
+    }
+
+    .upgrade {
+      background: #3b82f6;
     }
   </style>
 </head>
@@ -32,28 +36,51 @@
 
 <h1>💰 Crypto Miner Empire</h1>
 
-<p>Coins: <span id="coins">0</span></p>
+<h2 id="coins">Coins: 0</h2>
+<h3 id="perSec">Coins/sec: 0</h3>
 
 <button onclick="mine()">⛏️ Těžit</button>
 
-<script>
-let coins = localStorage.getItem("coins");
+<br>
 
-if (coins === null) {
-  coins = 0;
-} else {
-  coins = parseInt(coins);
-}
+<button class="upgrade" onclick="buyUpgrade()">⚡ Upgrade (+1/sec) – Cost: <span id="cost">10</span></button>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
+let cost = parseInt(localStorage.getItem("cost")) || 10;
 
 function update() {
-  document.getElementById("coins").innerText = coins;
+  document.getElementById("coins").innerText = "Coins: " + coins;
+  document.getElementById("perSec").innerText = "Coins/sec: " + perSecond;
+  document.getElementById("cost").innerText = cost;
 }
 
 function mine() {
   coins++;
+  save();
+}
+
+function buyUpgrade() {
+  if (coins >= cost) {
+    coins -= cost;
+    perSecond++;
+    cost = Math.floor(cost * 1.5);
+    save();
+  }
+}
+
+function save() {
   localStorage.setItem("coins", coins);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
   update();
 }
+
+setInterval(() => {
+  coins += perSecond;
+  save();
+}, 1000);
 
 update();
 </script>
