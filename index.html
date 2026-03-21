@@ -14,11 +14,49 @@
       margin: 0;
     }
 
+    .topStat {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 10px;
+      width: 80%;
+      max-width: 320px;
+      margin: 0 auto 15px auto;
+      font-size: 15px;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow:
+          0 0 5px #facc15,
+          0 0 10px #facc15,
+          0 0 20px #eab308;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #facc15,
+          0 0 20px #facc15,
+          0 0 35px #eab308,
+          0 0 50px #ca8a04;
+      }
+      100% {
+        text-shadow:
+          0 0 5px #facc15,
+          0 0 10px #facc15,
+          0 0 20px #eab308;
+      }
+    }
+
     h1 {
-  margin-top: 20px;
-  font-size: 6vw;
-  white-space: nowrap;
-}
+      margin-top: 20px;
+      font-size: 6vw;
+      white-space: nowrap;
+      color: #facc15;
+      text-shadow:
+        0 0 5px #facc15,
+        0 0 10px #facc15,
+        0 0 20px #eab308,
+        0 0 40px #ca8a04;
+      animation: glow 2s infinite;
     }
 
     h2, h3, p {
@@ -33,6 +71,11 @@
       color: white;
       width: 45%;
       font-size: 14px;
+      transition: 0.15s;
+    }
+
+    button:active {
+      transform: scale(0.95);
     }
 
     .mine { background: #22c55e; width: 70%; }
@@ -64,11 +107,39 @@
       height: 100%;
       width: 0%;
       border-radius: 10px;
+      transition: width 0.2s;
+    }
+
+    @media (max-width: 500px) {
+      .topStat {
+        font-size: 14px;
+      }
+
+      h1 {
+        font-size: 8vw;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      h3, p {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 13px;
+        padding: 10px;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <div class="topStat">
+    👥 Registrovaní hráči: <span id="playersCount">127</span>
+  </div>
 
   <h1>💰 Crypto Miner Empire</h1>
 
@@ -87,7 +158,6 @@
     <button class="blue" onclick="showShop()">🛒 Shop</button>
   </div>
 
-  <!-- GAME -->
   <div id="game" class="screen active">
     <button class="mine" onclick="mine()">⛏️ Těžit</button>
 
@@ -109,7 +179,6 @@
     <p>Rebirth vyžaduje 100 000 coins a dá ti +20 % income navždy.</p>
   </div>
 
-  <!-- SHOP -->
   <div id="shop" class="screen">
     <div class="row">
       <button class="blue" onclick="buyUpgrade()">
@@ -139,7 +208,6 @@
   </div>
 
   <script>
-    // ELEMENTY
     const coinsEl = document.getElementById("coins");
     const diamondsEl = document.getElementById("diamonds");
     const perSecondEl = document.getElementById("perSecond");
@@ -159,7 +227,6 @@
     const gameScreen = document.getElementById("game");
     const shopScreen = document.getElementById("shop");
 
-    // DATA
     let coins = parseFloat(localStorage.getItem("coins")) || 0;
     let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
     let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
@@ -179,7 +246,6 @@
     let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
     let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
 
-    // REKLAMY cooldown
     let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
     let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
 
@@ -409,7 +475,7 @@
 
       coins += 5000 * (1 + prestige * 0.2);
       checkLevel();
-      adCoinsCooldownUntil = now + 60000; // 60 sekund
+      adCoinsCooldownUntil = now + 60000;
       save();
       update();
     }
@@ -419,7 +485,7 @@
       if (now < adDiamondsCooldownUntil) return;
 
       diamonds += 1;
-      adDiamondsCooldownUntil = now + 120000; // 120 sekund
+      adDiamondsCooldownUntil = now + 120000;
       save();
       update();
     }
@@ -451,7 +517,6 @@
       location.reload();
     }
 
-    // OFFLINE INCOME
     {
       const now = Date.now();
       const diff = Math.floor((now - lastTime) / 1000);
@@ -461,7 +526,6 @@
       }
     }
 
-    // PASSIVE INCOME
     setInterval(() => {
       coins += perSecond * currentIncomeMultiplier();
       checkLevel();
@@ -469,7 +533,6 @@
       update();
     }, 1000);
 
-    // timer refresh
     setInterval(() => {
       update();
     }, 1000);
