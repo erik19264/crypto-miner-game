@@ -15,12 +15,12 @@
     }
 
     h1 {
-      margin-top: 30px;
-      font-size: 42px;
+      margin-top: 20px;
+      font-size: 34px;
     }
 
     h2, h3 {
-      margin: 14px 0;
+      margin: 10px 0;
     }
 
     .row {
@@ -32,34 +32,32 @@
     }
 
     button {
-      padding: 15px;
-      font-size: 16px;
+      padding: 14px;
+      font-size: 15px;
       border-radius: 12px;
       border: none;
       color: white;
       width: 45%;
-      min-width: 150px;
+      min-width: 140px;
     }
 
     .mine {
       background: #22c55e;
       width: 70%;
-      max-width: 320px;
-      font-size: 20px;
-      padding: 18px;
+      max-width: 300px;
+      font-size: 18px;
+      padding: 16px;
       margin-top: 20px;
     }
 
-    .upgrade {
-      background: #3b82f6;
-    }
+    .upgrade { background: #3b82f6; }
+    .reset { background: #ef4444; }
+    .boost { background: #f59e0b; }
 
-    .reset {
-      background: #ef4444;
-    }
-
-    .boost {
-      background: #f59e0b;
+    /* 🔥 MENŠÍ IKONY */
+    .icon {
+      font-size: 16px;
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -72,59 +70,60 @@
 <h3>Coins/sec: <span id="perSecond">0</span></h3>
 <h3>Level: <span id="level">1</span></h3>
 
-<button class="mine" onclick="mine()">⛏️ Těžit</button>
+<button class="mine" onclick="mine()">
+  <span class="icon">⛏️</span> Těžit
+</button>
 
 <div class="row">
   <button class="upgrade" onclick="buyUpgrade()">
-    ⚡ Upgrade<br>(+1/sec)<br>Cost: <span id="cost">10</span>
+    <span class="icon">⚡</span> Upgrade<br>
+    (+1/sec)<br>
+    Cost: <span id="cost">10</span>
   </button>
 
   <button class="upgrade" onclick="buySuperUpgrade()">
-    💎 Super<br>(+5/sec)<br>Cost: <span id="superCost">100</span>
+    <span class="icon">💎</span> Super<br>
+    (+5/sec)<br>
+    Cost: <span id="superCost">100</span>
   </button>
 </div>
 
 <div class="row">
   <button class="upgrade" onclick="buyAutoClicker()">
-    🤖 Auto Miner<br>(+10/sec)<br>Cost: <span id="autoCost">500</span>
+    <span class="icon">🤖</span> Auto Miner<br>
+    (+10/sec)<br>
+    Cost: <span id="autoCost">500</span>
   </button>
 
   <button id="boostBtn" class="boost" onclick="activateBoost()">
-    🚀 Boost
+    <span class="icon">🚀</span> Boost
   </button>
 </div>
 
 <div class="row">
-  <button class="reset" onclick="resetGame()">🗑 Reset hry</button>
+  <button class="reset" onclick="resetGame()">
+    <span class="icon">🗑️</span> Reset hry
+  </button>
 </div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-if (tg) {
-  tg.expand();
-}
-
-let user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-let userId = user ? user.id : "guest";
-
-let coins = parseInt(localStorage.getItem("coins_" + userId)) || 0;
-let perSecond = parseInt(localStorage.getItem("perSecond_" + userId)) || 0;
-let cost = parseInt(localStorage.getItem("cost_" + userId)) || 10;
-let superCost = parseInt(localStorage.getItem("superCost_" + userId)) || 100;
-let autoCost = parseInt(localStorage.getItem("autoCost_" + userId)) || 500;
-let level = parseInt(localStorage.getItem("level_" + userId)) || 1;
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
+let cost = parseInt(localStorage.getItem("cost")) || 10;
+let superCost = parseInt(localStorage.getItem("superCost")) || 100;
+let autoCost = parseInt(localStorage.getItem("autoCost")) || 500;
+let level = parseInt(localStorage.getItem("level")) || 1;
 
 let boostActive = false;
 let boostCooldown = false;
 let boostMultiplier = 1;
 let boostCooldownRemaining = 0;
 
-// offline earnings
-let lastTime = localStorage.getItem("lastTime_" + userId);
+// OFFLINE PROGRESS
+let lastTime = localStorage.getItem("lastTime");
 if (lastTime) {
   let now = Date.now();
-  let diff = Math.floor((now - parseInt(lastTime)) / 1000);
+  let diff = Math.floor((now - lastTime) / 1000);
   coins += diff * perSecond;
 }
 
@@ -136,7 +135,7 @@ function update() {
   document.getElementById("autoCost").innerText = autoCost;
   document.getElementById("level").innerText = level;
 
-  const boostBtn = document.getElementById("boostBtn");
+  let boostBtn = document.getElementById("boostBtn");
   if (boostActive) {
     boostBtn.innerText = "🚀 Aktivní";
   } else if (boostCooldown) {
@@ -146,27 +145,27 @@ function update() {
   }
 }
 
+function save() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
+  localStorage.setItem("superCost", superCost);
+  localStorage.setItem("autoCost", autoCost);
+  localStorage.setItem("level", level);
+  localStorage.setItem("lastTime", Date.now());
+}
+
 function checkLevel() {
   while (coins >= level * 50) {
     level++;
   }
 }
 
-function save() {
-  localStorage.setItem("coins_" + userId, coins);
-  localStorage.setItem("perSecond_" + userId, perSecond);
-  localStorage.setItem("cost_" + userId, cost);
-  localStorage.setItem("superCost_" + userId, superCost);
-  localStorage.setItem("autoCost_" + userId, autoCost);
-  localStorage.setItem("level_" + userId, level);
-  localStorage.setItem("lastTime_" + userId, Date.now());
-  update();
-}
-
 function mine() {
   coins += 1 * boostMultiplier;
   checkLevel();
   save();
+  update();
 }
 
 function buyUpgrade() {
@@ -176,6 +175,7 @@ function buyUpgrade() {
     cost = Math.floor(cost * 1.5);
     checkLevel();
     save();
+    update();
   }
 }
 
@@ -186,6 +186,7 @@ function buySuperUpgrade() {
     superCost = Math.floor(superCost * 1.7);
     checkLevel();
     save();
+    update();
   }
 }
 
@@ -196,6 +197,7 @@ function buyAutoClicker() {
     autoCost = Math.floor(autoCost * 2);
     checkLevel();
     save();
+    update();
   }
 }
 
@@ -206,19 +208,8 @@ function resetGame() {
   superCost = 100;
   autoCost = 500;
   level = 1;
-  boostActive = false;
-  boostCooldown = false;
-  boostMultiplier = 1;
-  boostCooldownRemaining = 0;
 
-  localStorage.setItem("coins_" + userId, coins);
-  localStorage.setItem("perSecond_" + userId, perSecond);
-  localStorage.setItem("cost_" + userId, cost);
-  localStorage.setItem("superCost_" + userId, superCost);
-  localStorage.setItem("autoCost_" + userId, autoCost);
-  localStorage.setItem("level_" + userId, level);
-  localStorage.removeItem("lastTime_" + userId);
-
+  localStorage.clear();
   update();
 }
 
@@ -234,15 +225,14 @@ function activateBoost() {
   setTimeout(() => {
     boostMultiplier = 1;
     boostActive = false;
-    update();
   }, 10000);
 
-  const cooldownTimer = setInterval(() => {
+  let interval = setInterval(() => {
     boostCooldownRemaining--;
     update();
 
     if (boostCooldownRemaining <= 0) {
-      clearInterval(cooldownTimer);
+      clearInterval(interval);
       boostCooldown = false;
       boostCooldownRemaining = 0;
       update();
@@ -254,9 +244,9 @@ setInterval(() => {
   coins += perSecond * boostMultiplier;
   checkLevel();
   save();
+  update();
 }, 1000);
 
-checkLevel();
 update();
 </script>
 
