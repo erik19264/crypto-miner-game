@@ -89,6 +89,7 @@
 <h1>💰 Crypto Miner Empire</h1>
 
 <h2>Coins: <span id="coins">0</span></h2>
+<h3>Diamonds: <span id="diamonds">0</span></h3>
 <h3>Coins/sec: <span id="perSecond">0</span></h3>
 <h3>Level: <span id="level">1</span></h3>
 
@@ -139,6 +140,7 @@
 
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
+let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
 let cost = parseInt(localStorage.getItem("cost")) || 10;
 let superCost = parseInt(localStorage.getItem("superCost")) || 100;
@@ -154,7 +156,7 @@ let boostCooldownRemaining = 0;
 let lastTime = localStorage.getItem("lastTime");
 if (lastTime) {
   let now = Date.now();
-  let diff = Math.floor((now - lastTime) / 1000);
+  let diff = Math.floor((now - parseInt(lastTime)) / 1000);
   coins += diff * perSecond;
 }
 
@@ -170,6 +172,7 @@ function showShop() {
 
 function update() {
   document.getElementById("coins").innerText = coins;
+  document.getElementById("diamonds").innerText = diamonds;
   document.getElementById("perSecond").innerText = perSecond;
   document.getElementById("cost").innerText = cost;
   document.getElementById("superCost").innerText = superCost;
@@ -188,6 +191,7 @@ function update() {
 
 function save() {
   localStorage.setItem("coins", coins);
+  localStorage.setItem("diamonds", diamonds);
   localStorage.setItem("perSecond", perSecond);
   localStorage.setItem("cost", cost);
   localStorage.setItem("superCost", superCost);
@@ -199,6 +203,11 @@ function save() {
 function checkLevel() {
   while (coins >= level * 50) {
     level++;
+
+    // každých 25 levelů dá 1 diamant
+    if (level % 25 === 0) {
+      diamonds += 1;
+    }
   }
 }
 
@@ -244,6 +253,7 @@ function buyAutoClicker() {
 
 function resetGame() {
   coins = 0;
+  diamonds = 0;
   perSecond = 0;
   cost = 10;
   superCost = 100;
