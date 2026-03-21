@@ -79,7 +79,7 @@
 
 <br>
 
-<button class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
+<button id="boostBtn" class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
 
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
@@ -91,6 +91,7 @@ let level = parseInt(localStorage.getItem("level")) || 1;
 let boostActive = false;
 let boostCooldown = false;
 let boostMultiplier = 1;
+let boostCooldownRemaining = 0;
 
 // offline earnings
 let lastTime = localStorage.getItem("lastTime");
@@ -106,6 +107,15 @@ function update() {
   document.getElementById("cost").innerText = cost;
   document.getElementById("superCost").innerText = superCost;
   document.getElementById("level").innerText = "Level: " + level;
+
+  const boostBtn = document.getElementById("boostBtn");
+  if (boostActive) {
+    boostBtn.innerText = "🚀 Boost aktivní";
+  } else if (boostCooldown) {
+    boostBtn.innerText = "⏳ Boost za " + boostCooldownRemaining + "s";
+  } else {
+    boostBtn.innerText = "🚀 x2 Boost (10s)";
+  }
 }
 
 function checkLevel() {
@@ -157,7 +167,9 @@ function resetGame() {
   superCost = 100;
   level = 1;
   boostActive = false;
+  boostCooldown = false;
   boostMultiplier = 1;
+  boostCooldownRemaining = 0;
 
   localStorage.setItem("coins", coins);
   localStorage.setItem("perSecond", perSecond);
@@ -175,24 +187,26 @@ function activateBoost() {
   boostActive = true;
   boostCooldown = true;
   boostMultiplier = 2;
+  boostCooldownRemaining = 30;
+  update();
 
   setTimeout(() => {
     boostMultiplier = 1;
     boostActive = false;
+    update();
   }, 10000);
 
-  setTimeout(() => {
-    boostCooldown = false;
-  }, 30000);
-}
+  const cooldownTimer = setInterval(() => {
+    boostCooldownRemaining--;
+    update();
 
-  boostActive = true;
-  boostMultiplier = 2;
-
-  setTimeout(() => {
-    boostMultiplier = 1;
-    boostActive = false;
-  }, 10000);
+    if (boostCooldownRemaining <= 0) {
+      clearInterval(cooldownTimer);
+      boostCooldown = false;
+      boostCooldownRemaining = 0;
+      update();
+    }
+  }, 1000);
 }
 
 setInterval(() => {
