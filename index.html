@@ -72,7 +72,10 @@
 <button class="upgrade" onclick="buySuperUpgrade()">
   💎 Super Upgrade (+5/sec) – Cost: <span id="superCost">100</span>
 </button>
-
+<br>
+<button class="upgrade" onclick="buyAutoClicker()">
+  🤖 Auto Miner (+10/sec) – Cost: <span id="autoCost">500</span>
+</button>
 <br>
 
 <button class="reset" onclick="resetGame()">🗑️ Reset hry</button>
@@ -95,6 +98,7 @@ let coins = parseInt(localStorage.getItem("coins_" + userId)) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond_" + userId)) || 0;
 let cost = parseInt(localStorage.getItem("cost_" + userId)) || 10;
 let superCost = parseInt(localStorage.getItem("superCost_" + userId)) || 100;
+let autoCost = parseInt(localStorage.getItem("autoCost_" + userId)) || 500;
 let level = parseInt(localStorage.getItem("level_" + userId)) || 1;
 
 let boostActive = false;
@@ -110,7 +114,7 @@ if (lastTime) {
   coins += diff * perSecond;
 }
 
-function update() {
+function update(document.getElementById("autoCost").innerText = autoCost;) {
   document.getElementById("coins").innerText = "Coins: " + coins;
   document.getElementById("perSec").innerText = "Coins/sec: " + perSecond;
   document.getElementById("cost").innerText = cost;
@@ -133,7 +137,7 @@ function checkLevel() {
   }
 }
 
-function save() {
+function save(localStorage.setItem("autoCost_" + userId, autoCost);) {
   localStorage.setItem("coins_" + userId, coins);
   localStorage.setItem("perSecond_" + userId, perSecond);
   localStorage.setItem("cost_" + userId, cost);
@@ -226,7 +230,14 @@ setInterval(() => {
 
 checkLevel();
 update();
-</script>
+</script function buyAutoClicker() { 
+  if (coins >= autoCost) {
+    coins -= autoCost;
+    perSecond += 10;
+    autoCost = Math.floor(autoCost * 2);
+    save();
+  }
+}>
 
 </body>
 </html>
