@@ -59,7 +59,14 @@
       margin-right: 5px;
     }
 
-    /* 🔥 MOBIL MENŠÍ */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
     @media (max-width: 500px) {
       h1 { font-size: 24px; }
       h2 { font-size: 18px; }
@@ -85,40 +92,49 @@
 <h3>Coins/sec: <span id="perSecond">0</span></h3>
 <h3>Level: <span id="level">1</span></h3>
 
-<button class="mine" onclick="mine()">
-  <span class="icon">⛏️</span> Těžit
-</button>
-
 <div class="row">
-  <button class="upgrade" onclick="buyUpgrade()">
-    <span class="icon">⚡</span> Upgrade<br>
-    (+1/sec)<br>
-    Cost: <span id="cost">10</span>
-  </button>
-
-  <button class="upgrade" onclick="buySuperUpgrade()">
-    <span class="icon">💎</span> Super<br>
-    (+5/sec)<br>
-    Cost: <span id="superCost">100</span>
-  </button>
+  <button class="upgrade" onclick="showGame()">🎮 Hra</button>
+  <button class="upgrade" onclick="showShop()">🛒 Shop</button>
 </div>
 
-<div class="row">
-  <button class="upgrade" onclick="buyAutoClicker()">
-    <span class="icon">🤖</span> Auto Miner<br>
-    (+10/sec)<br>
-    Cost: <span id="autoCost">500</span>
+<div id="gameScreen" class="screen active">
+  <button class="mine" onclick="mine()">
+    <span class="icon">⛏️</span> Těžit
   </button>
 
-  <button id="boostBtn" class="boost" onclick="activateBoost()">
-    <span class="icon">🚀</span> Boost
-  </button>
+  <div class="row">
+    <button id="boostBtn" class="boost" onclick="activateBoost()">
+      <span class="icon">🚀</span> Boost
+    </button>
+
+    <button class="reset" onclick="resetGame()">
+      <span class="icon">🗑️</span> Reset hry
+    </button>
+  </div>
 </div>
 
-<div class="row">
-  <button class="reset" onclick="resetGame()">
-    <span class="icon">🗑️</span> Reset hry
-  </button>
+<div id="shopScreen" class="screen">
+  <div class="row">
+    <button class="upgrade" onclick="buyUpgrade()">
+      <span class="icon">⚡</span> Upgrade<br>
+      (+1/sec)<br>
+      Cost: <span id="cost">10</span>
+    </button>
+
+    <button class="upgrade" onclick="buySuperUpgrade()">
+      <span class="icon">💎</span> Super<br>
+      (+5/sec)<br>
+      Cost: <span id="superCost">100</span>
+    </button>
+  </div>
+
+  <div class="row">
+    <button class="upgrade" onclick="buyAutoClicker()">
+      <span class="icon">🤖</span> Auto Miner<br>
+      (+10/sec)<br>
+      Cost: <span id="autoCost">500</span>
+    </button>
+  </div>
 </div>
 
 <script>
@@ -140,6 +156,16 @@ if (lastTime) {
   let now = Date.now();
   let diff = Math.floor((now - lastTime) / 1000);
   coins += diff * perSecond;
+}
+
+function showGame() {
+  document.getElementById("gameScreen").classList.add("active");
+  document.getElementById("shopScreen").classList.remove("active");
+}
+
+function showShop() {
+  document.getElementById("shopScreen").classList.add("active");
+  document.getElementById("gameScreen").classList.remove("active");
 }
 
 function update() {
