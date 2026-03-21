@@ -392,7 +392,31 @@ let critMultiplier = 5;
     }
 
     function mine() {
-      coins += 1 * currentIncomeMultiplier();
+  let amount = 1 * currentIncomeMultiplier();
+
+  // CRIT
+  if (Math.random() < critChance) {
+    amount *= critMultiplier;
+
+    // efekt při critu
+    document.body.style.background = "#78350f";
+    setTimeout(() => {
+      document.body.style.background = "#0f172a";
+    }, 100);
+  }
+
+  coins += amount;
+
+  if (navigator.vibrate) {
+    navigator.vibrate(20);
+  }
+
+  playSound(clickSound);
+  showCoinEffect();
+  checkLevel();
+  save();
+  update();
+}
 
       if (navigator.vibrate) {
         navigator.vibrate(20);
