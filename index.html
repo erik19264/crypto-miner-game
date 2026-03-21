@@ -19,7 +19,7 @@
       font-size: 34px;
     }
 
-    h2, h3 {
+    h2, h3, p {
       margin: 10px 0;
     }
 
@@ -33,14 +33,7 @@
       font-size: 14px;
     }
 
-    .mine {
-      background: #22c55e;
-      width: 70%;
-      max-width: 320px;
-      font-size: 18px;
-      padding: 16px;
-    }
-
+    .mine { background: #22c55e; width: 70%; }
     .blue { background: #3b82f6; }
     .orange { background: #f59e0b; }
     .red { background: #ef4444; }
@@ -52,13 +45,8 @@
       flex-wrap: wrap;
     }
 
-    .screen {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
+    .screen { display: none; }
+    .active { display: block; }
 
     .barWrap {
       background: #1e293b;
@@ -142,39 +130,58 @@
   </div>
 
   <script>
-    let coins = +localStorage.coins || 0;
-    let diamonds = +localStorage.diamonds || 0;
-    let perSecond = +localStorage.perSecond || 0;
+    // ELEMENTY
+    const coinsEl = document.getElementById("coins");
+    const diamondsEl = document.getElementById("diamonds");
+    const perSecondEl = document.getElementById("perSecond");
+    const levelEl = document.getElementById("level");
+    const prestigeEl = document.getElementById("prestige");
 
-    let cost = +localStorage.cost || 10;
-    let superCost = +localStorage.superCost || 100;
-    let autoCost = +localStorage.autoCost || 500;
+    const costEl = document.getElementById("cost");
+    const superCostEl = document.getElementById("superCost");
+    const autoCostEl = document.getElementById("autoCost");
 
-    let level = +localStorage.level || 1;
-    let prestige = +localStorage.prestige || 0;
+    const levelBar = document.getElementById("levelBar");
+    const boostBtn = document.getElementById("boostBtn");
+    const dailyBtn = document.getElementById("dailyBtn");
+
+    const gameScreen = document.getElementById("game");
+    const shopScreen = document.getElementById("shop");
+
+    // DATA
+    let coins = parseFloat(localStorage.getItem("coins")) || 0;
+    let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
+    let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
+
+    let cost = parseFloat(localStorage.getItem("cost")) || 10;
+    let superCost = parseFloat(localStorage.getItem("superCost")) || 100;
+    let autoCost = parseFloat(localStorage.getItem("autoCost")) || 500;
+
+    let level = parseInt(localStorage.getItem("level")) || 1;
+    let prestige = parseInt(localStorage.getItem("prestige")) || 0;
 
     let boostMultiplier = 1;
     let boostActive = false;
     let boostCooldown = false;
     let boostCooldownRemaining = 0;
 
-    let lastDaily = +localStorage.lastDaily || 0;
-    let lastTime = +localStorage.lastTime || Date.now();
+    let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
+    let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
 
     function showGame() {
-      game.classList.add("active");
-      shop.classList.remove("active");
+      gameScreen.classList.add("active");
+      shopScreen.classList.remove("active");
     }
 
     function showShop() {
-      shop.classList.add("active");
-      game.classList.remove("active");
+      shopScreen.classList.add("active");
+      gameScreen.classList.remove("active");
     }
 
     function update() {
       coinsEl.innerText = Math.floor(coins);
       diamondsEl.innerText = diamonds;
-      perSecondEl.innerText = perSecond;
+      perSecondEl.innerText = Math.floor(perSecond * 100) / 100;
       levelEl.innerText = level;
       prestigeEl.innerText = prestige;
 
@@ -182,8 +189,8 @@
       superCostEl.innerText = Math.floor(superCost);
       autoCostEl.innerText = Math.floor(autoCost);
 
-      let prevNeed = (level - 1) * 50;
-      let nextNeed = level * 50;
+      const prevNeed = (level - 1) * 50;
+      const nextNeed = level * 50;
       let progress = ((coins - prevNeed) / (nextNeed - prevNeed)) * 100;
       if (progress < 0) progress = 0;
       if (progress > 100) progress = 100;
@@ -197,14 +204,14 @@
         boostBtn.innerText = "🚀 Boost";
       }
 
-      let remaining = 86400000 - (Date.now() - lastDaily);
+      const remaining = 86400000 - (Date.now() - lastDaily);
       if (remaining <= 0) {
         dailyBtn.innerText = "🎁 Daily Reward";
         dailyBtn.disabled = false;
         dailyBtn.style.opacity = "1";
       } else {
-        let h = Math.floor(remaining / 3600000);
-        let m = Math.floor((remaining % 3600000) / 60000);
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
         dailyBtn.innerText = "⏳ " + h + "h " + m + "m";
         dailyBtn.disabled = true;
         dailyBtn.style.opacity = "0.7";
@@ -212,18 +219,16 @@
     }
 
     function save() {
-      localStorage.coins = coins;
-      localStorage.diamonds = diamonds;
-      localStorage.perSecond = perSecond;
-
-      localStorage.cost = cost;
-      localStorage.superCost = superCost;
-      localStorage.autoCost = autoCost;
-
-      localStorage.level = level;
-      localStorage.prestige = prestige;
-      localStorage.lastDaily = lastDaily;
-      localStorage.lastTime = Date.now();
+      localStorage.setItem("coins", coins);
+      localStorage.setItem("diamonds", diamonds);
+      localStorage.setItem("perSecond", perSecond);
+      localStorage.setItem("cost", cost);
+      localStorage.setItem("superCost", superCost);
+      localStorage.setItem("autoCost", autoCost);
+      localStorage.setItem("level", level);
+      localStorage.setItem("prestige", prestige);
+      localStorage.setItem("lastDaily", lastDaily);
+      localStorage.setItem("lastTime", Date.now());
     }
 
     function checkLevel() {
@@ -235,8 +240,12 @@
       }
     }
 
+    function currentIncomeMultiplier() {
+      return boostMultiplier * (1 + prestige * 0.2);
+    }
+
     function mine() {
-      coins += 1 * boostMultiplier * (1 + prestige * 0.2);
+      coins += 1 * currentIncomeMultiplier();
       checkLevel();
       save();
       update();
@@ -283,7 +292,7 @@
     }
 
     function buyDiamondBoost() {
-      if (diamonds >= 2) {
+      if (diamonds >= 2 && !boostActive) {
         diamonds -= 2;
         boostMultiplier = 2;
         boostActive = true;
@@ -326,7 +335,7 @@
         update();
       }, 10000);
 
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         boostCooldownRemaining--;
 
         if (boostCooldownRemaining <= 0) {
@@ -366,23 +375,25 @@
       location.reload();
     }
 
-    // offline income
+    // OFFLINE INCOME
     {
-      let now = Date.now();
-      let diff = Math.floor((now - lastTime) / 1000);
+      const now = Date.now();
+      const diff = Math.floor((now - lastTime) / 1000);
       if (diff > 0) {
         coins += diff * perSecond * (1 + prestige * 0.2);
         checkLevel();
       }
     }
 
+    // PASSIVE INCOME
     setInterval(() => {
-      coins += perSecond * boostMultiplier * (1 + prestige * 0.2);
+      coins += perSecond * currentIncomeMultiplier();
       checkLevel();
       save();
       update();
     }, 1000);
 
+    // daily timer refresh
     setInterval(() => {
       update();
     }, 60000);
