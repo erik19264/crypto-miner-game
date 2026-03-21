@@ -23,6 +23,16 @@
       margin: 10px 0;
     }
 
+    .topStat {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 10px;
+      width: 80%;
+      max-width: 320px;
+      margin: 0 auto 15px auto;
+      font-size: 15px;
+    }
+
     button {
       padding: 12px;
       margin: 6px;
@@ -67,6 +77,10 @@
 </head>
 
 <body>
+
+  <div class="topStat">
+    👥 Registrovaní hráči: <span id="playersCount">127</span>
+  </div>
 
   <h1>💰 Crypto Miner Empire</h1>
 
@@ -130,7 +144,6 @@
   </div>
 
   <script>
-    // ELEMENTY
     const coinsEl = document.getElementById("coins");
     const diamondsEl = document.getElementById("diamonds");
     const perSecondEl = document.getElementById("perSecond");
@@ -148,7 +161,6 @@
     const gameScreen = document.getElementById("game");
     const shopScreen = document.getElementById("shop");
 
-    // DATA
     let coins = parseFloat(localStorage.getItem("coins")) || 0;
     let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
     let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
@@ -375,7 +387,6 @@
       location.reload();
     }
 
-    // OFFLINE INCOME
     {
       const now = Date.now();
       const diff = Math.floor((now - lastTime) / 1000);
@@ -385,7 +396,6 @@
       }
     }
 
-    // PASSIVE INCOME
     setInterval(() => {
       coins += perSecond * currentIncomeMultiplier();
       checkLevel();
@@ -393,7 +403,6 @@
       update();
     }, 1000);
 
-    // daily timer refresh
     setInterval(() => {
       update();
     }, 60000);
