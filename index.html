@@ -68,7 +68,7 @@
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
 let cost = parseInt(localStorage.getItem("cost")) || 10;
-
+let level = parseInt(localStorage.getItem("level")) || 1;
 let boostActive = false;
 let boostMultiplier = 1;
 
@@ -81,13 +81,13 @@ if (lastTime) {
   coins += diff * perSecond;
 }
 
-function update() {
+function update(document.getElementById("level").innerText = "Level: " + level;) {
   document.getElementById("coins").innerText = "Coins: " + coins;
   document.getElementById("perSec").innerText = "Coins/sec: " + perSecond;
   document.getElementById("cost").innerText = cost;
 }
 
-function save() {
+function save(localStorage.setItem("level", level);) {
   localStorage.setItem("coins", coins);
   localStorage.setItem("perSecond", perSecond);
   localStorage.setItem("cost", cost);
@@ -97,6 +97,11 @@ function save() {
 
 function mine() {
   coins += 1 * boostMultiplier;
+
+  if (coins >= level * 50) {
+    level++;
+  }
+
   save();
 }
 
