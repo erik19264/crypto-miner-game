@@ -54,34 +54,27 @@
     .reset { background: #ef4444; }
     .boost { background: #f59e0b; }
 
-    /* 🔥 MENŠÍ IKONY */
     .icon {
       font-size: 16px;
       margin-right: 5px;
     }
+
+    /* 🔥 MOBIL MENŠÍ */
+    @media (max-width: 500px) {
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+      h3 { font-size: 14px; }
+
+      button {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      .icon {
+        font-size: 14px;
+      }
+    }
   </style>
-  @media (max-width: 500px) {
-  h1 {
-    font-size: 26px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  h3 {
-    font-size: 16px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .icon {
-    font-size: 14px;
-  }
-}
 </head>
 
 <body>
@@ -141,7 +134,7 @@ let boostCooldown = false;
 let boostMultiplier = 1;
 let boostCooldownRemaining = 0;
 
-// OFFLINE PROGRESS
+// OFFLINE
 let lastTime = localStorage.getItem("lastTime");
 if (lastTime) {
   let now = Date.now();
@@ -230,7 +223,6 @@ function resetGame() {
   superCost = 100;
   autoCost = 500;
   level = 1;
-
   localStorage.clear();
   update();
 }
