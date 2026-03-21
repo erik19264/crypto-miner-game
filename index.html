@@ -1,246 +1,394 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Miner Empire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Miner Empire</title>
 
-<style>
-body {
-  background:#0f172a;
-  color:white;
-  text-align:center;
-  font-family:Arial;
-}
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
 
-button{
-  padding:12px;
-  margin:6px;
-  border-radius:12px;
-  border:none;
-  color:white;
-  width:45%;
-  font-size:14px;
-}
+    h1 {
+      margin-top: 20px;
+      font-size: 34px;
+    }
 
-.mine{background:#22c55e;width:70%;}
-.blue{background:#3b82f6;}
-.orange{background:#f59e0b;}
-.red{background:#ef4444;}
-.purple{background:#8b5cf6;}
+    h2, h3 {
+      margin: 10px 0;
+    }
 
-.row{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-}
+    button {
+      padding: 12px;
+      margin: 6px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      width: 45%;
+      font-size: 14px;
+    }
 
-.screen{display:none;}
-.active{display:block;}
-</style>
+    .mine {
+      background: #22c55e;
+      width: 70%;
+      max-width: 320px;
+      font-size: 18px;
+      padding: 16px;
+    }
+
+    .blue { background: #3b82f6; }
+    .orange { background: #f59e0b; }
+    .red { background: #ef4444; }
+    .purple { background: #8b5cf6; }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .barWrap {
+      background: #1e293b;
+      border-radius: 10px;
+      height: 12px;
+      width: 80%;
+      margin: 10px auto 18px auto;
+      overflow: hidden;
+    }
+
+    .bar {
+      background: #22c55e;
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>💰 Crypto Miner Empire</h1>
+  <h1>💰 Crypto Miner Empire</h1>
 
-<h2>Coins: <span id="coins">0</span></h2>
-<h3>Diamonds: <span id="diamonds">0</span></h3>
-<h3>Coins/sec: <span id="perSecond">0</span></h3>
-<h3>Level: <span id="level">1</span></h3>
+  <h2>Coins: <span id="coins">0</span></h2>
+  <h3>Diamonds: <span id="diamonds">0</span></h3>
+  <h3>Coins/sec: <span id="perSecond">0</span></h3>
+  <h3>Level: <span id="level">1</span></h3>
+  <h3>Prestige: <span id="prestige">0</span></h3>
 
-<div class="row">
-  <button class="blue" onclick="showGame()">🎮 Hra</button>
-  <button class="blue" onclick="showShop()">🛒 Shop</button>
-</div>
+  <div class="barWrap">
+    <div id="levelBar" class="bar"></div>
+  </div>
 
-<!-- GAME -->
-<div id="game" class="active screen">
+  <div class="row">
+    <button class="blue" onclick="showGame()">🎮 Hra</button>
+    <button class="blue" onclick="showShop()">🛒 Shop</button>
+  </div>
 
-<button class="mine" onclick="mine()">⛏️ Těžit</button>
+  <div id="game" class="screen active">
+    <button class="mine" onclick="mine()">⛏️ Těžit</button>
 
-<div class="row">
-  <button class="orange" onclick="boost()">🚀 Boost</button>
-  <button class="purple" onclick="daily()">🎁 Daily</button>
-</div>
+    <div class="row">
+      <button class="orange" id="boostBtn" onclick="boost()">🚀 Boost</button>
+      <button class="purple" id="dailyBtn" onclick="daily()">🎁 Daily Reward</button>
+    </div>
 
-<button class="red" onclick="resetGame()">🗑️ Reset</button>
+    <div class="row">
+      <button class="purple" onclick="rebirth()">♻️ Rebirth</button>
+      <button class="red" onclick="resetGame()">🗑️ Reset</button>
+    </div>
 
-</div>
+    <p>Rebirth vyžaduje 100 000 coins a dá ti +20 % income navždy.</p>
+  </div>
 
-<!-- SHOP -->
-<div id="shop" class="screen">
+  <div id="shop" class="screen">
+    <div class="row">
+      <button class="blue" onclick="buyUpgrade()">
+        ⚡ +1/sec<br>Cost: <span id="cost">10</span>
+      </button>
 
-<div class="row">
-  <button class="blue" onclick="buyUpgrade()">
-    ⚡ +1/sec<br>Cost: <span id="cost">10</span>
-  </button>
+      <button class="blue" onclick="buySuper()">
+        💎 +5/sec<br>Cost: <span id="superCost">100</span>
+      </button>
+    </div>
 
-  <button class="blue" onclick="buySuper()">
-    💎 +5/sec<br>Cost: <span id="superCost">100</span>
-  </button>
-</div>
+    <div class="row">
+      <button class="blue" onclick="buyAuto()">
+        🤖 +10/sec<br>Cost: <span id="autoCost">500</span>
+      </button>
+    </div>
 
-<div class="row">
-  <button class="blue" onclick="buyAuto()">
-    🤖 +10/sec<br>Cost: <span id="autoCost">500</span>
-  </button>
-</div>
+    <div class="row">
+      <button class="blue" onclick="buyCoins()">
+        💎 +1000 Coins<br>Cost: 1 Diamond
+      </button>
 
-<div class="row">
-  <button class="blue" onclick="buyCoins()">
-    💎 +1000 coins (1)
-  </button>
+      <button class="blue" onclick="buyDiamondBoost()">
+        💎 x2 Boost 30s<br>Cost: 2 Diamonds
+      </button>
+    </div>
+  </div>
 
-  <button class="blue" onclick="buyDiamondBoost()">
-    💎 x2 boost 30s (2)
-  </button>
-</div>
+  <script>
+    let coins = +localStorage.coins || 0;
+    let diamonds = +localStorage.diamonds || 0;
+    let perSecond = +localStorage.perSecond || 0;
 
-</div>
+    let cost = +localStorage.cost || 10;
+    let superCost = +localStorage.superCost || 100;
+    let autoCost = +localStorage.autoCost || 500;
 
-<script>
+    let level = +localStorage.level || 1;
+    let prestige = +localStorage.prestige || 0;
 
-// DATA
-let coins = +localStorage.coins || 0;
-let diamonds = +localStorage.diamonds || 0;
-let perSecond = +localStorage.perSecond || 0;
+    let boostMultiplier = 1;
+    let boostActive = false;
+    let boostCooldown = false;
+    let boostCooldownRemaining = 0;
 
-let cost = +localStorage.cost || 10;
-let superCost = +localStorage.superCost || 100;
-let autoCost = +localStorage.autoCost || 500;
+    let lastDaily = +localStorage.lastDaily || 0;
+    let lastTime = +localStorage.lastTime || Date.now();
 
-let level = +localStorage.level || 1;
+    function showGame() {
+      game.classList.add("active");
+      shop.classList.remove("active");
+    }
 
-let boostMultiplier = 1;
-let lastDaily = +localStorage.lastDaily || 0;
+    function showShop() {
+      shop.classList.add("active");
+      game.classList.remove("active");
+    }
 
-// UI
-function update(){
-  coinsEl.innerText = Math.floor(coins);
-  diamondsEl.innerText = diamonds;
-  perSecondEl.innerText = perSecond;
-  levelEl.innerText = level;
+    function update() {
+      coinsEl.innerText = Math.floor(coins);
+      diamondsEl.innerText = diamonds;
+      perSecondEl.innerText = perSecond;
+      levelEl.innerText = level;
+      prestigeEl.innerText = prestige;
 
-  costEl.innerText = Math.floor(cost);
-  superCostEl.innerText = Math.floor(superCost);
-  autoCostEl.innerText = Math.floor(autoCost);
-}
+      costEl.innerText = Math.floor(cost);
+      superCostEl.innerText = Math.floor(superCost);
+      autoCostEl.innerText = Math.floor(autoCost);
 
-// SAVE
-function save(){
-  localStorage.coins = coins;
-  localStorage.diamonds = diamonds;
-  localStorage.perSecond = perSecond;
-  localStorage.cost = cost;
-  localStorage.superCost = superCost;
-  localStorage.autoCost = autoCost;
-  localStorage.level = level;
-  localStorage.lastDaily = lastDaily;
-}
+      let prevNeed = (level - 1) * 50;
+      let nextNeed = level * 50;
+      let progress = ((coins - prevNeed) / (nextNeed - prevNeed)) * 100;
+      if (progress < 0) progress = 0;
+      if (progress > 100) progress = 100;
+      levelBar.style.width = progress + "%";
 
-// LEVEL
-function checkLevel(){
-  while(coins >= level*50){
-    level++;
-    if(level % 50 === 0) diamonds++;
-  }
-}
+      if (boostActive) {
+        boostBtn.innerText = "🚀 Aktivní";
+      } else if (boostCooldown) {
+        boostBtn.innerText = "⏳ " + boostCooldownRemaining + "s";
+      } else {
+        boostBtn.innerText = "🚀 Boost";
+      }
 
-// GAME
-function mine(){
-  coins += 1 * boostMultiplier;
-  checkLevel();
-  save(); update();
-}
+      let remaining = 86400000 - (Date.now() - lastDaily);
+      if (remaining <= 0) {
+        dailyBtn.innerText = "🎁 Daily Reward";
+        dailyBtn.disabled = false;
+        dailyBtn.style.opacity = "1";
+      } else {
+        let h = Math.floor(remaining / 3600000);
+        let m = Math.floor((remaining % 3600000) / 60000);
+        dailyBtn.innerText = "⏳ " + h + "h " + m + "m";
+        dailyBtn.disabled = true;
+        dailyBtn.style.opacity = "0.7";
+      }
+    }
 
-// SHOP
-function buyUpgrade(){
-  if(coins >= cost){
-    coins -= cost;
-    perSecond += 1;
-    cost *= 1.5;
-  }
-  save(); update();
-}
+    function save() {
+      localStorage.coins = coins;
+      localStorage.diamonds = diamonds;
+      localStorage.perSecond = perSecond;
 
-function buySuper(){
-  if(coins >= superCost){
-    coins -= superCost;
-    perSecond += 5;
-    superCost *= 1.7;
-  }
-  save(); update();
-}
+      localStorage.cost = cost;
+      localStorage.superCost = superCost;
+      localStorage.autoCost = autoCost;
 
-function buyAuto(){
-  if(coins >= autoCost){
-    coins -= autoCost;
-    perSecond += 10;
-    autoCost *= 2;
-  }
-  save(); update();
-}
+      localStorage.level = level;
+      localStorage.prestige = prestige;
+      localStorage.lastDaily = lastDaily;
+      localStorage.lastTime = Date.now();
+    }
 
-function buyCoins(){
-  if(diamonds >= 1){
-    diamonds--;
-    coins += 1000;
-  }
-  save(); update();
-}
+    function checkLevel() {
+      while (coins >= level * 50) {
+        level++;
+        if (level % 50 === 0) {
+          diamonds++;
+        }
+      }
+    }
 
-function buyDiamondBoost(){
-  if(diamonds >= 2){
-    diamonds -= 2;
-    boostMultiplier = 2;
-    setTimeout(()=> boostMultiplier = 1, 30000);
-  }
-  save(); update();
-}
+    function mine() {
+      coins += 1 * boostMultiplier * (1 + prestige * 0.2);
+      checkLevel();
+      save();
+      update();
+    }
 
-// BOOST
-function boost(){
-  boostMultiplier = 2;
-  setTimeout(()=> boostMultiplier = 1, 10000);
-}
+    function buyUpgrade() {
+      if (coins >= cost) {
+        coins -= cost;
+        perSecond += 1;
+        cost = Math.floor(cost * 1.5);
+        save();
+        update();
+      }
+    }
 
-// DAILY
-function daily(){
-  if(Date.now() - lastDaily > 86400000){
-    coins += 5000;
-    diamonds += 1;
-    lastDaily = Date.now();
-  }
-  save(); update();
-}
+    function buySuper() {
+      if (coins >= superCost) {
+        coins -= superCost;
+        perSecond += 5;
+        superCost = Math.floor(superCost * 1.7);
+        save();
+        update();
+      }
+    }
 
-// RESET
-function resetGame(){
-  localStorage.clear();
-  location.reload();
-}
+    function buyAuto() {
+      if (coins >= autoCost) {
+        coins -= autoCost;
+        perSecond += 10;
+        autoCost = Math.floor(autoCost * 2);
+        save();
+        update();
+      }
+    }
 
-// SWITCH
-function showGame(){
-  game.classList.add("active");
-  shop.classList.remove("active");
-}
+    function buyCoins() {
+      if (diamonds >= 1) {
+        diamonds--;
+        coins += 1000;
+        checkLevel();
+        save();
+        update();
+      }
+    }
 
-function showShop(){
-  shop.classList.add("active");
-  game.classList.remove("active");
-}
+    function buyDiamondBoost() {
+      if (diamonds >= 2) {
+        diamonds -= 2;
+        boostMultiplier = 2;
+        boostActive = true;
+        save();
+        update();
 
-// AUTO INCOME
-setInterval(()=>{
-  coins += perSecond * boostMultiplier;
-  checkLevel();
-  save(); update();
-},1000);
+        setTimeout(() => {
+          boostMultiplier = 1;
+          boostActive = false;
+          save();
+          update();
+        }, 30000);
+      }
+    }
 
-update();
+    function daily() {
+      if (Date.now() - lastDaily >= 86400000) {
+        coins += 5000;
+        diamonds += 1;
+        lastDaily = Date.now();
+        checkLevel();
+        save();
+        update();
+      }
+    }
 
-</script>
+    function boost() {
+      if (boostActive || boostCooldown) return;
+
+      boostActive = true;
+      boostCooldown = true;
+      boostMultiplier = 2;
+      boostCooldownRemaining = 30;
+      update();
+
+      setTimeout(() => {
+        boostMultiplier = 1;
+        boostActive = false;
+        save();
+        update();
+      }, 10000);
+
+      let interval = setInterval(() => {
+        boostCooldownRemaining--;
+
+        if (boostCooldownRemaining <= 0) {
+          clearInterval(interval);
+          boostCooldown = false;
+          boostCooldownRemaining = 0;
+        }
+
+        update();
+      }, 1000);
+    }
+
+    function rebirth() {
+      if (coins < 100000) {
+        alert("Potřebuješ 100 000 coins!");
+        return;
+      }
+
+      prestige++;
+      coins = 0;
+      perSecond = 0;
+      cost = 10;
+      superCost = 100;
+      autoCost = 500;
+      level = 1;
+      boostMultiplier = 1;
+      boostActive = false;
+      boostCooldown = false;
+      boostCooldownRemaining = 0;
+
+      save();
+      update();
+    }
+
+    function resetGame() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    // offline income
+    {
+      let now = Date.now();
+      let diff = Math.floor((now - lastTime) / 1000);
+      if (diff > 0) {
+        coins += diff * perSecond * (1 + prestige * 0.2);
+        checkLevel();
+      }
+    }
+
+    setInterval(() => {
+      coins += perSecond * boostMultiplier * (1 + prestige * 0.2);
+      checkLevel();
+      save();
+      update();
+    }, 1000);
+
+    setInterval(() => {
+      update();
+    }, 60000);
+
+    update();
+  </script>
 
 </body>
 </html>
