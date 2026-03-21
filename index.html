@@ -170,7 +170,21 @@ function resetGame() {
 }
 
 function activateBoost() {
-  if (boostActive) return;
+  if (boostActive || boostCooldown) return;
+
+  boostActive = true;
+  boostCooldown = true;
+  boostMultiplier = 2;
+
+  setTimeout(() => {
+    boostMultiplier = 1;
+    boostActive = false;
+  }, 10000);
+
+  setTimeout(() => {
+    boostCooldown = false;
+  }, 30000);
+}
 
   boostActive = true;
   boostMultiplier = 2;
