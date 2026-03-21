@@ -53,6 +53,7 @@
     .upgrade { background: #3b82f6; }
     .reset { background: #ef4444; }
     .boost { background: #f59e0b; }
+    .reward { background: #8b5cf6; }
 
     .icon {
       font-size: 16px;
@@ -108,6 +109,12 @@
       <span class="icon">🚀</span> Boost
     </button>
 
+    <button id="dailyBtn" class="reward" onclick="claimDailyReward()">
+      <span class="icon">🎁</span> Daily Reward
+    </button>
+  </div>
+
+  <div class="row">
     <button class="reset" onclick="resetGame()">
       <span class="icon">🗑️</span> Reset hry
     </button>
@@ -136,6 +143,18 @@
       Cost: <span id="autoCost">500</span>
     </button>
   </div>
+
+  <div class="row">
+    <button class="upgrade" onclick="buyCoinsWithDiamonds()">
+      <span class="icon">💎</span> +1000 Coins<br>
+      Cost: 1 Diamond
+    </button>
+
+    <button class="upgrade" onclick="buyDiamondBoost()">
+      <span class="icon">💎</span> x2 Boost 30s<br>
+      Cost: 2 Diamonds
+    </button>
+  </div>
 </div>
 
 <script>
@@ -152,13 +171,17 @@ let boostCooldown = false;
 let boostMultiplier = 1;
 let boostCooldownRemaining = 0;
 
-// offline progress
+// offline income
 let lastTime = localStorage.getItem("lastTime");
 if (lastTime) {
   let now = Date.now();
   let diff = Math.floor((now - parseInt(lastTime)) / 1000);
   coins += diff * perSecond;
 }
+
+// daily reward
+let lastDailyClaim = parseInt(localStorage.getItem("lastDailyClaim")) || 0;
+const DAILY_COOLDOWN = 24 * 60 * 60 * 1000;
 
 function showGame() {
   document.getElementById("gameScreen").classList.add("active");
@@ -187,6 +210,22 @@ function update() {
   } else {
     boostBtn.innerText = "🚀 Boost";
   }
+
+  let dailyBtn = document.getElementById("dailyBtn");
+  let now = Date.now();
+  let remaining = DAILY_COOLDOWN - (now - lastDailyClaim);
+
+  if (remaining <= 0) {
+    dailyBtn.innerText = "🎁 Daily Reward";
+    dailyBtn.disabled = false;
+    dailyBtn.style.opacity = "1";
+  } else {
+    let hours = Math.floor(remaining / (1000 * 60 * 60));
+    let minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    dailyBtn.innerText = "⏳ " + hours + "h " + minutes + "m";
+    dailyBtn.disabled = true;
+    dailyBtn.style.opacity = "0.7";
+  }
 }
 
 function save() {
@@ -198,13 +237,12 @@ function save() {
   localStorage.setItem("autoCost", autoCost);
   localStorage.setItem("level", level);
   localStorage.setItem("lastTime", Date.now());
+  localStorage.setItem("lastDailyClaim", lastDailyClaim);
 }
 
 function checkLevel() {
   while (coins >= level * 50) {
     level++;
-
-    // každých 25 levelů dá 1 diamant
     if (level % 25 === 0) {
       diamonds += 1;
     }
@@ -251,6 +289,45 @@ function buyAutoClicker() {
   }
 }
 
+function buyCoinsWithDiamonds() {
+  if (diamonds >= 1) {
+    diamonds -= 1;
+    coins += 1000;
+    checkLevel();
+    save();
+    update();
+  }
+}
+
+function buyDiamondBoost() {
+  if (diamonds >= 2 && !boostActive) {
+    diamonds -= 2;
+    boostActive = true;
+    boostMultiplier = 2;
+    save();
+    update();
+
+    setTimeout(() => {
+      boostMultiplier = 1;
+      boostActive = false;
+      save();
+      update();
+    }, 30000);
+  }
+}
+
+function claimDailyReward() {
+  let now = Date.now();
+  if (now - lastDailyClaim >= DAILY_COOLDOWN) {
+    coins += 5000;
+    diamonds += 1;
+    lastDailyClaim = now;
+    checkLevel();
+    save();
+    update();
+  }
+}
+
 function resetGame() {
   coins = 0;
   diamonds = 0;
@@ -263,6 +340,7 @@ function resetGame() {
   boostCooldown = false;
   boostMultiplier = 1;
   boostCooldownRemaining = 0;
+  lastDailyClaim = 0;
 
   localStorage.clear();
   update();
@@ -275,11 +353,13 @@ function activateBoost() {
   boostCooldown = true;
   boostMultiplier = 2;
   boostCooldownRemaining = 30;
+  save();
   update();
 
   setTimeout(() => {
     boostMultiplier = 1;
     boostActive = false;
+    save();
     update();
   }, 10000);
 
@@ -291,6 +371,7 @@ function activateBoost() {
       clearInterval(interval);
       boostCooldown = false;
       boostCooldownRemaining = 0;
+      save();
       update();
     }
   }, 1000);
@@ -302,6 +383,10 @@ setInterval(() => {
   save();
   update();
 }, 1000);
+
+setInterval(() => {
+  update();
+}, 60000);
 
 update();
 </script>
