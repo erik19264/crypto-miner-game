@@ -44,7 +44,8 @@
 <br>
 
 <button class="upgrade" onclick="buyUpgrade()">⚡ Upgrade (+1/sec) – Cost: <span id="cost">10</span></button>
-
+<br>
+<button onclick="resetGame()" style="background:#ef4444;">🗑️ Reset hry</button>
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
