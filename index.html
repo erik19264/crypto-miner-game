@@ -22,12 +22,19 @@
       margin: 10px;
       border-radius: 10px;
       border: none;
-      background: #22c55e;
       color: white;
+    }
+
+    .mine {
+      background: #22c55e;
     }
 
     .upgrade {
       background: #3b82f6;
+    }
+
+    .reset {
+      background: #ef4444;
     }
   </style>
 </head>
@@ -39,17 +46,29 @@
 <h2 id="coins">Coins: 0</h2>
 <h3 id="perSec">Coins/sec: 0</h3>
 
-<button onclick="mine()">⛏️ Těžit</button>
+<button class="mine" onclick="mine()">⛏️ Těžit</button>
 
 <br>
 
 <button class="upgrade" onclick="buyUpgrade()">⚡ Upgrade (+1/sec) – Cost: <span id="cost">10</span></button>
+
 <br>
-<button onclick="resetGame()" style="background:#ef4444;">🗑️ Reset hry</button>
+
+<button class="reset" onclick="resetGame()">🗑️ Reset hry</button>
+
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
 let cost = parseInt(localStorage.getItem("cost")) || 10;
+
+// OFFLINE EARNINGS
+let lastTime = localStorage.getItem("lastTime");
+
+if (lastTime) {
+  let now = Date.now();
+  let diff = Math.floor((now - lastTime) / 1000);
+  coins += diff * perSecond;
+}
 
 function update() {
   document.getElementById("coins").innerText = "Coins: " + coins;
@@ -71,32 +90,7 @@ function buyUpgrade() {
   }
 }
 
-function save() {
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("perSecond", perSecond);
-  localStorage.setItem("cost", cost);
-  update();
-}
-
-let lastTime = localStorage.getItem("lastTime");
-
-if (lastTime) {
-  let now = Date.now();
-  let diff = Math.floor((now - lastTime) / 1000);
-  coins += diff * perSecond;
-}
-
-setInterval(() => {
-  coins += perSecond;
-  save();
-}, 1000);
-
-setInterval(() => {
-  localStorage.setItem("lastTime", Date.now());
-}, 5000);
-
-update();
-</scriptfunction resetGame() {
+function resetGame() {
   coins = 0;
   perSecond = 0;
   cost = 10;
@@ -105,8 +99,24 @@ update();
   localStorage.setItem("cost", cost);
   localStorage.removeItem("lastTime");
   update();
-}>
-
 }
+
+function save() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
+  localStorage.setItem("lastTime", Date.now());
+  update();
+}
+
+// AUTO INCOME
+setInterval(() => {
+  coins += perSecond;
+  save();
+}, 1000);
+
+update();
+</script>
+
 </body>
 </html>
