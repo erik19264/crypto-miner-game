@@ -77,10 +77,22 @@ function save() {
   update();
 }
 
+let lastTime = localStorage.getItem("lastTime");
+
+if (lastTime) {
+  let now = Date.now();
+  let diff = Math.floor((now - lastTime) / 1000);
+  coins += diff * perSecond;
+}
+
 setInterval(() => {
   coins += perSecond;
   save();
 }, 1000);
+
+setInterval(() => {
+  localStorage.setItem("lastTime", Date.now());
+}, 5000);
 
 update();
 </script>
