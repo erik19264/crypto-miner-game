@@ -9,79 +9,33 @@
       background: #0f172a;
       color: white;
       text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
+      font-family: Arial;
       padding: 20px;
     }
 
-    h1 {
-      margin-top: 20px;
-      font-size: 34px;
+    button {
+      padding: 12px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      color: white;
+      width: 45%;
     }
 
-    h2, h3 {
-      margin: 10px 0;
-    }
+    .mine { background: #22c55e; width: 70%; }
+    .upgrade { background: #3b82f6; }
+    .boost { background: #f59e0b; }
+    .reset { background: #ef4444; }
+    .reward { background: #8b5cf6; }
 
     .row {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
     }
 
-    button {
-      padding: 14px;
-      font-size: 15px;
-      border-radius: 12px;
-      border: none;
-      color: white;
-      width: 45%;
-      min-width: 140px;
-    }
-
-    .mine {
-      background: #22c55e;
-      width: 70%;
-      max-width: 300px;
-      font-size: 18px;
-      padding: 16px;
-      margin-top: 20px;
-    }
-
-    .upgrade { background: #3b82f6; }
-    .reset { background: #ef4444; }
-    .boost { background: #f59e0b; }
-    .reward { background: #8b5cf6; }
-
-    .icon {
-      font-size: 16px;
-      margin-right: 5px;
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    @media (max-width: 500px) {
-      h1 { font-size: 24px; }
-      h2 { font-size: 18px; }
-      h3 { font-size: 14px; }
-
-      button {
-        font-size: 13px;
-        padding: 10px;
-      }
-
-      .icon {
-        font-size: 14px;
-      }
-    }
+    .screen { display: none; }
+    .active { display: block; }
   </style>
 </head>
 
@@ -94,67 +48,54 @@
 <h3>Coins/sec: <span id="perSecond">0</span></h3>
 <h3>Level: <span id="level">1</span></h3>
 
+<div style="background:#1e293b; border-radius:10px; height:12px; width:80%; margin:10px auto;">
+  <div id="levelBar" style="background:#22c55e; height:100%; width:0%; border-radius:10px;"></div>
+</div>
+
 <div class="row">
   <button class="upgrade" onclick="showGame()">🎮 Hra</button>
   <button class="upgrade" onclick="showShop()">🛒 Shop</button>
 </div>
 
 <div id="gameScreen" class="screen active">
-  <button class="mine" onclick="mine()">
-    <span class="icon">⛏️</span> Těžit
-  </button>
+  <button class="mine" onclick="mine()">⛏️ Těžit</button>
 
   <div class="row">
-    <button id="boostBtn" class="boost" onclick="activateBoost()">
-      <span class="icon">🚀</span> Boost
-    </button>
-
-    <button id="dailyBtn" class="reward" onclick="claimDailyReward()">
-      <span class="icon">🎁</span> Daily Reward
-    </button>
+    <button id="boostBtn" class="boost" onclick="activateBoost()">🚀 Boost</button>
+    <button id="dailyBtn" class="reward" onclick="claimDailyReward()">🎁 Daily</button>
   </div>
 
-  <div class="row">
-    <button class="reset" onclick="resetGame()">
-      <span class="icon">🗑️</span> Reset hry
-    </button>
-  </div>
+  <button class="reset" onclick="resetGame()">🗑️ Reset</button>
 </div>
 
 <div id="shopScreen" class="screen">
+
   <div class="row">
     <button class="upgrade" onclick="buyUpgrade()">
-      <span class="icon">⚡</span> Upgrade<br>
-      (+1/sec)<br>
-      Cost: <span id="cost">10</span>
+      ⚡ +1/sec<br>Cost: <span id="cost">10</span>
     </button>
 
     <button class="upgrade" onclick="buySuperUpgrade()">
-      <span class="icon">💎</span> Super<br>
-      (+5/sec)<br>
-      Cost: <span id="superCost">100</span>
+      💎 +5/sec<br>Cost: <span id="superCost">100</span>
     </button>
   </div>
 
   <div class="row">
     <button class="upgrade" onclick="buyAutoClicker()">
-      <span class="icon">🤖</span> Auto Miner<br>
-      (+10/sec)<br>
-      Cost: <span id="autoCost">500</span>
+      🤖 +10/sec<br>Cost: <span id="autoCost">500</span>
     </button>
   </div>
 
   <div class="row">
     <button class="upgrade" onclick="buyCoinsWithDiamonds()">
-      <span class="icon">💎</span> +1000 Coins<br>
-      Cost: 1 Diamond
+      💎 +1000 coins<br>(1 diamond)
     </button>
 
     <button class="upgrade" onclick="buyDiamondBoost()">
-      <span class="icon">💎</span> x2 Boost 30s<br>
-      Cost: 2 Diamonds
+      💎 x2 boost 30s<br>(2 diamonds)
     </button>
   </div>
+
 </div>
 
 <script>
@@ -171,60 +112,41 @@ let boostCooldown = false;
 let boostMultiplier = 1;
 let boostCooldownRemaining = 0;
 
-// offline income
-let lastTime = localStorage.getItem("lastTime");
-if (lastTime) {
-  let now = Date.now();
-  let diff = Math.floor((now - parseInt(lastTime)) / 1000);
-  coins += diff * perSecond;
-}
-
-// daily reward
 let lastDailyClaim = parseInt(localStorage.getItem("lastDailyClaim")) || 0;
-const DAILY_COOLDOWN = 24 * 60 * 60 * 1000;
 
 function showGame() {
-  document.getElementById("gameScreen").classList.add("active");
-  document.getElementById("shopScreen").classList.remove("active");
+  gameScreen.classList.add("active");
+  shopScreen.classList.remove("active");
 }
 
 function showShop() {
-  document.getElementById("shopScreen").classList.add("active");
-  document.getElementById("gameScreen").classList.remove("active");
+  shopScreen.classList.add("active");
+  gameScreen.classList.remove("active");
 }
 
 function update() {
-  document.getElementById("coins").innerText = coins;
-  document.getElementById("diamonds").innerText = diamonds;
-  document.getElementById("perSecond").innerText = perSecond;
-  document.getElementById("cost").innerText = cost;
-  document.getElementById("superCost").innerText = superCost;
-  document.getElementById("autoCost").innerText = autoCost;
-  document.getElementById("level").innerText = level;
+  coinsEl.innerText = coins;
+  diamondsEl.innerText = diamonds;
+  perSecondEl.innerText = perSecond;
+  costEl.innerText = cost;
+  superCostEl.innerText = superCost;
+  autoCostEl.innerText = autoCost;
+  levelEl.innerText = level;
 
-  let boostBtn = document.getElementById("boostBtn");
-  if (boostActive) {
-    boostBtn.innerText = "🚀 Aktivní";
-  } else if (boostCooldown) {
-    boostBtn.innerText = "⏳ " + boostCooldownRemaining + "s";
-  } else {
-    boostBtn.innerText = "🚀 Boost";
-  }
+  let progress = (coins % (level*50)) / (level*50) * 100;
+  levelBar.style.width = progress + "%";
 
-  let dailyBtn = document.getElementById("dailyBtn");
   let now = Date.now();
-  let remaining = DAILY_COOLDOWN - (now - lastDailyClaim);
+  let diff = now - lastDailyClaim;
 
-  if (remaining <= 0) {
-    dailyBtn.innerText = "🎁 Daily Reward";
+  if (diff > 86400000) {
+    dailyBtn.innerText = "🎁 Daily";
     dailyBtn.disabled = false;
-    dailyBtn.style.opacity = "1";
   } else {
-    let hours = Math.floor(remaining / (1000 * 60 * 60));
-    let minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    dailyBtn.innerText = "⏳ " + hours + "h " + minutes + "m";
+    let h = Math.floor((86400000-diff)/3600000);
+    let m = Math.floor(((86400000-diff)%3600000)/60000);
+    dailyBtn.innerText = h+"h "+m+"m";
     dailyBtn.disabled = true;
-    dailyBtn.style.opacity = "0.7";
   }
 }
 
@@ -236,16 +158,13 @@ function save() {
   localStorage.setItem("superCost", superCost);
   localStorage.setItem("autoCost", autoCost);
   localStorage.setItem("level", level);
-  localStorage.setItem("lastTime", Date.now());
   localStorage.setItem("lastDailyClaim", lastDailyClaim);
 }
 
 function checkLevel() {
   while (coins >= level * 50) {
     level++;
-    if (level % 25 === 0) {
-      diamonds += 1;
-    }
+    if (level % 25 === 0) diamonds++;
   }
 }
 
@@ -259,11 +178,9 @@ function mine() {
 function buyUpgrade() {
   if (coins >= cost) {
     coins -= cost;
-    perSecond += 1;
-    cost = Math.floor(cost * 1.5);
-    checkLevel();
-    save();
-    update();
+    perSecond++;
+    cost *= 1.5;
+    save(); update();
   }
 }
 
@@ -271,10 +188,8 @@ function buySuperUpgrade() {
   if (coins >= superCost) {
     coins -= superCost;
     perSecond += 5;
-    superCost = Math.floor(superCost * 1.7);
-    checkLevel();
-    save();
-    update();
+    superCost *= 1.7;
+    save(); update();
   }
 }
 
@@ -282,68 +197,35 @@ function buyAutoClicker() {
   if (coins >= autoCost) {
     coins -= autoCost;
     perSecond += 10;
-    autoCost = Math.floor(autoCost * 2);
-    checkLevel();
-    save();
-    update();
+    autoCost *= 2;
+    save(); update();
   }
 }
 
 function buyCoinsWithDiamonds() {
   if (diamonds >= 1) {
-    diamonds -= 1;
+    diamonds--;
     coins += 1000;
-    checkLevel();
-    save();
-    update();
+    save(); update();
   }
 }
 
 function buyDiamondBoost() {
-  if (diamonds >= 2 && !boostActive) {
+  if (diamonds >= 2) {
     diamonds -= 2;
-    boostActive = true;
     boostMultiplier = 2;
-    save();
-    update();
-
-    setTimeout(() => {
-      boostMultiplier = 1;
-      boostActive = false;
-      save();
-      update();
-    }, 30000);
+    setTimeout(()=> boostMultiplier=1,30000);
+    save(); update();
   }
 }
 
 function claimDailyReward() {
-  let now = Date.now();
-  if (now - lastDailyClaim >= DAILY_COOLDOWN) {
+  if (Date.now() - lastDailyClaim > 86400000) {
     coins += 5000;
-    diamonds += 1;
-    lastDailyClaim = now;
-    checkLevel();
-    save();
-    update();
+    diamonds++;
+    lastDailyClaim = Date.now();
+    save(); update();
   }
-}
-
-function resetGame() {
-  coins = 0;
-  diamonds = 0;
-  perSecond = 0;
-  cost = 10;
-  superCost = 100;
-  autoCost = 500;
-  level = 1;
-  boostActive = false;
-  boostCooldown = false;
-  boostMultiplier = 1;
-  boostCooldownRemaining = 0;
-  lastDailyClaim = 0;
-
-  localStorage.clear();
-  update();
 }
 
 function activateBoost() {
@@ -353,40 +235,25 @@ function activateBoost() {
   boostCooldown = true;
   boostMultiplier = 2;
   boostCooldownRemaining = 30;
-  save();
-  update();
 
-  setTimeout(() => {
-    boostMultiplier = 1;
-    boostActive = false;
-    save();
-    update();
-  }, 10000);
+  setTimeout(()=>{ boostMultiplier=1; boostActive=false; },10000);
 
-  let interval = setInterval(() => {
+  let i = setInterval(()=>{
     boostCooldownRemaining--;
-    update();
-
-    if (boostCooldownRemaining <= 0) {
-      clearInterval(interval);
-      boostCooldown = false;
-      boostCooldownRemaining = 0;
-      save();
-      update();
+    if (boostCooldownRemaining<=0){
+      clearInterval(i);
+      boostCooldown=false;
     }
-  }, 1000);
+    update();
+  },1000);
 }
 
-setInterval(() => {
+setInterval(()=>{
   coins += perSecond * boostMultiplier;
   checkLevel();
   save();
   update();
-}, 1000);
-
-setInterval(() => {
-  update();
-}, 60000);
+},1000);
 
 update();
 </script>
