@@ -36,6 +36,10 @@
     .reset {
       background: #ef4444;
     }
+
+    .boost {
+      background: #f59e0b;
+    }
   </style>
 </head>
 
@@ -55,17 +59,20 @@
 <br>
 
 <button class="reset" onclick="resetGame()">🗑️ Reset hry</button>
+
 <br>
-<button onclick="activateBoost()" style="background:#f59e0b;">
-🚀 x2 Boost (10s)
-</button>
+
+<button class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
+
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
 let cost = parseInt(localStorage.getItem("cost")) || 10;
+
 let boostActive = false;
 let boostMultiplier = 1;
-// OFFLINE EARNINGS
+
+// offline earnings
 let lastTime = localStorage.getItem("lastTime");
 
 if (lastTime) {
@@ -80,15 +87,23 @@ function update() {
   document.getElementById("cost").innerText = cost;
 }
 
+function save() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
+  localStorage.setItem("lastTime", Date.now());
+  update();
+}
+
 function mine() {
-  coins++;
+  coins += 1 * boostMultiplier;
   save();
 }
 
 function buyUpgrade() {
   if (coins >= cost) {
     coins -= cost;
-    perSecond++;
+    perSecond += 1;
     cost = Math.floor(cost * 1.5);
     save();
   }
@@ -98,6 +113,8 @@ function resetGame() {
   coins = 0;
   perSecond = 0;
   cost = 10;
+  boostActive = false;
+  boostMultiplier = 1;
   localStorage.setItem("coins", coins);
   localStorage.setItem("perSecond", perSecond);
   localStorage.setItem("cost", cost);
@@ -105,22 +122,7 @@ function resetGame() {
   update();
 }
 
-function save() {
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("perSecond", perSecond);
-  localStorage.setItem("cost", cost);
-  localStorage.setItem("lastTime", Date.now());
-  update();
-}
-
-// AUTO INCOME
-setInterval(() => {
-  coins += perSecond * boostMultiplier;
-  save();
-}, 1000);
-
-update();
-</scriptfunction activateBoost() {
+function activateBoost() {
   if (boostActive) return;
 
   boostActive = true;
@@ -130,7 +132,15 @@ update();
     boostMultiplier = 1;
     boostActive = false;
   }, 10000);
-}> 
+}
+
+setInterval(() => {
+  coins += perSecond * boostMultiplier;
+  save();
+}, 1000);
+
+update();
+</script>
 
 </body>
 </html>
