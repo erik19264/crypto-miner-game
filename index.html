@@ -63,7 +63,8 @@
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
 let cost = parseInt(localStorage.getItem("cost")) || 10;
-
+let boostActive = false;
+let boostMultiplier = 1;
 // OFFLINE EARNINGS
 let lastTime = localStorage.getItem("lastTime");
 
@@ -114,12 +115,22 @@ function save() {
 
 // AUTO INCOME
 setInterval(() => {
-  coins += perSecond;
+  coins += perSecond * boostMultiplier;
   save();
 }, 1000);
 
 update();
-</script>
+</scriptfunction activateBoost() {
+  if (boostActive) return;
+
+  boostActive = true;
+  boostMultiplier = 2;
+
+  setTimeout(() => {
+    boostMultiplier = 1;
+    boostActive = false;
+  }, 10000);
+}> 
 
 </body>
 </html>
