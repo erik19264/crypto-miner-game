@@ -55,7 +55,10 @@
 <br>
 
 <button class="reset" onclick="resetGame()">🗑️ Reset hry</button>
-
+<br>
+<button onclick="activateBoost()" style="background:#f59e0b;">
+🚀 x2 Boost (10s)
+</button>
 <script>
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
