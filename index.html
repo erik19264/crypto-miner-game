@@ -81,12 +81,21 @@
 
 <button id="boostBtn" class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-let coins = parseInt(localStorage.getItem("coins")) || 0;
-let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
-let cost = parseInt(localStorage.getItem("cost")) || 10;
-let superCost = parseInt(localStorage.getItem("superCost")) || 100;
-let level = parseInt(localStorage.getItem("level")) || 1;
+let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) {
+  tg.expand();
+}
+
+let user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+let userId = user ? user.id : "guest";
+
+let coins = parseInt(localStorage.getItem("coins_" + userId)) || 0;
+let perSecond = parseInt(localStorage.getItem("perSecond_" + userId)) || 0;
+let cost = parseInt(localStorage.getItem("cost_" + userId)) || 10;
+let superCost = parseInt(localStorage.getItem("superCost_" + userId)) || 100;
+let level = parseInt(localStorage.getItem("level_" + userId)) || 1;
 
 let boostActive = false;
 let boostCooldown = false;
@@ -94,7 +103,7 @@ let boostMultiplier = 1;
 let boostCooldownRemaining = 0;
 
 // offline earnings
-let lastTime = localStorage.getItem("lastTime");
+let lastTime = localStorage.getItem("lastTime_" + userId);
 if (lastTime) {
   let now = Date.now();
   let diff = Math.floor((now - parseInt(lastTime)) / 1000);
@@ -125,12 +134,12 @@ function checkLevel() {
 }
 
 function save() {
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("perSecond", perSecond);
-  localStorage.setItem("cost", cost);
-  localStorage.setItem("superCost", superCost);
-  localStorage.setItem("level", level);
-  localStorage.setItem("lastTime", Date.now());
+  localStorage.setItem("coins_" + userId, coins);
+  localStorage.setItem("perSecond_" + userId, perSecond);
+  localStorage.setItem("cost_" + userId, cost);
+  localStorage.setItem("superCost_" + userId, superCost);
+  localStorage.setItem("level_" + userId, level);
+  localStorage.setItem("lastTime_" + userId, Date.now());
   update();
 }
 
@@ -171,12 +180,12 @@ function resetGame() {
   boostMultiplier = 1;
   boostCooldownRemaining = 0;
 
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("perSecond", perSecond);
-  localStorage.setItem("cost", cost);
-  localStorage.setItem("superCost", superCost);
-  localStorage.setItem("level", level);
-  localStorage.removeItem("lastTime");
+  localStorage.setItem("coins_" + userId, coins);
+  localStorage.setItem("perSecond_" + userId, perSecond);
+  localStorage.setItem("cost_" + userId, cost);
+  localStorage.setItem("superCost_" + userId, superCost);
+  localStorage.setItem("level_" + userId, level);
+  localStorage.removeItem("lastTime_" + userId);
 
   update();
 }
