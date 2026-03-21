@@ -9,45 +9,28 @@
       background: #0f172a;
       color: white;
       text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
+      font-family: Arial;
     }
 
     h1 {
-      margin-top: 30px;
-      font-size: 42px;
-    }
-
-    h2, h3 {
-      margin: 18px 0;
+      margin-top: 40px;
     }
 
     button {
-      padding: 18px;
-      font-size: 18px;
-      margin: 10px;
-      border-radius: 14px;
+      padding: 20px;
+      font-size: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
       border: none;
       color: white;
-      min-width: 260px;
+      width: 80%;
+      max-width: 400px;
     }
 
-    .mine {
-      background: #22c55e;
-    }
-
-    .upgrade {
-      background: #3b82f6;
-    }
-
-    .reset {
-      background: #ef4444;
-    }
-
-    .boost {
-      background: #f59e0b;
-    }
+    .mine { background: #22c55e; }
+    .upgrade { background: #3b82f6; }
+    .reset { background: #ef4444; }
+    .boost { background: #f59e0b; }
   </style>
 </head>
 
@@ -55,189 +38,163 @@
 
 <h1>💰 Crypto Miner Empire</h1>
 
-<h2 id="coins">Coins: 0</h2>
-<h3 id="perSec">Coins/sec: 0</h3>
-<h3 id="level">Level: 1</h3>
+<p>Coins: <span id="coins">0</span></p>
+<p>Coins/sec: <span id="perSecond">0</span></p>
+<p>Level: <span id="level">1</span></p>
 
 <button class="mine" onclick="mine()">⛏️ Těžit</button>
 
 <br>
 
 <button class="upgrade" onclick="buyUpgrade()">
-  ⚡ Upgrade (+1/sec) – Cost: <span id="cost">10</span>
+⚡ Upgrade (+1/sec) – Cost: <span id="cost">10</span>
 </button>
 
 <br>
 
 <button class="upgrade" onclick="buySuperUpgrade()">
-  💎 Super Upgrade (+5/sec) – Cost: <span id="superCost">100</span>
+💎 Super Upgrade (+5/sec) – Cost: <span id="superCost">100</span>
 </button>
+
 <br>
+
 <button class="upgrade" onclick="buyAutoClicker()">
-  🤖 Auto Miner (+10/sec) – Cost: <span id="autoCost">500</span>
+🤖 Auto Miner (+10/sec) – Cost: <span id="autoCost">500</span>
 </button>
-<br>
-
-<button class="reset" onclick="resetGame()">🗑️ Reset hry</button>
 
 <br>
 
-<button id="boostBtn" class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
+<button class="reset" onclick="resetGame()">🗑 Reset hry</button>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<br>
+
+<button class="boost" onclick="activateBoost()">🚀 x2 Boost (10s)</button>
+
 <script>
-let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-if (tg) {
-  tg.expand();
-}
 
-let user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-let userId = user ? user.id : "guest";
+// ===== DATA =====
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let perSecond = parseInt(localStorage.getItem("perSecond")) || 0;
+let cost = parseInt(localStorage.getItem("cost")) || 10;
+let superCost = parseInt(localStorage.getItem("superCost")) || 100;
+let autoCost = parseInt(localStorage.getItem("autoCost")) || 500;
+let level = parseInt(localStorage.getItem("level")) || 1;
 
-let coins = parseInt(localStorage.getItem("coins_" + userId)) || 0;
-let perSecond = parseInt(localStorage.getItem("perSecond_" + userId)) || 0;
-let cost = parseInt(localStorage.getItem("cost_" + userId)) || 10;
-let superCost = parseInt(localStorage.getItem("superCost_" + userId)) || 100;
-let autoCost = parseInt(localStorage.getItem("autoCost_" + userId)) || 500;
-let level = parseInt(localStorage.getItem("level_" + userId)) || 1;
-
+// BOOST
 let boostActive = false;
-let boostCooldown = false;
 let boostMultiplier = 1;
-let boostCooldownRemaining = 0;
 
-// offline earnings
-let lastTime = localStorage.getItem("lastTime_" + userId);
-if (lastTime) {
-  let now = Date.now();
-  let diff = Math.floor((now - parseInt(lastTime)) / 1000);
-  coins += diff * perSecond;
-}
-
-function update(document.getElementById("autoCost").innerText = autoCost;) {
-  document.getElementById("coins").innerText = "Coins: " + coins;
-  document.getElementById("perSec").innerText = "Coins/sec: " + perSecond;
+// ===== UPDATE UI =====
+function update() {
+  document.getElementById("coins").innerText = coins;
+  document.getElementById("perSecond").innerText = perSecond;
   document.getElementById("cost").innerText = cost;
   document.getElementById("superCost").innerText = superCost;
-  document.getElementById("level").innerText = "Level: " + level;
-
-  const boostBtn = document.getElementById("boostBtn");
-  if (boostActive) {
-    boostBtn.innerText = "🚀 Boost aktivní";
-  } else if (boostCooldown) {
-    boostBtn.innerText = "⏳ Boost za " + boostCooldownRemaining + "s";
-  } else {
-    boostBtn.innerText = "🚀 x2 Boost (10s)";
-  }
+  document.getElementById("autoCost").innerText = autoCost;
+  document.getElementById("level").innerText = level;
 }
 
-function checkLevel() {
-  while (coins >= level * 50) {
-    level++;
-  }
+// ===== SAVE =====
+function save() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
+  localStorage.setItem("superCost", superCost);
+  localStorage.setItem("autoCost", autoCost);
+  localStorage.setItem("level", level);
 }
 
-function save(localStorage.setItem("autoCost_" + userId, autoCost);) {
-  localStorage.setItem("coins_" + userId, coins);
-  localStorage.setItem("perSecond_" + userId, perSecond);
-  localStorage.setItem("cost_" + userId, cost);
-  localStorage.setItem("superCost_" + userId, superCost);
-  localStorage.setItem("level_" + userId, level);
-  localStorage.setItem("lastTime_" + userId, Date.now());
+// ===== MINE =====
+function mine() {
+  coins += 1 * boostMultiplier;
   update();
 }
 
-function mine() {
-  coins += 1 * boostMultiplier;
-  checkLevel();
-  save();
-}
-
+// ===== UPGRADE =====
 function buyUpgrade() {
   if (coins >= cost) {
     coins -= cost;
     perSecond += 1;
     cost = Math.floor(cost * 1.5);
-    checkLevel();
+    level++;
     save();
+    update();
   }
 }
 
+// ===== SUPER =====
 function buySuperUpgrade() {
   if (coins >= superCost) {
     coins -= superCost;
     perSecond += 5;
     superCost = Math.floor(superCost * 1.7);
-    checkLevel();
+    level += 2;
     save();
+    update();
   }
 }
 
+// ===== AUTO MINER =====
+function buyAutoClicker() {
+  if (coins >= autoCost) {
+    coins -= autoCost;
+    perSecond += 10;
+    autoCost = Math.floor(autoCost * 2);
+    level += 3;
+    save();
+    update();
+  }
+}
+
+// ===== BOOST =====
+function activateBoost() {
+  if (!boostActive) {
+    boostActive = true;
+    boostMultiplier = 2;
+
+    setTimeout(() => {
+      boostMultiplier = 1;
+      boostActive = false;
+    }, 10000);
+  }
+}
+
+// ===== PASSIVE INCOME =====
+setInterval(() => {
+  coins += perSecond * boostMultiplier;
+  update();
+}, 1000);
+
+// ===== OFFLINE PROGRESS =====
+let lastTime = localStorage.getItem("lastTime");
+
+if (lastTime) {
+  let now = Date.now();
+  let diff = Math.floor((now - lastTime) / 1000);
+  coins += diff * perSecond;
+}
+
+setInterval(() => {
+  localStorage.setItem("lastTime", Date.now());
+}, 5000);
+
+// ===== RESET =====
 function resetGame() {
   coins = 0;
   perSecond = 0;
   cost = 10;
   superCost = 100;
+  autoCost = 500;
   level = 1;
-  boostActive = false;
-  boostCooldown = false;
-  boostMultiplier = 1;
-  boostCooldownRemaining = 0;
 
-  localStorage.setItem("coins_" + userId, coins);
-  localStorage.setItem("perSecond_" + userId, perSecond);
-  localStorage.setItem("cost_" + userId, cost);
-  localStorage.setItem("superCost_" + userId, superCost);
-  localStorage.setItem("level_" + userId, level);
-  localStorage.removeItem("lastTime_" + userId);
-
+  localStorage.clear();
   update();
 }
 
-function activateBoost() {
-  if (boostActive || boostCooldown) return;
-
-  boostActive = true;
-  boostCooldown = true;
-  boostMultiplier = 2;
-  boostCooldownRemaining = 30;
-  update();
-
-  setTimeout(() => {
-    boostMultiplier = 1;
-    boostActive = false;
-    update();
-  }, 10000);
-
-  const cooldownTimer = setInterval(() => {
-    boostCooldownRemaining--;
-    update();
-
-    if (boostCooldownRemaining <= 0) {
-      clearInterval(cooldownTimer);
-      boostCooldown = false;
-      boostCooldownRemaining = 0;
-      update();
-    }
-  }, 1000);
-}
-
-setInterval(() => {
-  coins += perSecond * boostMultiplier;
-  checkLevel();
-  save();
-}, 1000);
-
-checkLevel();
+// ===== START =====
 update();
-</script (function buyAutoClicker) { 
-  if (coins >= autoCost) {
-    coins -= autoCost;
-    perSecond += 10;
-    autoCost = Math.floor(autoCost * 2);
-    save();
-  }
-}>
+
+</script>
 
 </body>
 </html>
