@@ -23,16 +23,6 @@
       margin: 10px 0;
     }
 
-    .topStat {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 10px;
-      width: 80%;
-      max-width: 320px;
-      margin: 0 auto 15px auto;
-      font-size: 15px;
-    }
-
     button {
       padding: 12px;
       margin: 6px;
@@ -78,10 +68,6 @@
 
 <body>
 
-  <div class="topStat">
-    👥 Registrovaní hráči: <span id="playersCount">127</span>
-  </div>
-
   <h1>💰 Crypto Miner Empire</h1>
 
   <h2>Coins: <span id="coins">0</span></h2>
@@ -99,12 +85,18 @@
     <button class="blue" onclick="showShop()">🛒 Shop</button>
   </div>
 
+  <!-- GAME -->
   <div id="game" class="screen active">
     <button class="mine" onclick="mine()">⛏️ Těžit</button>
 
     <div class="row">
       <button class="orange" id="boostBtn" onclick="boost()">🚀 Boost</button>
       <button class="purple" id="dailyBtn" onclick="daily()">🎁 Daily Reward</button>
+    </div>
+
+    <div class="row">
+      <button class="blue" id="adCoinsBtn" onclick="watchAdCoins()">🎥 +5000 Coins</button>
+      <button class="blue" id="adDiamondsBtn" onclick="watchAdDiamonds()">🎥 +1 Diamond</button>
     </div>
 
     <div class="row">
@@ -115,6 +107,7 @@
     <p>Rebirth vyžaduje 100 000 coins a dá ti +20 % income navždy.</p>
   </div>
 
+  <!-- SHOP -->
   <div id="shop" class="screen">
     <div class="row">
       <button class="blue" onclick="buyUpgrade()">
@@ -144,6 +137,7 @@
   </div>
 
   <script>
+    // ELEMENTY
     const coinsEl = document.getElementById("coins");
     const diamondsEl = document.getElementById("diamonds");
     const perSecondEl = document.getElementById("perSecond");
@@ -157,10 +151,13 @@
     const levelBar = document.getElementById("levelBar");
     const boostBtn = document.getElementById("boostBtn");
     const dailyBtn = document.getElementById("dailyBtn");
+    const adCoinsBtn = document.getElementById("adCoinsBtn");
+    const adDiamondsBtn = document.getElementById("adDiamondsBtn");
 
     const gameScreen = document.getElementById("game");
     const shopScreen = document.getElementById("shop");
 
+    // DATA
     let coins = parseFloat(localStorage.getItem("coins")) || 0;
     let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
     let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
@@ -180,6 +177,10 @@
     let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
     let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
 
+    // REKLAMY cooldown
+    let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
+    let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
+
     function showGame() {
       gameScreen.classList.add("active");
       shopScreen.classList.remove("active");
@@ -190,24 +191,20 @@
       gameScreen.classList.remove("active");
     }
 
-    function update() {
-      coinsEl.innerText = Math.floor(coins);
-      diamondsEl.innerText = diamonds;
-      perSecondEl.innerText = Math.floor(perSecond * 100) / 100;
-      levelEl.innerText = level;
-      prestigeEl.innerText = prestige;
+    function currentIncomeMultiplier() {
+      return boostMultiplier * (1 + prestige * 0.2);
+    }
 
-      costEl.innerText = Math.floor(cost);
-      superCostEl.innerText = Math.floor(superCost);
-      autoCostEl.innerText = Math.floor(autoCost);
-
+    function updateLevelBar() {
       const prevNeed = (level - 1) * 50;
       const nextNeed = level * 50;
       let progress = ((coins - prevNeed) / (nextNeed - prevNeed)) * 100;
       if (progress < 0) progress = 0;
       if (progress > 100) progress = 100;
       levelBar.style.width = progress + "%";
+    }
 
+    function updateBoostButton() {
       if (boostActive) {
         boostBtn.innerText = "🚀 Aktivní";
       } else if (boostCooldown) {
@@ -215,8 +212,11 @@
       } else {
         boostBtn.innerText = "🚀 Boost";
       }
+    }
 
+    function updateDailyButton() {
       const remaining = 86400000 - (Date.now() - lastDaily);
+
       if (remaining <= 0) {
         dailyBtn.innerText = "🎁 Daily Reward";
         dailyBtn.disabled = false;
@@ -230,6 +230,49 @@
       }
     }
 
+    function updateAdButtons() {
+      const now = Date.now();
+
+      const adCoinsRemaining = Math.ceil((adCoinsCooldownUntil - now) / 1000);
+      if (adCoinsRemaining > 0) {
+        adCoinsBtn.innerText = "⏳ " + adCoinsRemaining + "s";
+        adCoinsBtn.disabled = true;
+        adCoinsBtn.style.opacity = "0.7";
+      } else {
+        adCoinsBtn.innerText = "🎥 +5000 Coins";
+        adCoinsBtn.disabled = false;
+        adCoinsBtn.style.opacity = "1";
+      }
+
+      const adDiamondsRemaining = Math.ceil((adDiamondsCooldownUntil - now) / 1000);
+      if (adDiamondsRemaining > 0) {
+        adDiamondsBtn.innerText = "⏳ " + adDiamondsRemaining + "s";
+        adDiamondsBtn.disabled = true;
+        adDiamondsBtn.style.opacity = "0.7";
+      } else {
+        adDiamondsBtn.innerText = "🎥 +1 Diamond";
+        adDiamondsBtn.disabled = false;
+        adDiamondsBtn.style.opacity = "1";
+      }
+    }
+
+    function update() {
+      coinsEl.innerText = Math.floor(coins);
+      diamondsEl.innerText = diamonds;
+      perSecondEl.innerText = Math.floor(perSecond * 100) / 100;
+      levelEl.innerText = level;
+      prestigeEl.innerText = prestige;
+
+      costEl.innerText = Math.floor(cost);
+      superCostEl.innerText = Math.floor(superCost);
+      autoCostEl.innerText = Math.floor(autoCost);
+
+      updateLevelBar();
+      updateBoostButton();
+      updateDailyButton();
+      updateAdButtons();
+    }
+
     function save() {
       localStorage.setItem("coins", coins);
       localStorage.setItem("diamonds", diamonds);
@@ -241,6 +284,8 @@
       localStorage.setItem("prestige", prestige);
       localStorage.setItem("lastDaily", lastDaily);
       localStorage.setItem("lastTime", Date.now());
+      localStorage.setItem("adCoinsCooldownUntil", adCoinsCooldownUntil);
+      localStorage.setItem("adDiamondsCooldownUntil", adDiamondsCooldownUntil);
     }
 
     function checkLevel() {
@@ -250,10 +295,6 @@
           diamonds++;
         }
       }
-    }
-
-    function currentIncomeMultiplier() {
-      return boostMultiplier * (1 + prestige * 0.2);
     }
 
     function mine() {
@@ -360,6 +401,27 @@
       }, 1000);
     }
 
+    function watchAdCoins() {
+      const now = Date.now();
+      if (now < adCoinsCooldownUntil) return;
+
+      coins += 5000 * (1 + prestige * 0.2);
+      checkLevel();
+      adCoinsCooldownUntil = now + 60000; // 60 sekund
+      save();
+      update();
+    }
+
+    function watchAdDiamonds() {
+      const now = Date.now();
+      if (now < adDiamondsCooldownUntil) return;
+
+      diamonds += 1;
+      adDiamondsCooldownUntil = now + 120000; // 120 sekund
+      save();
+      update();
+    }
+
     function rebirth() {
       if (coins < 100000) {
         alert("Potřebuješ 100 000 coins!");
@@ -387,6 +449,7 @@
       location.reload();
     }
 
+    // OFFLINE INCOME
     {
       const now = Date.now();
       const diff = Math.floor((now - lastTime) / 1000);
@@ -396,6 +459,7 @@
       }
     }
 
+    // PASSIVE INCOME
     setInterval(() => {
       coins += perSecond * currentIncomeMultiplier();
       checkLevel();
@@ -403,9 +467,10 @@
       update();
     }, 1000);
 
+    // timer refresh
     setInterval(() => {
       update();
-    }, 60000);
+    }, 1000);
 
     update();
   </script>
