@@ -426,7 +426,7 @@
       border-radius:24px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      padding:6px 6px;
+      padding:10px 6px;
       backdrop-filter:blur(10px);
       z-index:20;
     }
@@ -453,32 +453,6 @@
 
     .nav-btn.active{
       color:#f4e7ff;
-    }
-
-    .nav-center{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%) !important;
-      top:-18px;
-      width:76px;
-      height:76px;
-      border-radius:50%;
-      border:none;
-      font-size:24px;
-      font-weight:900;
-      color:#f0d4ff;
-      background:
-        radial-gradient(circle at 35% 30%, #c88cff 0, #9f4cf4 28%, #4b236f 70%, #26153d 100%);
-      box-shadow:
-        0 0 0 4px rgba(220,170,255,.14),
-        0 0 0 10px rgba(177,85,255,.08),
-        0 0 28px rgba(177,85,255,.28);
-      transition:none !important;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .nav-center:active{
-      transform:translateX(-50%) !important;
     }
 
     #effects{
@@ -694,7 +668,6 @@
 <div class="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">🏠<span>Domů</span></button>
   <button class="nav-btn" id="nav-shop" onclick="showScreen('shop')">🛒<span>Shop</span></button>
-  <button class="nav-center" onclick="mine()">CM</button>
   <button class="nav-btn" id="nav-bonus" onclick="showScreen('bonus')">🎁<span>Bonus</span></button>
   <button class="nav-btn" id="nav-withdraw" onclick="showScreen('withdraw')">💰<span>Výběr</span></button>
 </div>
@@ -871,6 +844,8 @@ function update(){
   const clickValue = currentClickValue();
   const czk = coins * RATE;
 
+  const clickText = clickValue.toFixed(1).replace(".0","") + "x";
+
   el("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   el("diamonds").innerText = diamonds;
   el("level").innerText = level;
@@ -879,11 +854,11 @@ function update(){
   el("xpNeeded").innerText = xpNeeded;
   el("xpLeft").innerText = Math.max(0, xpNeeded - xp);
 
-  el("clickValue").innerText = clickValue.toFixed(1).replace(".0","") + "x";
-  el("clickPowerText").innerText = clickValue.toFixed(1).replace(".0","") + "x";
+  el("clickValue").innerText = clickText;
+  el("clickPowerText").innerText = clickText;
   el("diamondsText").innerText = diamonds;
   el("critChanceText").innerText = Math.floor(critChance * 100) + "%";
-  el("infoClickValue").innerText = clickValue.toFixed(1).replace(".0","") + "x";
+  el("infoClickValue").innerText = clickText;
 
   el("clickCost2x").innerText = Math.floor(clickCost2x).toLocaleString("cs-CZ");
   el("clickCost3x").innerText = Math.floor(clickCost3x).toLocaleString("cs-CZ");
