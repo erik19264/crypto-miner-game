@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Crypto Miner Empire</title>
   <style>
     :root{
@@ -30,14 +30,9 @@
         radial-gradient(circle at 50% 35%, rgba(124,58,237,.14), transparent 28%),
         linear-gradient(180deg,var(--bg2),var(--bg1));
       min-height:100vh;
-      overflow-x:hidden;
-    }
-
-    .wrap{
-      max-width:360px;
-      margin:0 auto;
-      padding:12px 12px 92px;
-      position:relative;
+      overflow:hidden;
+      touch-action:none;
+      overscroll-behavior:none;
     }
 
     .circuit{
@@ -49,6 +44,16 @@
         linear-gradient(0deg, transparent 0 14%, rgba(59,130,246,.20) 14% 15%, transparent 15% 100%);
       background-size:120px 120px;
       pointer-events:none;
+    }
+
+    .wrap{
+      max-width:360px;
+      height:100vh;
+      margin:0 auto;
+      padding:12px 12px 92px;
+      position:relative;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
     }
 
     .top-title{
@@ -130,12 +135,17 @@
         inset 0 12px 24px rgba(255,255,255,.08),
         inset 0 -12px 22px rgba(0,0,0,.28);
       position:relative;
-      transition:none;
+      transition:none !important;
       transform:none !important;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .coin-button:active{
       transform:none !important;
+    }
+
+    .coin-button:focus{
+      outline:none;
     }
 
     .coin-button::after{
@@ -237,6 +247,13 @@
       font-weight:700;
       min-height:70px;
       box-shadow:var(--shadow);
+      transition:none !important;
+      transform:none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .action-btn:active{
+      transform:none !important;
     }
 
     .purple{ background:linear-gradient(135deg,#8b5cf6,#6d46d7); }
@@ -269,6 +286,13 @@
       text-align:left;
       min-height:96px;
       box-shadow:var(--shadow);
+      transition:none !important;
+      transform:none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .shop-item:active{
+      transform:none !important;
     }
 
     .shop-item .title{
@@ -334,7 +358,7 @@
       text-align:left;
       color:var(--muted);
       font-size:14px;
-      line-height:1.5;
+      line-height:1.55;
       margin-top:10px;
     }
 
@@ -410,7 +434,7 @@
     .nav-btn{
       background:none;
       border:none;
-      color:#939db5;
+      color:#8f98b1;
       font-size:11px;
       display:flex;
       flex-direction:column;
@@ -418,6 +442,13 @@
       gap:5px;
       padding:6px 2px;
       font-weight:700;
+      transition:none !important;
+      transform:none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-btn:active{
+      transform:none !important;
     }
 
     .nav-btn.active{
@@ -427,7 +458,7 @@
     .nav-center{
       position:absolute;
       left:50%;
-      transform:translateX(-50%);
+      transform:translateX(-50%) !important;
       top:-18px;
       width:76px;
       height:76px;
@@ -442,8 +473,8 @@
         0 0 0 4px rgba(220,170,255,.14),
         0 0 0 10px rgba(177,85,255,.08),
         0 0 28px rgba(177,85,255,.28);
-      transition:none;
-      transform:translateX(-50%) !important;
+      transition:none !important;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-center:active{
@@ -596,6 +627,7 @@
 
       <div class="condition-list">
         <div>• Minimální výběr: <b>400 000 coin</b></div>
+        <div>• Přepočet minima: <b>20 000 Kč</b></div>
         <div>• Minimální počet pozvaných lidí: <b>8</b></div>
         <div>• Aktuálně pozváno: <b><span id="referrals">0</span></b></div>
       </div>
@@ -621,7 +653,7 @@
           <div class="feed-type">Tether</div>
         </div>
         <div class="feed-right">
-          <div class="feed-amount">2 310 Kč</div>
+          <div class="feed-amount">24 310 Kč</div>
           <div class="feed-time">před 7 h</div>
         </div>
       </div>
@@ -631,7 +663,7 @@
           <div class="feed-type">SEPA</div>
         </div>
         <div class="feed-right">
-          <div class="feed-amount">325 Kč</div>
+          <div class="feed-amount">31 250 Kč</div>
           <div class="feed-time">před 20 h</div>
         </div>
       </div>
@@ -641,7 +673,7 @@
           <div class="feed-type">Ethereum</div>
         </div>
         <div class="feed-right">
-          <div class="feed-amount">1 048 Kč</div>
+          <div class="feed-amount">48 990 Kč</div>
           <div class="feed-time">před 23 h</div>
         </div>
       </div>
@@ -681,7 +713,7 @@ const MIN_REFERRALS = 8;
 let coins = parseFloat(localStorage.getItem("coins")) || 0;
 let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
 
-let clickMultiplier = parseInt(localStorage.getItem("clickMultiplier")) || 1;
+let clickMultiplier = parseFloat(localStorage.getItem("clickMultiplier")) || 1;
 let clickCost2x = parseFloat(localStorage.getItem("clickCost2x")) || 600;
 let clickCost3x = parseFloat(localStorage.getItem("clickCost3x")) || 1800;
 
@@ -702,6 +734,7 @@ let critMultiplier = 5;
 let critCost = parseInt(localStorage.getItem("critCost")) || 5;
 
 let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
+
 let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
 let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
 
@@ -846,11 +879,11 @@ function update(){
   el("xpNeeded").innerText = xpNeeded;
   el("xpLeft").innerText = Math.max(0, xpNeeded - xp);
 
-  el("clickValue").innerText = clickValue + "x";
-  el("clickPowerText").innerText = clickValue + "x";
+  el("clickValue").innerText = clickValue.toFixed(1).replace(".0","") + "x";
+  el("clickPowerText").innerText = clickValue.toFixed(1).replace(".0","") + "x";
   el("diamondsText").innerText = diamonds;
   el("critChanceText").innerText = Math.floor(critChance * 100) + "%";
-  el("infoClickValue").innerText = clickValue + "x";
+  el("infoClickValue").innerText = clickValue.toFixed(1).replace(".0","") + "x";
 
   el("clickCost2x").innerText = Math.floor(clickCost2x).toLocaleString("cs-CZ");
   el("clickCost3x").innerText = Math.floor(clickCost3x).toLocaleString("cs-CZ");
@@ -942,16 +975,6 @@ function buyBoostTime(){
     diamonds -= boostTimeCost;
     boostDuration += 5000;
     boostTimeCost += 2;
-    playSound(upgradeSound);
-    save();
-    update();
-  }
-}
-
-function buyDiamondBoost(){
-  if (diamonds >= 2){
-    diamonds -= 2;
-    boostEndUntil = Date.now() + 30000;
     playSound(upgradeSound);
     save();
     update();
@@ -1051,7 +1074,7 @@ function requestWithdraw(){
     return;
   }
 
-  alert("Žádost o výběr byla odeslána.");
+  alert("Žádost byla odeslána.");
 }
 
 function resetGame(){
