@@ -7,17 +7,17 @@
     :root{
       --bg1:#07111f;
       --bg2:#0b1830;
-      --panel:rgba(24, 23, 54, 0.88);
-      --panel-border:rgba(180,120,255,0.18);
+      --panel:rgba(15,23,42,.92);
+      --panel-border:rgba(96,165,250,.12);
       --text:#f5f7ff;
-      --muted:#b7b1d4;
-      --purple:#b155ff;
+      --muted:#aeb7d0;
+      --purple:#9b5cff;
       --purple2:#7c3aed;
-      --purple3:#d28cff;
+      --purple3:#c084fc;
       --green:#22c55e;
       --orange:#f59e0b;
       --red:#ef4444;
-      --blue:#60a5fa;
+      --blue:#3b82f6;
       --shadow:0 10px 30px rgba(0,0,0,.35);
     }
 
@@ -28,79 +28,78 @@
       font-family:Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at 50% 35%, rgba(177,85,255,.22), transparent 28%),
+        radial-gradient(circle at 50% 35%, rgba(124,58,237,.16), transparent 28%),
         linear-gradient(180deg,var(--bg2),var(--bg1));
       min-height:100vh;
       overflow-x:hidden;
     }
 
     .wrap{
-      max-width:430px;
+      max-width:360px;
       margin:0 auto;
-      padding:18px 16px 110px;
+      padding:12px 12px 90px;
       position:relative;
     }
 
     .circuit{
       position:fixed;
       inset:0;
-      opacity:.12;
+      opacity:.09;
       background-image:
-        linear-gradient(90deg, transparent 0 14%, rgba(96,165,250,.35) 14% 15%, transparent 15% 100%),
-        linear-gradient(0deg, transparent 0 14%, rgba(96,165,250,.28) 14% 15%, transparent 15% 100%);
+        linear-gradient(90deg, transparent 0 14%, rgba(59,130,246,.28) 14% 15%, transparent 15% 100%),
+        linear-gradient(0deg, transparent 0 14%, rgba(59,130,246,.22) 14% 15%, transparent 15% 100%);
       background-size:120px 120px;
       pointer-events:none;
-      filter:blur(.2px);
     }
 
     .top-title{
       text-align:center;
-      margin:6px 0 18px;
+      margin:4px 0 14px;
     }
 
     .top-title h1{
       margin:0;
-      font-size:22px;
+      font-size:18px;
       font-weight:800;
-      letter-spacing:.3px;
+      letter-spacing:.2px;
     }
 
     .top-title p{
       margin:4px 0 0;
       color:var(--muted);
-      font-size:13px;
+      font-size:12px;
     }
 
     .top-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:18px;
+      gap:10px;
+      margin-bottom:14px;
     }
 
     .card{
       background:var(--panel);
       border:1px solid var(--panel-border);
-      border-radius:22px;
+      border-radius:20px;
       box-shadow:var(--shadow);
       backdrop-filter:blur(8px);
     }
 
     .mini-card{
-      padding:18px 16px;
-      min-height:108px;
+      padding:14px 12px;
+      min-height:90px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
     }
 
     .mini-label{
-      font-size:14px;
+      font-size:13px;
       color:var(--muted);
     }
 
     .mini-value{
-      font-size:24px;
+      font-size:20px;
       font-weight:800;
       display:flex;
       gap:8px;
@@ -109,28 +108,28 @@
 
     .hero{
       text-align:center;
-      padding:8px 0 4px;
+      padding:6px 0 2px;
     }
 
     .coin-button{
-      width:240px;
-      height:240px;
-      margin:0 auto 20px;
+      width:200px;
+      height:200px;
+      margin:0 auto 16px;
       border-radius:50%;
       border:none;
       cursor:pointer;
-      color:#f0d4ff;
-      font-size:84px;
+      color:#f3deff;
+      font-size:64px;
       font-weight:800;
       letter-spacing:2px;
       background:
         radial-gradient(circle at 35% 30%, #c88cff 0, #9f4cf4 28%, #4b236f 70%, #26153d 100%);
       box-shadow:
-        0 0 0 4px rgba(220,170,255,.18),
-        0 0 0 14px rgba(177,85,255,.10),
-        0 0 40px rgba(177,85,255,.45),
-        inset 0 12px 30px rgba(255,255,255,.08),
-        inset 0 -12px 25px rgba(0,0,0,.28);
+        0 0 0 4px rgba(220,170,255,.14),
+        0 0 0 10px rgba(177,85,255,.08),
+        0 0 30px rgba(177,85,255,.30),
+        inset 0 12px 24px rgba(255,255,255,.08),
+        inset 0 -12px 22px rgba(0,0,0,.28);
       transition:transform .08s, box-shadow .15s;
       position:relative;
     }
@@ -142,33 +141,40 @@
     .coin-button::after{
       content:"";
       position:absolute;
-      inset:-12px;
+      inset:-8px;
       border-radius:50%;
-      border:2px solid rgba(223,171,255,.28);
-      box-shadow:0 0 30px rgba(177,85,255,.3);
+      border:2px solid rgba(223,171,255,.22);
+      box-shadow:0 0 22px rgba(177,85,255,.24);
     }
 
     .main-balance{
       text-align:center;
-      margin-bottom:18px;
+      margin-bottom:14px;
     }
 
     .main-balance .label{
       color:var(--muted);
-      font-size:18px;
-      margin-bottom:8px;
+      font-size:16px;
+      margin-bottom:6px;
     }
 
     .main-balance .value{
-      font-size:58px;
+      font-size:42px;
       font-weight:900;
       letter-spacing:1px;
       line-height:1;
     }
 
+    .subvalue{
+      color:var(--purple3);
+      font-size:15px;
+      margin-top:8px;
+      font-weight:700;
+    }
+
     .progress-card{
-      padding:18px;
-      margin-bottom:16px;
+      padding:16px;
+      margin-bottom:14px;
     }
 
     .progress-top{
@@ -176,16 +182,16 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:14px;
+      margin-bottom:12px;
     }
 
     .progress-top .left{
-      font-size:16px;
+      font-size:15px;
       color:var(--muted);
     }
 
     .progress-top .right{
-      font-size:20px;
+      font-size:18px;
       font-weight:800;
       display:flex;
       align-items:center;
@@ -194,42 +200,42 @@
 
     .bar-wrap{
       width:100%;
-      height:14px;
-      background:rgba(110,65,160,.22);
+      height:12px;
+      background:rgba(110,65,160,.18);
       border-radius:999px;
       overflow:hidden;
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
     .bar{
       height:100%;
       width:0%;
-      background:linear-gradient(90deg,#b155ff,#e29bff);
+      background:linear-gradient(90deg,#8b5cf6,#d8b4fe);
       border-radius:999px;
-      box-shadow:0 0 18px rgba(177,85,255,.55);
+      box-shadow:0 0 16px rgba(177,85,255,.45);
       transition:width .18s;
     }
 
     .progress-sub{
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
     }
 
     .action-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:16px;
+      gap:10px;
+      margin-bottom:14px;
     }
 
     .action-btn{
       border:none;
-      border-radius:20px;
-      padding:18px 14px;
+      border-radius:18px;
+      padding:16px 12px;
       color:white;
-      font-size:16px;
+      font-size:15px;
       font-weight:700;
-      min-height:78px;
+      min-height:70px;
       box-shadow:var(--shadow);
     }
 
@@ -240,42 +246,134 @@
     .green{ background:linear-gradient(135deg,#34d27a,#22c55e); }
 
     .panel{
-      padding:18px;
-      margin-bottom:16px;
+      padding:16px;
+      margin-bottom:14px;
     }
 
     .panel h3{
       margin:0 0 12px;
-      font-size:18px;
+      font-size:17px;
     }
 
     .shop-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
+      gap:10px;
     }
 
     .shop-item{
-      padding:16px 14px;
-      border-radius:18px;
+      padding:14px 12px;
+      border-radius:16px;
       border:none;
       color:white;
       background:linear-gradient(135deg,#467fe9,#5a95ff);
       text-align:left;
-      min-height:110px;
+      min-height:96px;
       box-shadow:var(--shadow);
     }
 
     .shop-item .title{
-      font-size:18px;
+      font-size:16px;
       font-weight:800;
       margin-bottom:8px;
     }
 
     .shop-item .desc{
-      font-size:14px;
+      font-size:13px;
       opacity:.92;
       line-height:1.35;
+    }
+
+    .withdraw-card{
+      padding:18px 16px;
+      text-align:center;
+    }
+
+    .withdraw-big{
+      font-size:46px;
+      font-weight:900;
+      line-height:1;
+      margin:10px 0;
+    }
+
+    .withdraw-czk{
+      font-size:20px;
+      color:var(--purple3);
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .withdraw-input{
+      width:100%;
+      background:#07101f;
+      color:white;
+      border:1px solid rgba(192,132,252,.18);
+      border-radius:16px;
+      padding:16px;
+      font-size:28px;
+      margin:10px 0 10px;
+    }
+
+    .method-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .method{
+      background:rgba(255,255,255,.04);
+      border-radius:16px;
+      padding:14px 8px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .feed-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .feed-item:last-child{
+      border-bottom:none;
+    }
+
+    .feed-left{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:4px;
+    }
+
+    .feed-name{
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .feed-type{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .feed-right{
+      text-align:right;
+    }
+
+    .feed-amount{
+      color:var(--purple3);
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .feed-time{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:4px;
     }
 
     .hidden{ display:none; }
@@ -283,16 +381,16 @@
     .bottom-nav{
       position:fixed;
       left:50%;
-      bottom:10px;
+      bottom:8px;
       transform:translateX(-50%);
-      width:min(430px, calc(100% - 16px));
-      background:rgba(13,19,37,.94);
-      border:1px solid rgba(181,85,255,.18);
+      width:min(360px, calc(100% - 12px));
+      background:rgba(13,19,37,.96);
+      border:1px solid rgba(181,85,255,.14);
       box-shadow:0 10px 35px rgba(0,0,0,.38);
-      border-radius:28px;
+      border-radius:24px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      padding:10px 8px;
+      padding:6px 6px;
       backdrop-filter:blur(10px);
       z-index:20;
     }
@@ -301,11 +399,11 @@
       background:none;
       border:none;
       color:#c7bfe9;
-      font-size:13px;
+      font-size:11px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:6px;
+      gap:5px;
       padding:6px 2px;
     }
 
@@ -317,20 +415,20 @@
       position:absolute;
       left:50%;
       transform:translateX(-50%);
-      top:-22px;
-      width:88px;
-      height:88px;
+      top:-18px;
+      width:76px;
+      height:76px;
       border-radius:50%;
       border:none;
-      font-size:28px;
+      font-size:24px;
       font-weight:900;
       color:#f0d4ff;
       background:
         radial-gradient(circle at 35% 30%, #c88cff 0, #9f4cf4 28%, #4b236f 70%, #26153d 100%);
       box-shadow:
-        0 0 0 4px rgba(220,170,255,.18),
-        0 0 0 14px rgba(177,85,255,.10),
-        0 0 40px rgba(177,85,255,.45);
+        0 0 0 4px rgba(220,170,255,.14),
+        0 0 0 10px rgba(177,85,255,.08),
+        0 0 28px rgba(177,85,255,.28);
     }
 
     #effects{
@@ -343,15 +441,15 @@
 
     .float{
       position:absolute;
-      font-size:22px;
+      font-size:20px;
       font-weight:800;
       animation:floatUp 1s forwards;
-      text-shadow:0 0 12px rgba(255,255,255,.2);
+      text-shadow:0 0 10px rgba(255,255,255,.18);
     }
 
     @keyframes floatUp{
       from{ opacity:1; transform:translateY(0) scale(1); }
-      to{ opacity:0; transform:translateY(-80px) scale(1.08); }
+      to{ opacity:0; transform:translateY(-70px) scale(1.08); }
     }
 
     .muted{
@@ -392,11 +490,12 @@
     <div class="main-balance">
       <div class="label">💎 Zůstatek Coins</div>
       <div class="value" id="coins">0</div>
+      <div class="subvalue">≈ <span id="czkValue">0.00</span> Kč</div>
     </div>
 
     <div class="card progress-card">
       <div class="progress-top">
-        <div class="left">Level <span id="level">1</span>/<span id="nextLevelText">∞</span></div>
+        <div class="left">Level <span id="level">1</span></div>
         <div class="right">💎 <span id="diamonds">0</span></div>
       </div>
       <div class="bar-wrap">
@@ -413,8 +512,9 @@
     </div>
 
     <div class="card panel">
-      <h3>Denní přehled</h3>
-      <p class="muted">Coins/sec: <b id="perSecond">0</b></p>
+      <h3>Přehled</h3>
+      <p class="muted">Coins za klik: <b id="clickPowerText">1</b></p>
+      <p class="muted">Diamonds: <b id="diamondsText">0</b></p>
       <p class="muted">Prestige: <b id="prestige">0</b></p>
       <p class="muted" id="unlockInfo">Odemkni další věci vyšším levelem.</p>
     </div>
@@ -422,37 +522,23 @@
 
   <div id="screen-shop" class="hidden">
     <div class="card panel">
-      <h3>Posílení</h3>
+      <h3>Posílení kliknutí</h3>
       <div class="shop-grid">
-        <button class="shop-item" onclick="buyUpgrade()">
-          <div class="title">⚡ +1/sec</div>
-          <div class="desc">Cost: <span id="cost">10</span></div>
+        <button class="shop-item" onclick="buyClickUpgrade()">
+          <div class="title">⚡ +1 za klik</div>
+          <div class="desc">Cost: <span id="clickCost">10</span></div>
         </button>
-        <button class="shop-item" onclick="buySuper()">
-          <div class="title">💎 +5/sec</div>
-          <div class="desc">Cost: <span id="superCost">100</span></div>
+        <button class="shop-item" onclick="buyCritUpgrade()">
+          <div class="title">🎯 Crit +5%</div>
+          <div class="desc">Cost: <span id="critCost">5</span> 💎</div>
         </button>
-        <button class="shop-item" onclick="buyAuto()">
-          <div class="title">🤖 +10/sec</div>
-          <div class="desc">Cost: <span id="autoCost">500</span></div>
-        </button>
-        <button class="shop-item" onclick="buyMega()">
-          <div class="title">🏭 +50/sec</div>
-          <div class="desc">Cost: <span id="megaCost">5000</span></div>
-        </button>
-      </div>
-    </div>
-
-    <div class="card panel">
-      <h3>Diamond shop</h3>
-      <div class="shop-grid">
-        <button class="shop-item" onclick="buyCoins()">
-          <div class="title">💎 +1000 Coins</div>
-          <div class="desc">Cost: 1 Diamond</div>
+        <button class="shop-item" onclick="buyBoostTime()">
+          <div class="title">⏱️ Boost +5s</div>
+          <div class="desc">Cost: <span id="boostTimeCost">3</span> 💎</div>
         </button>
         <button class="shop-item" onclick="buyDiamondBoost()">
-          <div class="title">💎 x2 Boost 30s</div>
-          <div class="desc">Cost: 2 Diamonds</div>
+          <div class="title">💎 x2 Boost</div>
+          <div class="desc">30s • Cost: 2 💎</div>
         </button>
       </div>
     </div>
@@ -460,12 +546,74 @@
 
   <div id="screen-bonus" class="hidden">
     <div class="card panel">
-      <h3>Bonusy a restart</h3>
+      <h3>Bonusy</h3>
       <div class="action-grid">
         <button class="action-btn purple" id="rebirthBtn" onclick="rebirth()">♻️ Rebirth</button>
         <button class="action-btn red" onclick="resetGame()">🗑️ Reset</button>
       </div>
-      <p class="muted">Rebirth potřebuje 100 000 coins a dá ti +20 % income navždy.</p>
+      <p class="muted">Rebirth potřebuje 100 000 coins a dá ti +20 % sílu kliknutí navždy.</p>
+    </div>
+  </div>
+
+  <div id="screen-withdraw" class="hidden">
+    <div class="card withdraw-card">
+      <div class="muted" style="font-size:18px;">Celkový zůstatek</div>
+      <div class="withdraw-big"><span id="withdrawCoins">0</span> 💎</div>
+      <div class="withdraw-czk"><span id="withdrawCzk">0.00</span> Kč</div>
+      <div class="muted">1 coin = 0.03 Kč</div>
+    </div>
+
+    <div class="card panel">
+      <h3>Částka k výběru</h3>
+      <input id="withdrawInput" class="withdraw-input" type="number" min="1" value="1">
+      <p class="muted">≈ <span id="withdrawPreview">0.03</span> Kč</p>
+      <button class="action-btn purple" style="width:100%;" onclick="requestWithdraw()">Požádat</button>
+    </div>
+
+    <div class="card panel">
+      <h3>Dostupné metody</h3>
+      <div class="method-grid">
+        <div class="method">💳<br>VISA</div>
+        <div class="method">💳<br>MasterCard</div>
+        <div class="method">₿<br>Bitcoin</div>
+        <div class="method">₮<br>Tether</div>
+        <div class="method">Ξ<br>Ethereum</div>
+        <div class="method">🏦<br>Bank</div>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <h3>Nedávné transakce</h3>
+      <div class="feed-item">
+        <div class="feed-left">
+          <div class="feed-name">@klara.m****</div>
+          <div class="feed-type">Tether</div>
+        </div>
+        <div class="feed-right">
+          <div class="feed-amount">2 310 Kč</div>
+          <div class="feed-time">před 7 h</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-left">
+          <div class="feed-name">@marek.dv****</div>
+          <div class="feed-type">SEPA</div>
+        </div>
+        <div class="feed-right">
+          <div class="feed-amount">325 Kč</div>
+          <div class="feed-time">před 20 h</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-left">
+          <div class="feed-name">@adela.u****</div>
+          <div class="feed-type">Ethereum</div>
+        </div>
+        <div class="feed-right">
+          <div class="feed-amount">1 048 Kč</div>
+          <div class="feed-time">před 23 h</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -475,6 +623,7 @@
       <p class="muted">👥 Registrovaní hráči: <b id="playersCount">127</b></p>
       <p class="muted">XP: <b id="xp">0</b> / <b id="xpNeeded">50</b></p>
       <p class="muted">Crit chance: <b id="critChanceText">15%</b></p>
+      <p class="muted">Coin za klik: <b id="infoClickValue">1</b></p>
     </div>
   </div>
 </div>
@@ -483,8 +632,8 @@
   <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">🏠<span>Domů</span></button>
   <button class="nav-btn" id="nav-shop" onclick="showScreen('shop')">⚡<span>Shop</span></button>
   <button class="nav-center" onclick="mine()">CM</button>
-  <button class="nav-btn" id="nav-bonus" onclick="showScreen('bonus')">💼<span>Bonus</span></button>
-  <button class="nav-btn" id="nav-info" onclick="showScreen('info')">❔<span>Info</span></button>
+  <button class="nav-btn" id="nav-bonus" onclick="showScreen('bonus')">🎁<span>Bonus</span></button>
+  <button class="nav-btn" id="nav-withdraw" onclick="showScreen('withdraw')">👛<span>Výběr</span></button>
 </div>
 
 <script>
@@ -494,14 +643,13 @@ const clickSound = el("clickSound");
 const upgradeSound = el("upgradeSound");
 const levelSound = el("levelSound");
 
+const RATE = 0.03;
+
 let coins = parseFloat(localStorage.getItem("coins")) || 0;
 let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
-let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
 
-let cost = parseFloat(localStorage.getItem("cost")) || 10;
-let superCost = parseFloat(localStorage.getItem("superCost")) || 100;
-let autoCost = parseFloat(localStorage.getItem("autoCost")) || 500;
-let megaCost = parseFloat(localStorage.getItem("megaCost")) || 5000;
+let clickPower = parseFloat(localStorage.getItem("clickPower")) || 1;
+let clickCost = parseFloat(localStorage.getItem("clickCost")) || 10;
 
 let level = parseInt(localStorage.getItem("level")) || 1;
 let prestige = parseInt(localStorage.getItem("prestige")) || 0;
@@ -512,12 +660,14 @@ let xpNeeded = parseInt(localStorage.getItem("xpNeeded")) || 50;
 let boostMultiplier = 1;
 let boostCooldownUntil = parseInt(localStorage.getItem("boostCooldownUntil")) || 0;
 let boostEndUntil = parseInt(localStorage.getItem("boostEndUntil")) || 0;
+let boostDuration = parseInt(localStorage.getItem("boostDuration")) || 10000;
+let boostTimeCost = parseInt(localStorage.getItem("boostTimeCost")) || 3;
 
-let critChance = 0.15;
+let critChance = parseFloat(localStorage.getItem("critChance")) || 0.15;
 let critMultiplier = 5;
+let critCost = parseInt(localStorage.getItem("critCost")) || 5;
 
 let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
-let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
 
 let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
 let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
@@ -530,25 +680,25 @@ function playSound(audioEl){
 function save(){
   localStorage.setItem("coins", coins);
   localStorage.setItem("diamonds", diamonds);
-  localStorage.setItem("perSecond", perSecond);
-  localStorage.setItem("cost", cost);
-  localStorage.setItem("superCost", superCost);
-  localStorage.setItem("autoCost", autoCost);
-  localStorage.setItem("megaCost", megaCost);
+  localStorage.setItem("clickPower", clickPower);
+  localStorage.setItem("clickCost", clickCost);
   localStorage.setItem("level", level);
   localStorage.setItem("prestige", prestige);
   localStorage.setItem("xp", xp);
   localStorage.setItem("xpNeeded", xpNeeded);
-  localStorage.setItem("lastDaily", lastDaily);
-  localStorage.setItem("lastTime", Date.now());
   localStorage.setItem("boostCooldownUntil", boostCooldownUntil);
   localStorage.setItem("boostEndUntil", boostEndUntil);
+  localStorage.setItem("boostDuration", boostDuration);
+  localStorage.setItem("boostTimeCost", boostTimeCost);
+  localStorage.setItem("critChance", critChance);
+  localStorage.setItem("critCost", critCost);
+  localStorage.setItem("lastDaily", lastDaily);
   localStorage.setItem("adCoinsCooldownUntil", adCoinsCooldownUntil);
   localStorage.setItem("adDiamondsCooldownUntil", adDiamondsCooldownUntil);
 }
 
 function showScreen(id){
-  ["home","shop","bonus","info"].forEach(s => {
+  ["home","shop","bonus","withdraw","info"].forEach(s => {
     el("screen-" + s).classList.add("hidden");
     el("nav-" + s)?.classList.remove("active");
   });
@@ -556,8 +706,8 @@ function showScreen(id){
   el("nav-" + id)?.classList.add("active");
 }
 
-function currentIncomeMultiplier(){
-  return boostMultiplier * (1 + prestige * 0.2);
+function currentClickValue(){
+  return clickPower * boostMultiplier * (1 + prestige * 0.2);
 }
 
 function showFloat(text, color){
@@ -565,17 +715,17 @@ function showFloat(text, color){
   d.className = "float";
   d.innerText = text;
   d.style.left = Math.random() * (window.innerWidth - 100) + "px";
-  d.style.top = "52%";
+  d.style.top = "50%";
   if (color) d.style.color = color;
   el("effects").appendChild(d);
   setTimeout(() => d.remove(), 1000);
 }
 
 function levelUpEffect(){
-  document.body.style.background = "#1c0f2e";
+  document.body.style.background = "#160d28";
   setTimeout(() => {
     document.body.style.background = "";
-  }, 150);
+  }, 120);
 }
 
 function updateUnlocks(){
@@ -652,28 +802,38 @@ function updateBar(){
   el("levelBar").style.width = progress + "%";
 }
 
+function updateWithdrawPreview(){
+  const amount = Math.max(0, Number(el("withdrawInput").value || 0));
+  el("withdrawPreview").innerText = (amount * RATE).toFixed(2);
+}
+
 function update(){
-  const clickValue = Math.floor(1 * currentIncomeMultiplier());
+  const clickValue = Math.floor(currentClickValue());
+  const czk = coins * RATE;
 
   el("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   el("diamonds").innerText = diamonds.toLocaleString("cs-CZ");
-  el("perSecond").innerText = Math.floor(perSecond * 100) / 100;
   el("level").innerText = level;
-  el("nextLevelText").innerText = level + 1;
   el("prestige").innerText = prestige;
   el("xp").innerText = xp;
   el("xpNeeded").innerText = xpNeeded;
   el("xpLeft").innerText = Math.max(0, xpNeeded - xp);
-  el("cost").innerText = Math.floor(cost);
-  el("superCost").innerText = Math.floor(superCost);
-  el("autoCost").innerText = Math.floor(autoCost);
-  el("megaCost").innerText = Math.floor(megaCost);
   el("clickValue").innerText = clickValue;
+  el("clickPowerText").innerText = clickValue;
+  el("diamondsText").innerText = diamonds;
   el("critChanceText").innerText = Math.floor(critChance * 100) + "%";
+  el("infoClickValue").innerText = clickValue;
+  el("clickCost").innerText = Math.floor(clickCost);
+  el("critCost").innerText = critCost;
+  el("boostTimeCost").innerText = boostTimeCost;
+  el("czkValue").innerText = czk.toFixed(2);
+  el("withdrawCoins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
+  el("withdrawCzk").innerText = czk.toFixed(2);
 
   updateButtons();
   updateBar();
   updateUnlocks();
+  updateWithdrawPreview();
 }
 
 function checkLevel(){
@@ -688,21 +848,21 @@ function checkLevel(){
 }
 
 function mine(){
-  let amount = 1 * currentIncomeMultiplier();
+  let amount = currentClickValue();
   xp += 1;
 
   if (Math.random() < critChance){
     amount *= critMultiplier;
     showFloat("CRIT!", "#ffb74d");
-    document.body.style.background = "#2a163e";
-    setTimeout(() => { document.body.style.background = ""; }, 100);
+    document.body.style.background = "#241038";
+    setTimeout(() => { document.body.style.background = ""; }, 90);
   } else {
     showFloat("+" + Math.floor(amount), "#d8b4fe");
   }
 
   coins += amount;
 
-  if (navigator.vibrate) navigator.vibrate(20);
+  if (navigator.vibrate) navigator.vibrate(15);
   playSound(clickSound);
 
   checkLevel();
@@ -710,54 +870,34 @@ function mine(){
   update();
 }
 
-function buyUpgrade(){
-  if (coins >= cost){
-    coins -= cost;
-    perSecond += 1;
-    cost = Math.floor(cost * 1.5);
+function buyClickUpgrade(){
+  if (coins >= clickCost){
+    coins -= clickCost;
+    clickPower += 1;
+    clickCost = Math.floor(clickCost * 1.6);
     playSound(upgradeSound);
     save();
     update();
   }
 }
 
-function buySuper(){
-  if (coins >= superCost){
-    coins -= superCost;
-    perSecond += 5;
-    superCost = Math.floor(superCost * 1.7);
+function buyCritUpgrade(){
+  if (diamonds >= critCost){
+    diamonds -= critCost;
+    critChance += 0.05;
+    if (critChance > 0.60) critChance = 0.60;
+    critCost += 3;
     playSound(upgradeSound);
     save();
     update();
   }
 }
 
-function buyAuto(){
-  if (coins >= autoCost){
-    coins -= autoCost;
-    perSecond += 10;
-    autoCost = Math.floor(autoCost * 2);
-    playSound(upgradeSound);
-    save();
-    update();
-  }
-}
-
-function buyMega(){
-  if (coins >= megaCost){
-    coins -= megaCost;
-    perSecond += 50;
-    megaCost = Math.floor(megaCost * 2.2);
-    playSound(upgradeSound);
-    save();
-    update();
-  }
-}
-
-function buyCoins(){
-  if (diamonds >= 1){
-    diamonds--;
-    coins += 1000;
+function buyBoostTime(){
+  if (diamonds >= boostTimeCost){
+    diamonds -= boostTimeCost;
+    boostDuration += 5000;
+    boostTimeCost += 2;
     playSound(upgradeSound);
     save();
     update();
@@ -779,7 +919,7 @@ function boost(){
   if (level < 10) return;
   if (now < boostCooldownUntil || now < boostEndUntil) return;
 
-  boostEndUntil = now + 10000;
+  boostEndUntil = now + boostDuration;
   boostCooldownUntil = now + 30000;
   playSound(upgradeSound);
   save();
@@ -806,68 +946,3 @@ function watchAdCoins(){
   adCoinsCooldownUntil = now + 60000;
   playSound(upgradeSound);
   save();
-  update();
-}
-
-function watchAdDiamonds(){
-  const now = Date.now();
-  if (level < 20) return;
-  if (now < adDiamondsCooldownUntil) return;
-
-  diamonds += 1;
-  adDiamondsCooldownUntil = now + 120000;
-  playSound(upgradeSound);
-  save();
-  update();
-}
-
-function rebirth(){
-  if (level < 50) return;
-  if (coins < 100000){
-    alert("Potřebuješ 100 000 coins!");
-    return;
-  }
-
-  prestige++;
-  coins = 0;
-  perSecond = 0;
-  cost = 10;
-  superCost = 100;
-  autoCost = 500;
-  megaCost = 5000;
-  level = 1;
-  xp = 0;
-  xpNeeded = 50;
-  boostEndUntil = 0;
-  boostCooldownUntil = 0;
-
-  playSound(levelSound);
-  save();
-  update();
-}
-
-function resetGame(){
-  localStorage.clear();
-  location.reload();
-}
-
-{
-  const now = Date.now();
-  const diff = Math.floor((now - lastTime) / 1000);
-  if (diff > 0){
-    coins += diff * perSecond * (1 + prestige * 0.2);
-  }
-}
-
-setInterval(() => {
-  coins += perSecond * currentIncomeMultiplier();
-  save();
-  update();
-}, 1000);
-
-setInterval(update, 1000);
-
-update();
-</script>
-</body>
-</html>
