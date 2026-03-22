@@ -2,604 +2,872 @@
 <html lang="cs">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Miner</title>
-
+  <title>Crypto Miner Empire</title>
   <style>
-    body {
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      transition: 0.15s;
+    :root{
+      --bg1:#07111f;
+      --bg2:#0b1830;
+      --panel:rgba(24, 23, 54, 0.88);
+      --panel-border:rgba(180,120,255,0.18);
+      --text:#f5f7ff;
+      --muted:#b7b1d4;
+      --purple:#b155ff;
+      --purple2:#7c3aed;
+      --purple3:#d28cff;
+      --green:#22c55e;
+      --orange:#f59e0b;
+      --red:#ef4444;
+      --blue:#60a5fa;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
     }
 
-    h1 {
-      font-size: 6vw;
-      color: #facc15;
-      margin: 10px 0 0 0;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(177,85,255,.22), transparent 28%),
+        linear-gradient(180deg,var(--bg2),var(--bg1));
+      min-height:100vh;
+      overflow-x:hidden;
     }
 
-    .subtitle {
-      opacity: 0.6;
-      margin: 0 0 14px 0;
-      letter-spacing: 2px;
+    .wrap{
+      max-width:430px;
+      margin:0 auto;
+      padding:18px 16px 110px;
+      position:relative;
     }
 
-    h2, h3, p {
-      margin: 10px 0;
+    .circuit{
+      position:fixed;
+      inset:0;
+      opacity:.12;
+      background-image:
+        linear-gradient(90deg, transparent 0 14%, rgba(96,165,250,.35) 14% 15%, transparent 15% 100%),
+        linear-gradient(0deg, transparent 0 14%, rgba(96,165,250,.28) 14% 15%, transparent 15% 100%);
+      background-size:120px 120px;
+      pointer-events:none;
+      filter:blur(.2px);
     }
 
-    button {
-      padding: 12px;
-      margin: 6px;
-      border: none;
-      border-radius: 12px;
-      color: white;
-      width: 45%;
-      font-size: 14px;
-      transition: 0.15s;
+    .top-title{
+      text-align:center;
+      margin:6px 0 18px;
     }
 
-    button:active {
-      transform: scale(0.95);
+    .top-title h1{
+      margin:0;
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.3px;
     }
 
-    button:disabled {
-      opacity: 0.6;
+    .top-title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .mine { background: #22c55e; width: 70%; }
-    .blue { background: #3b82f6; }
-    .orange { background: #f59e0b; }
-    .red { background: #ef4444; }
-    .purple { background: #8b5cf6; }
-
-    .row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+    .top-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:18px;
     }
 
-    .screen { display: none; }
-    .active { display: block; }
-
-    .barWrap {
-      background: #1e293b;
-      border-radius: 10px;
-      height: 14px;
-      width: 82%;
-      margin: 10px auto 18px auto;
-      overflow: hidden;
+    .card{
+      background:var(--panel);
+      border:1px solid var(--panel-border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(8px);
     }
 
-    .bar {
-      background: #22c55e;
-      height: 100%;
-      width: 0%;
-      border-radius: 10px;
-      transition: width 0.2s;
+    .mini-card{
+      padding:18px 16px;
+      min-height:108px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
 
-    .topStat {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 10px;
-      width: 80%;
-      max-width: 320px;
-      margin: 0 auto 15px auto;
-      font-size: 15px;
+    .mini-label{
+      font-size:14px;
+      color:var(--muted);
     }
 
-    #effects {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
+    .mini-value{
+      font-size:24px;
+      font-weight:800;
+      display:flex;
+      gap:8px;
+      align-items:center;
     }
 
-    .coinEffect {
-      position: absolute;
-      font-size: 20px;
-      animation: floatUp 1s forwards;
+    .hero{
+      text-align:center;
+      padding:8px 0 4px;
     }
 
-    .critText {
-      position: absolute;
-      font-size: 22px;
-      color: #fb923c;
-      font-weight: bold;
-      animation: floatUp 1s forwards;
+    .coin-button{
+      width:240px;
+      height:240px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      border:none;
+      cursor:pointer;
+      color:#f0d4ff;
+      font-size:84px;
+      font-weight:800;
+      letter-spacing:2px;
+      background:
+        radial-gradient(circle at 35% 30%, #c88cff 0, #9f4cf4 28%, #4b236f 70%, #26153d 100%);
+      box-shadow:
+        0 0 0 4px rgba(220,170,255,.18),
+        0 0 0 14px rgba(177,85,255,.10),
+        0 0 40px rgba(177,85,255,.45),
+        inset 0 12px 30px rgba(255,255,255,.08),
+        inset 0 -12px 25px rgba(0,0,0,.28);
+      transition:transform .08s, box-shadow .15s;
+      position:relative;
     }
 
-    @keyframes floatUp {
-      from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(-60px); }
+    .coin-button:active{
+      transform:scale(.97);
     }
 
-    @media (max-width: 500px) {
-      h1 { font-size: 8vw; }
-      button { font-size: 13px; padding: 10px; }
+    .coin-button::after{
+      content:"";
+      position:absolute;
+      inset:-12px;
+      border-radius:50%;
+      border:2px solid rgba(223,171,255,.28);
+      box-shadow:0 0 30px rgba(177,85,255,.3);
+    }
+
+    .main-balance{
+      text-align:center;
+      margin-bottom:18px;
+    }
+
+    .main-balance .label{
+      color:var(--muted);
+      font-size:18px;
+      margin-bottom:8px;
+    }
+
+    .main-balance .value{
+      font-size:58px;
+      font-weight:900;
+      letter-spacing:1px;
+      line-height:1;
+    }
+
+    .progress-card{
+      padding:18px;
+      margin-bottom:16px;
+    }
+
+    .progress-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .progress-top .left{
+      font-size:16px;
+      color:var(--muted);
+    }
+
+    .progress-top .right{
+      font-size:20px;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .bar-wrap{
+      width:100%;
+      height:14px;
+      background:rgba(110,65,160,.22);
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:12px;
+    }
+
+    .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#b155ff,#e29bff);
+      border-radius:999px;
+      box-shadow:0 0 18px rgba(177,85,255,.55);
+      transition:width .18s;
+    }
+
+    .progress-sub{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .action-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .action-btn{
+      border:none;
+      border-radius:20px;
+      padding:18px 14px;
+      color:white;
+      font-size:16px;
+      font-weight:700;
+      min-height:78px;
+      box-shadow:var(--shadow);
+    }
+
+    .purple{ background:linear-gradient(135deg,#8b5cf6,#6d46d7); }
+    .orange{ background:linear-gradient(135deg,#f59e0b,#d97706); }
+    .blue{ background:linear-gradient(135deg,#4f87ee,#3b82f6); }
+    .red{ background:linear-gradient(135deg,#f25555,#ef4444); }
+    .green{ background:linear-gradient(135deg,#34d27a,#22c55e); }
+
+    .panel{
+      padding:18px;
+      margin-bottom:16px;
+    }
+
+    .panel h3{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+
+    .shop-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .shop-item{
+      padding:16px 14px;
+      border-radius:18px;
+      border:none;
+      color:white;
+      background:linear-gradient(135deg,#467fe9,#5a95ff);
+      text-align:left;
+      min-height:110px;
+      box-shadow:var(--shadow);
+    }
+
+    .shop-item .title{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .shop-item .desc{
+      font-size:14px;
+      opacity:.92;
+      line-height:1.35;
+    }
+
+    .hidden{ display:none; }
+
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      bottom:10px;
+      transform:translateX(-50%);
+      width:min(430px, calc(100% - 16px));
+      background:rgba(13,19,37,.94);
+      border:1px solid rgba(181,85,255,.18);
+      box-shadow:0 10px 35px rgba(0,0,0,.38);
+      border-radius:28px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      padding:10px 8px;
+      backdrop-filter:blur(10px);
+      z-index:20;
+    }
+
+    .nav-btn{
+      background:none;
+      border:none;
+      color:#c7bfe9;
+      font-size:13px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      padding:6px 2px;
+    }
+
+    .nav-btn.active{
+      color:#f4e7ff;
+    }
+
+    .nav-center{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:-22px;
+      width:88px;
+      height:88px;
+      border-radius:50%;
+      border:none;
+      font-size:28px;
+      font-weight:900;
+      color:#f0d4ff;
+      background:
+        radial-gradient(circle at 35% 30%, #c88cff 0, #9f4cf4 28%, #4b236f 70%, #26153d 100%);
+      box-shadow:
+        0 0 0 4px rgba(220,170,255,.18),
+        0 0 0 14px rgba(177,85,255,.10),
+        0 0 40px rgba(177,85,255,.45);
+    }
+
+    #effects{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:30;
+    }
+
+    .float{
+      position:absolute;
+      font-size:22px;
+      font-weight:800;
+      animation:floatUp 1s forwards;
+      text-shadow:0 0 12px rgba(255,255,255,.2);
+    }
+
+    @keyframes floatUp{
+      from{ opacity:1; transform:translateY(0) scale(1); }
+      to{ opacity:0; transform:translateY(-80px) scale(1.08); }
+    }
+
+    .muted{
+      color:var(--muted);
     }
   </style>
 </head>
 <body>
+<div class="circuit"></div>
+<div id="effects"></div>
 
-  <div id="effects"></div>
+<audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.wav"></audio>
+<audio id="upgradeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-power-up-3164.wav"></audio>
+<audio id="levelSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.wav"></audio>
 
-  <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.wav"></audio>
-  <audio id="upgradeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-power-up-3164.wav"></audio>
-  <audio id="levelSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.wav"></audio>
-
-  <div class="topStat">
-    👥 Registrovaní hráči: <span id="playersCount">127</span>
+<div class="wrap">
+  <div class="top-title">
+    <h1>Crypto Miner Empire</h1>
+    <p>neon edition</p>
   </div>
 
-  <h1>💰 Crypto Miner</h1>
-  <p class="subtitle">Empire</p>
-
-  <h2>Coins: <span id="coins">0</span></h2>
-  <h3>Diamonds: <span id="diamonds">0</span></h3>
-  <h3>Coins/sec: <span id="perSecond">0</span></h3>
-  <h3>Level: <span id="level">1</span></h3>
-  <p>XP: <span id="xp">0</span> / <span id="xpNeeded">50</span></p>
-  <h3>Prestige: <span id="prestige">0</span></h3>
-
-  <div class="barWrap">
-    <div id="levelBar" class="bar"></div>
-  </div>
-
-  <div class="row">
-    <button class="blue" onclick="showScreen('game')">🎮 Hra</button>
-    <button class="blue" id="shopBtn" onclick="showScreen('shop')">🛒 Shop</button>
-  </div>
-
-  <div id="game" class="screen active">
-    <button class="mine" onclick="mine()">⛏️ Těžit</button>
-
-    <div class="row">
-      <button class="orange" id="boostBtn" onclick="boost()">🚀 Boost</button>
-      <button class="purple" id="dailyBtn" onclick="dailyReward()">🎁 Daily Reward</button>
+  <div class="top-grid">
+    <div class="card mini-card">
+      <div class="mini-label">Za kliknutí</div>
+      <div class="mini-value">🪙 <span id="clickValue">1</span></div>
     </div>
-
-    <div class="row">
-      <button class="blue" id="adCoinsBtn" onclick="watchAdCoins()">🎥 +5000 Coins</button>
-      <button class="blue" id="adDiamondsBtn" onclick="watchAdDiamonds()">🎥 +1 Diamond</button>
-    </div>
-
-    <div class="row">
-      <button class="purple" id="rebirthBtn" onclick="rebirth()">♻️ Rebirth</button>
-      <button class="red" onclick="resetGame()">🗑️ Reset</button>
-    </div>
-
-    <p id="unlockInfo">Odemkni další věci vyšším levelem.</p>
-  </div>
-
-  <div id="shop" class="screen">
-    <div class="row">
-      <button class="blue" onclick="buyUpgrade()">
-        ⚡ +1/sec<br>Cost: <span id="cost">10</span>
-      </button>
-
-      <button class="blue" onclick="buySuper()">
-        💎 +5/sec<br>Cost: <span id="superCost">100</span>
-      </button>
-    </div>
-
-    <div class="row">
-      <button class="blue" onclick="buyAuto()">
-        🤖 +10/sec<br>Cost: <span id="autoCost">500</span>
-      </button>
-
-      <button class="blue" onclick="buyMega()">
-        🏭 +50/sec<br>Cost: <span id="megaCost">5000</span>
-      </button>
-    </div>
-
-    <div class="row">
-      <button class="blue" onclick="buyCoins()">
-        💎 +1000 Coins<br>Cost: 1 Diamond
-      </button>
-
-      <button class="blue" onclick="buyDiamondBoost()">
-        💎 x2 Boost 30s<br>Cost: 2 Diamonds
-      </button>
+    <div class="card mini-card">
+      <div class="mini-label">Energie boostu</div>
+      <div class="mini-value">⚡ <span id="boostInfo">Ready</span></div>
     </div>
   </div>
 
-  <script>
-    const el = (id) => document.getElementById(id);
+  <div id="screen-home">
+    <div class="hero">
+      <button class="coin-button" onclick="mine()">CM</button>
+    </div>
 
-    const clickSound = el("clickSound");
-    const upgradeSound = el("upgradeSound");
-    const levelSound = el("levelSound");
+    <div class="main-balance">
+      <div class="label">💎 Zůstatek Coins</div>
+      <div class="value" id="coins">0</div>
+    </div>
 
-    let coins = parseFloat(localStorage.getItem("coins")) || 0;
-    let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
-    let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
+    <div class="card progress-card">
+      <div class="progress-top">
+        <div class="left">Level <span id="level">1</span>/<span id="nextLevelText">∞</span></div>
+        <div class="right">💎 <span id="diamonds">0</span></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar" id="levelBar"></div>
+      </div>
+      <div class="progress-sub">Zbývá: <span id="xpLeft">50</span> XP</div>
+    </div>
 
-    let cost = parseFloat(localStorage.getItem("cost")) || 10;
-    let superCost = parseFloat(localStorage.getItem("superCost")) || 100;
-    let autoCost = parseFloat(localStorage.getItem("autoCost")) || 500;
-    let megaCost = parseFloat(localStorage.getItem("megaCost")) || 5000;
+    <div class="action-grid">
+      <button class="action-btn orange" id="boostBtn" onclick="boost()">🚀 Boost</button>
+      <button class="action-btn purple" id="dailyBtn" onclick="dailyReward()">🎁 Daily</button>
+      <button class="action-btn blue" id="adCoinsBtn" onclick="watchAdCoins()">🎥 +5000</button>
+      <button class="action-btn blue" id="adDiamondsBtn" onclick="watchAdDiamonds()">🎥 +1 💎</button>
+    </div>
 
-    let level = parseInt(localStorage.getItem("level")) || 1;
-    let prestige = parseInt(localStorage.getItem("prestige")) || 0;
+    <div class="card panel">
+      <h3>Denní přehled</h3>
+      <p class="muted">Coins/sec: <b id="perSecond">0</b></p>
+      <p class="muted">Prestige: <b id="prestige">0</b></p>
+      <p class="muted" id="unlockInfo">Odemkni další věci vyšším levelem.</p>
+    </div>
+  </div>
 
-    let xp = parseInt(localStorage.getItem("xp")) || 0;
-    let xpNeeded = parseInt(localStorage.getItem("xpNeeded")) || 50;
+  <div id="screen-shop" class="hidden">
+    <div class="card panel">
+      <h3>Posílení</h3>
+      <div class="shop-grid">
+        <button class="shop-item" onclick="buyUpgrade()">
+          <div class="title">⚡ +1/sec</div>
+          <div class="desc">Cost: <span id="cost">10</span></div>
+        </button>
+        <button class="shop-item" onclick="buySuper()">
+          <div class="title">💎 +5/sec</div>
+          <div class="desc">Cost: <span id="superCost">100</span></div>
+        </button>
+        <button class="shop-item" onclick="buyAuto()">
+          <div class="title">🤖 +10/sec</div>
+          <div class="desc">Cost: <span id="autoCost">500</span></div>
+        </button>
+        <button class="shop-item" onclick="buyMega()">
+          <div class="title">🏭 +50/sec</div>
+          <div class="desc">Cost: <span id="megaCost">5000</span></div>
+        </button>
+      </div>
+    </div>
 
-    let boostMultiplier = 1;
-    let boostCooldownUntil = parseInt(localStorage.getItem("boostCooldownUntil")) || 0;
-    let boostEndUntil = parseInt(localStorage.getItem("boostEndUntil")) || 0;
+    <div class="card panel">
+      <h3>Diamond shop</h3>
+      <div class="shop-grid">
+        <button class="shop-item" onclick="buyCoins()">
+          <div class="title">💎 +1000 Coins</div>
+          <div class="desc">Cost: 1 Diamond</div>
+        </button>
+        <button class="shop-item" onclick="buyDiamondBoost()">
+          <div class="title">💎 x2 Boost 30s</div>
+          <div class="desc">Cost: 2 Diamonds</div>
+        </button>
+      </div>
+    </div>
+  </div>
 
-    let critChance = 0.15;
-    let critMultiplier = 5;
+  <div id="screen-bonus" class="hidden">
+    <div class="card panel">
+      <h3>Bonusy a restart</h3>
+      <div class="action-grid">
+        <button class="action-btn purple" id="rebirthBtn" onclick="rebirth()">♻️ Rebirth</button>
+        <button class="action-btn red" onclick="resetGame()">🗑️ Reset</button>
+      </div>
+      <p class="muted">Rebirth potřebuje 100 000 coins a dá ti +20 % income navždy.</p>
+    </div>
+  </div>
 
-    let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
-    let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
+  <div id="screen-info" class="hidden">
+    <div class="card panel">
+      <h3>Info</h3>
+      <p class="muted">👥 Registrovaní hráči: <b id="playersCount">127</b></p>
+      <p class="muted">XP: <b id="xp">0</b> / <b id="xpNeeded">50</b></p>
+      <p class="muted">Crit chance: <b id="critChanceText">15%</b></p>
+    </div>
+  </div>
+</div>
 
-    let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
-    let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">🏠<span>Domů</span></button>
+  <button class="nav-btn" id="nav-shop" onclick="showScreen('shop')">⚡<span>Shop</span></button>
+  <button class="nav-center" onclick="mine()">CM</button>
+  <button class="nav-btn" id="nav-bonus" onclick="showScreen('bonus')">💼<span>Bonus</span></button>
+  <button class="nav-btn" id="nav-info" onclick="showScreen('info')">❔<span>Info</span></button>
+</div>
 
-    function playSound(audioEl) {
-      audioEl.currentTime = 0;
-      audioEl.play().catch(() => {});
-    }
+<script>
+const el = (id) => document.getElementById(id);
 
-    function save() {
-      localStorage.setItem("coins", coins);
-      localStorage.setItem("diamonds", diamonds);
-      localStorage.setItem("perSecond", perSecond);
-      localStorage.setItem("cost", cost);
-      localStorage.setItem("superCost", superCost);
-      localStorage.setItem("autoCost", autoCost);
-      localStorage.setItem("megaCost", megaCost);
-      localStorage.setItem("level", level);
-      localStorage.setItem("prestige", prestige);
-      localStorage.setItem("xp", xp);
-      localStorage.setItem("xpNeeded", xpNeeded);
-      localStorage.setItem("lastDaily", lastDaily);
-      localStorage.setItem("lastTime", Date.now());
-      localStorage.setItem("boostCooldownUntil", boostCooldownUntil);
-      localStorage.setItem("boostEndUntil", boostEndUntil);
-      localStorage.setItem("adCoinsCooldownUntil", adCoinsCooldownUntil);
-      localStorage.setItem("adDiamondsCooldownUntil", adDiamondsCooldownUntil);
-    }
+const clickSound = el("clickSound");
+const upgradeSound = el("upgradeSound");
+const levelSound = el("levelSound");
 
-    function showScreen(id) {
-      if (id === "shop" && level < 5) return;
-      ["game", "shop"].forEach(screen => el(screen).classList.remove("active"));
-      el(id).classList.add("active");
-    }
+let coins = parseFloat(localStorage.getItem("coins")) || 0;
+let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
+let perSecond = parseFloat(localStorage.getItem("perSecond")) || 0;
 
-    function currentIncomeMultiplier() {
-      return boostMultiplier * (1 + prestige * 0.2);
-    }
+let cost = parseFloat(localStorage.getItem("cost")) || 10;
+let superCost = parseFloat(localStorage.getItem("superCost")) || 100;
+let autoCost = parseFloat(localStorage.getItem("autoCost")) || 500;
+let megaCost = parseFloat(localStorage.getItem("megaCost")) || 5000;
 
-    function showCoinEffect(text = "💰", crit = false) {
-      const effect = document.createElement("div");
-      effect.className = crit ? "critText" : "coinEffect";
-      effect.innerText = text;
-      effect.style.left = Math.random() * (window.innerWidth - 80) + "px";
-      effect.style.top = "60%";
-      el("effects").appendChild(effect);
-      setTimeout(() => effect.remove(), 1000);
-    }
+let level = parseInt(localStorage.getItem("level")) || 1;
+let prestige = parseInt(localStorage.getItem("prestige")) || 0;
 
-    function levelUpEffect() {
-      document.body.style.background = "#14532d";
-      setTimeout(() => {
-        document.body.style.background = "#0f172a";
-      }, 150);
-    }
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let xpNeeded = parseInt(localStorage.getItem("xpNeeded")) || 50;
 
-    function checkUnlocks() {
-      const shopBtn = el("shopBtn");
-      const boostBtn = el("boostBtn");
-      const adCoinsBtn = el("adCoinsBtn");
-      const adDiamondsBtn = el("adDiamondsBtn");
-      const rebirthBtn = el("rebirthBtn");
-      const unlockInfo = el("unlockInfo");
+let boostMultiplier = 1;
+let boostCooldownUntil = parseInt(localStorage.getItem("boostCooldownUntil")) || 0;
+let boostEndUntil = parseInt(localStorage.getItem("boostEndUntil")) || 0;
 
-      if (level < 5) {
-        shopBtn.innerText = "🔒 Shop (lvl 5)";
-        shopBtn.disabled = true;
-      } else {
-        shopBtn.innerText = "🛒 Shop";
-        shopBtn.disabled = false;
-      }
+let critChance = 0.15;
+let critMultiplier = 5;
 
-      if (level < 10) {
-        boostBtn.innerText = "🔒 Boost (lvl 10)";
-        boostBtn.disabled = true;
-      } else {
-        boostBtn.disabled = false;
-        const now = Date.now();
-        const left = Math.ceil((boostCooldownUntil - now) / 1000);
-        boostBtn.innerText = now < boostEndUntil ? "🚀 Aktivní" : (left > 0 ? "⏳ " + left + "s" : "🚀 Boost");
-      }
+let lastDaily = parseInt(localStorage.getItem("lastDaily")) || 0;
+let lastTime = parseInt(localStorage.getItem("lastTime")) || Date.now();
 
-      if (level < 20) {
-        adCoinsBtn.innerText = "🔒 Reklama (lvl 20)";
-        adDiamondsBtn.innerText = "🔒 Reklama (lvl 20)";
-        adCoinsBtn.disabled = true;
-        adDiamondsBtn.disabled = true;
-      } else {
-        const now = Date.now();
-        const adCoinsLeft = Math.ceil((adCoinsCooldownUntil - now) / 1000);
-        adCoinsBtn.innerText = adCoinsLeft > 0 ? "⏳ " + adCoinsLeft + "s" : "🎥 +5000 Coins";
-        adCoinsBtn.disabled = adCoinsLeft > 0;
+let adCoinsCooldownUntil = parseInt(localStorage.getItem("adCoinsCooldownUntil")) || 0;
+let adDiamondsCooldownUntil = parseInt(localStorage.getItem("adDiamondsCooldownUntil")) || 0;
 
-        const adDiamondsLeft = Math.ceil((adDiamondsCooldownUntil - now) / 1000);
-        adDiamondsBtn.innerText = adDiamondsLeft > 0 ? "⏳ " + adDiamondsLeft + "s" : "🎥 +1 Diamond";
-        adDiamondsBtn.disabled = adDiamondsLeft > 0;
-      }
+function playSound(audioEl){
+  audioEl.currentTime = 0;
+  audioEl.play().catch(() => {});
+}
 
-      if (level < 50) {
-        rebirthBtn.innerText = "🔒 Rebirth (lvl 50)";
-        rebirthBtn.disabled = true;
-      } else {
-        rebirthBtn.innerText = "♻️ Rebirth";
-        rebirthBtn.disabled = false;
-      }
+function save(){
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("diamonds", diamonds);
+  localStorage.setItem("perSecond", perSecond);
+  localStorage.setItem("cost", cost);
+  localStorage.setItem("superCost", superCost);
+  localStorage.setItem("autoCost", autoCost);
+  localStorage.setItem("megaCost", megaCost);
+  localStorage.setItem("level", level);
+  localStorage.setItem("prestige", prestige);
+  localStorage.setItem("xp", xp);
+  localStorage.setItem("xpNeeded", xpNeeded);
+  localStorage.setItem("lastDaily", lastDaily);
+  localStorage.setItem("lastTime", Date.now());
+  localStorage.setItem("boostCooldownUntil", boostCooldownUntil);
+  localStorage.setItem("boostEndUntil", boostEndUntil);
+  localStorage.setItem("adCoinsCooldownUntil", adCoinsCooldownUntil);
+  localStorage.setItem("adDiamondsCooldownUntil", adDiamondsCooldownUntil);
+}
 
-      if (level < 5) {
-        unlockInfo.innerText = "Další odemčení: Shop na levelu 5";
-      } else if (level < 10) {
-        unlockInfo.innerText = "Další odemčení: Boost na levelu 10";
-      } else if (level < 20) {
-        unlockInfo.innerText = "Další odemčení: Reklamy na levelu 20";
-      } else if (level < 50) {
-        unlockInfo.innerText = "Další odemčení: Rebirth na levelu 50";
-      } else {
-        unlockInfo.innerText = "Máš odemčeno všechno v základní verzi.";
-      }
-    }
+function showScreen(id){
+  ["home","shop","bonus","info"].forEach(s => {
+    el("screen-" + s).classList.add("hidden");
+    el("nav-" + s)?.classList.remove("active");
+  });
+  el("screen-" + id).classList.remove("hidden");
+  el("nav-" + id)?.classList.add("active");
+}
 
-    function updateLevelBar() {
-      let progress = (xp / xpNeeded) * 100;
-      if (progress < 0) progress = 0;
-      if (progress > 100) progress = 100;
-      el("levelBar").style.width = progress + "%";
-    }
+function currentIncomeMultiplier(){
+  return boostMultiplier * (1 + prestige * 0.2);
+}
 
-    function updateDailyButton() {
-      const remaining = 86400000 - (Date.now() - lastDaily);
+function showFloat(text, color){
+  const d = document.createElement("div");
+  d.className = "float";
+  d.innerText = text;
+  d.style.left = Math.random() * (window.innerWidth - 100) + "px";
+  d.style.top = "52%";
+  if (color) d.style.color = color;
+  el("effects").appendChild(d);
+  setTimeout(() => d.remove(), 1000);
+}
 
-      if (remaining <= 0) {
-        el("dailyBtn").innerText = "🎁 Daily Reward";
-        el("dailyBtn").disabled = false;
-      } else {
-        const h = Math.floor(remaining / 3600000);
-        const m = Math.floor((remaining % 3600000) / 60000);
-        el("dailyBtn").innerText = "⏳ " + h + "h " + m + "m";
-        el("dailyBtn").disabled = true;
-      }
-    }
+function levelUpEffect(){
+  document.body.style.background = "#1c0f2e";
+  setTimeout(() => {
+    document.body.style.background = "";
+  }, 150);
+}
 
-    function update() {
-      el("coins").innerText = Math.floor(coins);
-      el("diamonds").innerText = diamonds;
-      el("perSecond").innerText = Math.floor(perSecond * 100) / 100;
-      el("level").innerText = level;
-      el("prestige").innerText = prestige;
-      el("xp").innerText = xp;
-      el("xpNeeded").innerText = xpNeeded;
+function updateUnlocks(){
+  const shopUnlocked = level >= 5;
+  const boostUnlocked = level >= 10;
+  const adsUnlocked = level >= 20;
+  const rebirthUnlocked = level >= 50;
 
-      el("cost").innerText = Math.floor(cost);
-      el("superCost").innerText = Math.floor(superCost);
-      el("autoCost").innerText = Math.floor(autoCost);
-      el("megaCost").innerText = Math.floor(megaCost);
+  el("nav-shop").disabled = !shopUnlocked;
+  el("nav-shop").style.opacity = shopUnlocked ? "1" : ".5";
 
-      updateLevelBar();
-      updateDailyButton();
-      checkUnlocks();
-    }
+  el("boostBtn").disabled = !boostUnlocked;
+  el("adCoinsBtn").disabled = !adsUnlocked || Date.now() < adCoinsCooldownUntil;
+  el("adDiamondsBtn").disabled = !adsUnlocked || Date.now() < adDiamondsCooldownUntil;
+  el("rebirthBtn").disabled = !rebirthUnlocked;
 
-    function checkLevel() {
-      while (xp >= xpNeeded) {
-        xp -= xpNeeded;
-        level++;
-        xpNeeded = Math.floor(xpNeeded * 1.4);
+  if (level < 5) {
+    el("unlockInfo").innerText = "Další odemčení: Shop na levelu 5";
+  } else if (level < 10) {
+    el("unlockInfo").innerText = "Další odemčení: Boost na levelu 10";
+  } else if (level < 20) {
+    el("unlockInfo").innerText = "Další odemčení: Reklamy na levelu 20";
+  } else if (level < 50) {
+    el("unlockInfo").innerText = "Další odemčení: Rebirth na levelu 50";
+  } else {
+    el("unlockInfo").innerText = "Máš odemčenou celou základní verzi.";
+  }
+}
 
-        playSound(levelSound);
-        levelUpEffect();
+function updateButtons(){
+  const now = Date.now();
 
-        if (level % 10 === 0) {
-          diamonds += 1;
-        }
-      }
-    }
+  if (now < boostEndUntil) {
+    el("boostInfo").innerText = Math.ceil((boostEndUntil - now)/1000) + "s";
+    el("boostBtn").innerText = "🚀 Aktivní";
+    boostMultiplier = 2;
+  } else {
+    boostMultiplier = 1;
+    const left = Math.ceil((boostCooldownUntil - now) / 1000);
+    el("boostInfo").innerText = left > 0 ? left + "s" : "Ready";
+    el("boostBtn").innerText = left > 0 ? "⏳ " + left + "s" : "🚀 Boost";
+  }
 
-    function mine() {
-      let amount = 1 * currentIncomeMultiplier();
-      xp += 1;
+  const dailyRemaining = 86400000 - (now - lastDaily);
+  if (dailyRemaining <= 0){
+    el("dailyBtn").innerText = "🎁 Daily";
+    el("dailyBtn").disabled = false;
+  } else {
+    const h = Math.floor(dailyRemaining / 3600000);
+    const m = Math.floor((dailyRemaining % 3600000) / 60000);
+    el("dailyBtn").innerText = "⏳ " + h + "h " + m + "m";
+    el("dailyBtn").disabled = true;
+  }
 
-      if (Math.random() < critChance) {
-        amount *= critMultiplier;
-        document.body.style.background = "#78350f";
-        showCoinEffect("CRIT!", true);
-        setTimeout(() => {
-          document.body.style.background = "#0f172a";
-        }, 100);
-      } else {
-        showCoinEffect("💰");
-      }
+  const adCoinsLeft = Math.ceil((adCoinsCooldownUntil - now) / 1000);
+  if (level >= 20){
+    el("adCoinsBtn").innerText = adCoinsLeft > 0 ? "⏳ " + adCoinsLeft + "s" : "🎥 +5000";
+  } else {
+    el("adCoinsBtn").innerText = "🔒 lvl 20";
+  }
 
-      coins += amount;
+  const adDiamondsLeft = Math.ceil((adDiamondsCooldownUntil - now) / 1000);
+  if (level >= 20){
+    el("adDiamondsBtn").innerText = adDiamondsLeft > 0 ? "⏳ " + adDiamondsLeft + "s" : "🎥 +1 💎";
+  } else {
+    el("adDiamondsBtn").innerText = "🔒 lvl 20";
+  }
+}
 
-      if (navigator.vibrate) navigator.vibrate(20);
+function updateBar(){
+  let progress = (xp / xpNeeded) * 100;
+  if (progress < 0) progress = 0;
+  if (progress > 100) progress = 100;
+  el("levelBar").style.width = progress + "%";
+}
 
-      playSound(clickSound);
-      checkLevel();
-      save();
-      update();
-    }
+function update(){
+  const clickValue = Math.floor(1 * currentIncomeMultiplier());
 
-    function buyUpgrade() {
-      if (coins >= cost) {
-        coins -= cost;
-        perSecond += 1;
-        cost = Math.floor(cost * 1.5);
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+  el("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
+  el("diamonds").innerText = diamonds.toLocaleString("cs-CZ");
+  el("perSecond").innerText = Math.floor(perSecond * 100) / 100;
+  el("level").innerText = level;
+  el("nextLevelText").innerText = level + 1;
+  el("prestige").innerText = prestige;
+  el("xp").innerText = xp;
+  el("xpNeeded").innerText = xpNeeded;
+  el("xpLeft").innerText = Math.max(0, xpNeeded - xp);
+  el("cost").innerText = Math.floor(cost);
+  el("superCost").innerText = Math.floor(superCost);
+  el("autoCost").innerText = Math.floor(autoCost);
+  el("megaCost").innerText = Math.floor(megaCost);
+  el("clickValue").innerText = clickValue;
+  el("critChanceText").innerText = Math.floor(critChance * 100) + "%";
 
-    function buySuper() {
-      if (coins >= superCost) {
-        coins -= superCost;
-        perSecond += 5;
-        superCost = Math.floor(superCost * 1.7);
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+  updateButtons();
+  updateBar();
+  updateUnlocks();
+}
 
-    function buyAuto() {
-      if (coins >= autoCost) {
-        coins -= autoCost;
-        perSecond += 10;
-        autoCost = Math.floor(autoCost * 2);
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+function checkLevel(){
+  while (xp >= xpNeeded){
+    xp -= xpNeeded;
+    level++;
+    xpNeeded = Math.floor(xpNeeded * 1.35);
+    playSound(levelSound);
+    levelUpEffect();
+    if (level % 10 === 0) diamonds++;
+  }
+}
 
-    function buyMega() {
-      if (coins >= megaCost) {
-        coins -= megaCost;
-        perSecond += 50;
-        megaCost = Math.floor(megaCost * 2.2);
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+function mine(){
+  let amount = 1 * currentIncomeMultiplier();
+  xp += 1;
 
-    function buyCoins() {
-      if (diamonds >= 1) {
-        diamonds--;
-        coins += 1000;
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+  if (Math.random() < critChance){
+    amount *= critMultiplier;
+    showFloat("CRIT!", "#ffb74d");
+    document.body.style.background = "#2a163e";
+    setTimeout(() => { document.body.style.background = ""; }, 100);
+  } else {
+    showFloat("+" + Math.floor(amount), "#d8b4fe");
+  }
 
-    function buyDiamondBoost() {
-      if (diamonds >= 2) {
-        diamonds -= 2;
-        boostEndUntil = Date.now() + 30000;
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
+  coins += amount;
 
-    function boost() {
-      const now = Date.now();
-      if (level < 10) return;
-      if (now < boostCooldownUntil || now < boostEndUntil) return;
+  if (navigator.vibrate) navigator.vibrate(20);
+  playSound(clickSound);
 
-      boostEndUntil = now + 10000;
-      boostCooldownUntil = now + 30000;
-      playSound(upgradeSound);
-      save();
-      update();
-    }
+  checkLevel();
+  save();
+  update();
+}
 
-    function dailyReward() {
-      if (Date.now() - lastDaily >= 86400000) {
-        coins += 5000;
-        diamonds += 1;
-        lastDaily = Date.now();
-        playSound(upgradeSound);
-        save();
-        update();
-      }
-    }
-
-    function watchAdCoins() {
-      const now = Date.now();
-      if (level < 20) return;
-      if (now < adCoinsCooldownUntil) return;
-
-      coins += 5000 * (1 + prestige * 0.2);
-      adCoinsCooldownUntil = now + 60000;
-      playSound(upgradeSound);
-      save();
-      update();
-    }
-
-    function watchAdDiamonds() {
-      const now = Date.now();
-      if (level < 20) return;
-      if (now < adDiamondsCooldownUntil) return;
-
-      diamonds += 1;
-      adDiamondsCooldownUntil = now + 120000;
-      playSound(upgradeSound);
-      save();
-      update();
-    }
-
-    function rebirth() {
-      if (level < 50) return;
-      if (coins < 100000) {
-        alert("Potřebuješ 100 000 coins!");
-        return;
-      }
-
-      prestige++;
-      coins = 0;
-      perSecond = 0;
-      cost = 10;
-      superCost = 100;
-      autoCost = 500;
-      megaCost = 5000;
-      level = 1;
-      xp = 0;
-      xpNeeded = 50;
-      boostEndUntil = 0;
-      boostCooldownUntil = 0;
-
-      playSound(levelSound);
-      save();
-      update();
-    }
-
-    function resetGame() {
-      localStorage.clear();
-      location.reload();
-    }
-
-    {
-      const now = Date.now();
-      const diff = Math.floor((now - lastTime) / 1000);
-      if (diff > 0) {
-        coins += diff * perSecond * (1 + prestige * 0.2);
-      }
-    }
-
-    setInterval(() => {
-      const now = Date.now();
-      boostMultiplier = now < boostEndUntil ? 2 : 1;
-
-      coins += perSecond * currentIncomeMultiplier();
-      save();
-      update();
-    }, 1000);
-
-    setInterval(update, 1000);
-
+function buyUpgrade(){
+  if (coins >= cost){
+    coins -= cost;
+    perSecond += 1;
+    cost = Math.floor(cost * 1.5);
+    playSound(upgradeSound);
+    save();
     update();
-  </script>
+  }
+}
 
+function buySuper(){
+  if (coins >= superCost){
+    coins -= superCost;
+    perSecond += 5;
+    superCost = Math.floor(superCost * 1.7);
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function buyAuto(){
+  if (coins >= autoCost){
+    coins -= autoCost;
+    perSecond += 10;
+    autoCost = Math.floor(autoCost * 2);
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function buyMega(){
+  if (coins >= megaCost){
+    coins -= megaCost;
+    perSecond += 50;
+    megaCost = Math.floor(megaCost * 2.2);
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function buyCoins(){
+  if (diamonds >= 1){
+    diamonds--;
+    coins += 1000;
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function buyDiamondBoost(){
+  if (diamonds >= 2){
+    diamonds -= 2;
+    boostEndUntil = Date.now() + 30000;
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function boost(){
+  const now = Date.now();
+  if (level < 10) return;
+  if (now < boostCooldownUntil || now < boostEndUntil) return;
+
+  boostEndUntil = now + 10000;
+  boostCooldownUntil = now + 30000;
+  playSound(upgradeSound);
+  save();
+  update();
+}
+
+function dailyReward(){
+  if (Date.now() - lastDaily >= 86400000){
+    coins += 5000;
+    diamonds += 1;
+    lastDaily = Date.now();
+    playSound(upgradeSound);
+    save();
+    update();
+  }
+}
+
+function watchAdCoins(){
+  const now = Date.now();
+  if (level < 20) return;
+  if (now < adCoinsCooldownUntil) return;
+
+  coins += 5000 * (1 + prestige * 0.2);
+  adCoinsCooldownUntil = now + 60000;
+  playSound(upgradeSound);
+  save();
+  update();
+}
+
+function watchAdDiamonds(){
+  const now = Date.now();
+  if (level < 20) return;
+  if (now < adDiamondsCooldownUntil) return;
+
+  diamonds += 1;
+  adDiamondsCooldownUntil = now + 120000;
+  playSound(upgradeSound);
+  save();
+  update();
+}
+
+function rebirth(){
+  if (level < 50) return;
+  if (coins < 100000){
+    alert("Potřebuješ 100 000 coins!");
+    return;
+  }
+
+  prestige++;
+  coins = 0;
+  perSecond = 0;
+  cost = 10;
+  superCost = 100;
+  autoCost = 500;
+  megaCost = 5000;
+  level = 1;
+  xp = 0;
+  xpNeeded = 50;
+  boostEndUntil = 0;
+  boostCooldownUntil = 0;
+
+  playSound(levelSound);
+  save();
+  update();
+}
+
+function resetGame(){
+  localStorage.clear();
+  location.reload();
+}
+
+{
+  const now = Date.now();
+  const diff = Math.floor((now - lastTime) / 1000);
+  if (diff > 0){
+    coins += diff * perSecond * (1 + prestige * 0.2);
+  }
+}
+
+setInterval(() => {
+  coins += perSecond * currentIncomeMultiplier();
+  save();
+  update();
+}, 1000);
+
+setInterval(update, 1000);
+
+update();
+</script>
 </body>
 </html>
