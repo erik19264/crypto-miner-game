@@ -596,12 +596,14 @@
     <div class="card panel">
       <h3>Částka k výběru</h3>
       <input id="withdrawInput" class="withdraw-input" type="number" min="1" value="1">
-      <p class="muted">≈ <span id="withdrawPreview">0.05</span> Kč</p>
+      <p class="muted">Hrubá částka: <span id="withdrawPreview">0.05</span> Kč</p>
+      <p class="muted">Po odečtení poplatku 15 %: <b><span id="withdrawAfterFee">0.04</span> Kč</b></p>
       <button class="action-btn purple" style="width:100%;" onclick="requestWithdraw()">Požádat</button>
 
       <div class="condition-list">
         <div>• Minimální výběr: <b>400 000 coin</b></div>
         <div>• Přepočet minima: <b>20 000 Kč</b></div>
+        <div>• Poplatek za výběr: <b>15 %</b></div>
         <div>• Minimální počet pozvaných lidí: <b>8</b></div>
         <div>• Aktuálně pozváno: <b><span id="referrals">0</span></b></div>
       </div>
@@ -682,6 +684,7 @@ const levelSound = el("levelSound");
 const RATE = 0.05;
 const MIN_WITHDRAW = 400000;
 const MIN_REFERRALS = 8;
+const WITHDRAW_FEE = 0.15;
 
 let coins = parseFloat(localStorage.getItem("coins")) || 0;
 let diamonds = parseInt(localStorage.getItem("diamonds")) || 0;
@@ -837,13 +840,16 @@ function updateBar(){
 
 function updateWithdrawPreview(){
   const amount = Math.max(0, Number(el("withdrawInput").value || 0));
-  el("withdrawPreview").innerText = (amount * RATE).toFixed(2);
+  const gross = amount * RATE;
+  const net = gross * (1 - WITHDRAW_FEE);
+
+  el("withdrawPreview").innerText = gross.toFixed(2);
+  el("withdrawAfterFee").innerText = net.toFixed(2);
 }
 
 function update(){
   const clickValue = currentClickValue();
   const czk = coins * RATE;
-
   const clickText = clickValue.toFixed(1).replace(".0","") + "x";
 
   el("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
