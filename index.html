@@ -12,7 +12,7 @@
 
     body {
       margin: 0;
-      background: #111827;
+      background: #0f172a;
       color: #ffffff;
       display: flex;
       justify-content: center;
@@ -22,20 +22,21 @@
 
     .game {
       width: 100%;
-      max-width: 420px;
-      background: #1f2937;
+      max-width: 430px;
+      background: #1e293b;
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
     }
 
     h1 {
-      margin: 0 0 20px;
       text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
       font-size: 28px;
     }
 
-    .stats {
+    .panel {
       background: #111827;
       border-radius: 16px;
       padding: 18px;
@@ -44,19 +45,14 @@
     }
 
     .btc {
-      font-size: 30px;
+      font-size: 32px;
       font-weight: bold;
-      margin-bottom: 8px;
-      word-break: break-word;
+      margin-bottom: 10px;
     }
 
     .bps {
       font-size: 18px;
       opacity: 0.9;
-    }
-
-    .section {
-      margin-top: 16px;
     }
 
     .btn {
@@ -67,7 +63,7 @@
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       transition: transform 0.08s ease, opacity 0.2s ease;
     }
 
@@ -75,36 +71,26 @@
       transform: scale(0.98);
     }
 
-    .btn-upgrade {
+    .upgrade-btn {
       background: linear-gradient(180deg, #16a34a, #15803d);
       color: white;
       box-shadow: 0 6px 0 #0f5c2b;
     }
 
-    .btn-upgrade:disabled {
+    .upgrade-btn:disabled {
       background: #4b5563;
       box-shadow: 0 6px 0 #374151;
       cursor: not-allowed;
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
-    .btn-invite {
-      background: linear-gradient(180deg, #2563eb, #1d4ed8);
-      color: white;
-      box-shadow: 0 6px 0 #1e3a8a;
-    }
-
-    .card {
+    .info {
       background: #111827;
       border-radius: 16px;
       padding: 16px;
-      margin-top: 16px;
-    }
-
-    .small {
       font-size: 14px;
-      opacity: 0.85;
       line-height: 1.5;
+      opacity: 0.9;
     }
   </style>
 </head>
@@ -112,31 +98,26 @@
   <div class="game">
     <h1>Crypto Miner Empire</h1>
 
-    <div class="stats">
+    <div class="panel">
       <div class="btc" id="btcText">BTC: 0</div>
       <div class="bps" id="bpsText">BTC/s: 1</div>
     </div>
 
-    <div class="section">
-      <button class="btn btn-upgrade" id="upgradeBtn">
-        UPGRADE +1 BTC/s<br>
-        <span id="upgradeCostText">COST: 10 BTC</span>
-      </button>
+    <button class="btn upgrade-btn" id="upgradeBtn">
+      UPGRADE +1 BTC/s<br>
+      <span id="upgradeCostText">COST: 10 BTC</span>
+    </button>
 
-      <button class="btn btn-invite" id="inviteBtn">
-        POZVAT KAMARÁDY
-      </button>
-    </div>
-
-    <div class="card small">
-      Těžba běží automaticky. Upgrade zvyšuje BTC za sekundu a cena se po každém nákupu zdvojnásobí.
+    <div class="info">
+      BTC se přičítá automaticky každou sekundu.  
+      Upgrade zvýší těžbu o +1 BTC/s a cena se po každém nákupu zdvojnásobí.
     </div>
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_save_v1";
+    const SAVE_KEY = "crypto_miner_empire_save";
 
-    let game = {
+    const game = {
       btc: 0,
       btcPerSecond: 1,
       upgradeCost: 10
@@ -151,8 +132,8 @@
         if (typeof parsed.btc === "number") game.btc = parsed.btc;
         if (typeof parsed.btcPerSecond === "number") game.btcPerSecond = parsed.btcPerSecond;
         if (typeof parsed.upgradeCost === "number") game.upgradeCost = parsed.upgradeCost;
-      } catch (error) {
-        console.error("Chyba při načítání uložené hry:", error);
+      } catch (e) {
+        console.error("Chyba při načítání uložené hry:", e);
       }
     }
 
@@ -176,11 +157,6 @@
       upgradeBtn.disabled = game.btc < game.upgradeCost;
     }
 
-    function tick() {
-      game.btc += game.btcPerSecond;
-      updateUI();
-    }
-
     function buyUpgrade() {
       if (game.btc < game.upgradeCost) return;
 
@@ -192,21 +168,18 @@
       saveGame();
     }
 
-    function openInviteLink() {
-      const inviteUrl = "https://google.com";
-      window.open(inviteUrl, "_blank");
+    function tick() {
+      game.btc += game.btcPerSecond;
+      updateUI();
+      saveGame();
     }
 
     document.getElementById("upgradeBtn").addEventListener("click", buyUpgrade);
-    document.getElementById("inviteBtn").addEventListener("click", openInviteLink);
 
     loadGame();
     updateUI();
 
-    setInterval(() => {
-      tick();
-      saveGame();
-    }, 1000);
+    setInterval(tick, 1000);
   </script>
 </body>
 </html>
