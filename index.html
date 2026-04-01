@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Miner</title>
+<title>Crypto Miner Empire</title>
 
 <style>
 body {
@@ -216,6 +216,51 @@ body {
   opacity: 0.8;
   line-height: 1.6;
 }
+
+.input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #0b1220;
+  color: white;
+  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.withdraw-balance {
+  text-align: center;
+  background: linear-gradient(180deg, #111827, #1f2937);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.withdraw-balance .big {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.withdraw-balance .money {
+  font-size: 20px;
+  color: #c084fc;
+  font-weight: bold;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
 </style>
 </head>
 <body>
@@ -226,7 +271,7 @@ body {
     Crypto Miner Empire
   </div>
 
-  <!-- DOMŮ -->
+  <!-- HOME -->
   <div class="panel active" id="panel-home">
     <div class="title">
       <h1>Crypto Miner</h1>
@@ -238,6 +283,9 @@ body {
       <div><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
       <div><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
       <div><b>Level:</b> <span id="levelStat">1</span></div>
+      <div><b>VIP Credits:</b> <span id="vipStat">0</span></div>
+      <div><b>Pozvaní lidé:</b> <span id="refStat">0</span></div>
+      <div><b>Prestige:</b> <span id="prestigeStat">1</span></div>
       <div><b>Boost:</b> <span id="boostStat">Neaktivní</span></div>
     </div>
 
@@ -285,6 +333,12 @@ body {
           <div class="shop-item-desc">Zvýší maximální energii.</div>
           <button class="btn btn-purple" id="buyEnergyBtn">Koupit za <span id="buyEnergyCostText">75</span> Coins</button>
         </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+1 Diamond za Coins</div>
+          <div class="shop-item-desc">Koupíš 1 Diamond za Coins.</div>
+          <button class="btn btn-yellow" id="buyDiamondShopBtn">Koupit za <span id="buyDiamondCostText">500</span> Coins</button>
+        </div>
       </div>
     </div>
   </div>
@@ -303,29 +357,54 @@ body {
 
         <div class="bonus-item">
           <div class="bonus-item-title">+1 Diamond</div>
-          <div class="bonus-item-desc">Jednoduchý bonus.</div>
+          <div class="bonus-item-desc">Rychlý bonus zdarma.</div>
           <button class="btn btn-blue" id="diamondBtn">Vzít zdarma</button>
         </div>
 
         <div class="bonus-item">
           <div class="bonus-item-title">+500 Coins</div>
-          <div class="bonus-item-desc">Rychlý bonus na rozjezd.</div>
+          <div class="bonus-item-desc">Bonus na rozjezd.</div>
           <button class="btn btn-green" id="giftCoinsBtn">Vzít zdarma</button>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-item-title">+2 VIP Credits</div>
+          <div class="bonus-item-desc">Simulace odměny za reklamu.</div>
+          <button class="btn btn-purple" id="vipBtn">Získat</button>
+        </div>
+
+        <div class="row-2">
+          <button class="btn btn-purple" id="rebirthBtn">Rebirth</button>
+          <button class="btn btn-red" id="resetBtn">Reset</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- VÝBĚR -->
+  <!-- WITHDRAW -->
   <div class="panel" id="panel-withdraw">
     <div class="section">
       <div class="card">
         <h3>Výběr</h3>
+
+        <div class="withdraw-balance">
+          <div class="small">Celkový zůstatek</div>
+          <div class="big" id="withdrawCoinBalance">0</div>
+          <div class="money" id="withdrawKcBalance">0.00 Kč</div>
+          <div class="small">1 Coin = 0.0900 Kč</div>
+        </div>
+
+        <div class="small">Částka k výběru</div>
+        <input class="input" id="withdrawInput" type="number" placeholder="Zadejte částku výběru" />
+        <button class="btn btn-purple" id="withdrawBtn">Vybrat</button>
+
         <div class="small">
           Minimální částka pro výběr: <b>10 000 Coins</b><br>
-          Poplatek za výběr: <b>10 %</b><br>
-          Minimální počet pozvaných lidí: <b>8</b>
+          <b>10 % za výběr</b><br>
+          Minimální počet pozvaných lidí pro výběr: <b>8 lidí</b>
         </div>
+
+        <div class="status" id="withdrawStatus">Zatím žádná žádost.</div>
       </div>
     </div>
   </div>
@@ -340,10 +419,15 @@ body {
 </div>
 
 <script>
+const SAVE_KEY = "crypto_miner_empire_step4_save";
+
 let coins = 0;
 let diamonds = 0;
 let coinsPerSec = 1;
 let level = 1;
+let vipCredits = 0;
+let referrals = 0;
+let prestige = 1;
 
 let energy = 100;
 let maxEnergy = 100;
@@ -353,19 +437,66 @@ let clickValue = 1;
 let buyClickCost = 50;
 let buyCpsCost = 100;
 let buyEnergyCost = 75;
+let buyDiamondCost = 500;
 
 let boostUntil = 0;
+
+function saveGame() {
+  const data = {
+    coins,
+    diamonds,
+    coinsPerSec,
+    level,
+    vipCredits,
+    referrals,
+    prestige,
+    energy,
+    maxEnergy,
+    clickValue,
+    buyClickCost,
+    buyCpsCost,
+    buyEnergyCost,
+    buyDiamondCost,
+    boostUntil
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+}
+
+function loadGame() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    coins = data.coins ?? coins;
+    diamonds = data.diamonds ?? diamonds;
+    coinsPerSec = data.coinsPerSec ?? coinsPerSec;
+    level = data.level ?? level;
+    vipCredits = data.vipCredits ?? vipCredits;
+    referrals = data.referrals ?? referrals;
+    prestige = data.prestige ?? prestige;
+    energy = data.energy ?? energy;
+    maxEnergy = data.maxEnergy ?? maxEnergy;
+    clickValue = data.clickValue ?? clickValue;
+    buyClickCost = data.buyClickCost ?? buyClickCost;
+    buyCpsCost = data.buyCpsCost ?? buyCpsCost;
+    buyEnergyCost = data.buyEnergyCost ?? buyEnergyCost;
+    buyDiamondCost = data.buyDiamondCost ?? buyDiamondCost;
+    boostUntil = data.boostUntil ?? boostUntil;
+  } catch (e) {
+    console.error("Chyba načítání save:", e);
+  }
+}
 
 function getBoostMultiplier() {
   return Date.now() < boostUntil ? 2 : 1;
 }
 
 function getRealClickValue() {
-  return clickValue * getBoostMultiplier();
+  return clickValue * getBoostMultiplier() * prestige;
 }
 
 function getRealCoinsPerSec() {
-  return coinsPerSec * getBoostMultiplier();
+  return coinsPerSec * getBoostMultiplier() * prestige;
 }
 
 function updateLevel() {
@@ -375,17 +506,25 @@ function updateLevel() {
 function updateUI() {
   updateLevel();
 
-  document.getElementById("coins").innerText = coins.toLocaleString("cs-CZ");
-  document.getElementById("coinsStat").innerText = coins.toLocaleString("cs-CZ");
+  document.getElementById("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
+  document.getElementById("coinsStat").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   document.getElementById("diamondsStat").innerText = diamonds.toLocaleString("cs-CZ");
   document.getElementById("cpsStat").innerText = getRealCoinsPerSec().toLocaleString("cs-CZ");
   document.getElementById("levelStat").innerText = level;
+  document.getElementById("vipStat").innerText = vipCredits.toLocaleString("cs-CZ");
+  document.getElementById("refStat").innerText = referrals.toLocaleString("cs-CZ");
+  document.getElementById("prestigeStat").innerText = prestige.toLocaleString("cs-CZ");
+
   document.getElementById("energyText").innerText = energy + "/" + maxEnergy;
   document.getElementById("clickValue").innerText = "+" + getRealClickValue();
 
   document.getElementById("buyClickCostText").innerText = buyClickCost;
   document.getElementById("buyCpsCostText").innerText = buyCpsCost;
   document.getElementById("buyEnergyCostText").innerText = buyEnergyCost;
+  document.getElementById("buyDiamondCostText").innerText = buyDiamondCost;
+
+  document.getElementById("withdrawCoinBalance").innerText = Math.floor(coins).toLocaleString("cs-CZ");
+  document.getElementById("withdrawKcBalance").innerText = (coins * 0.09).toFixed(2) + " Kč";
 
   if (Date.now() < boostUntil) {
     const secondsLeft = Math.ceil((boostUntil - Date.now()) / 1000);
@@ -395,12 +534,15 @@ function updateUI() {
   }
 }
 
-document.getElementById("mine").onclick = () => {
+function mine() {
   if (energy <= 0) return;
   coins += getRealClickValue();
   energy--;
   updateUI();
-};
+  saveGame();
+}
+
+document.getElementById("mine").onclick = mine;
 
 document.getElementById("buyClickBtn").onclick = () => {
   if (coins < buyClickCost) return;
@@ -408,6 +550,7 @@ document.getElementById("buyClickBtn").onclick = () => {
   clickValue += 1;
   buyClickCost = Math.floor(buyClickCost * 1.8);
   updateUI();
+  saveGame();
 };
 
 document.getElementById("buyCpsBtn").onclick = () => {
@@ -416,6 +559,7 @@ document.getElementById("buyCpsBtn").onclick = () => {
   coinsPerSec += 1;
   buyCpsCost = Math.floor(buyCpsCost * 2);
   updateUI();
+  saveGame();
 };
 
 document.getElementById("buyEnergyBtn").onclick = () => {
@@ -425,6 +569,16 @@ document.getElementById("buyEnergyBtn").onclick = () => {
   energy += 25;
   buyEnergyCost = Math.floor(buyEnergyCost * 1.9);
   updateUI();
+  saveGame();
+};
+
+document.getElementById("buyDiamondShopBtn").onclick = () => {
+  if (coins < buyDiamondCost) return;
+  coins -= buyDiamondCost;
+  diamonds += 1;
+  buyDiamondCost = Math.floor(buyDiamondCost * 1.7);
+  updateUI();
+  saveGame();
 };
 
 document.getElementById("boostBtn").onclick = () => {
@@ -432,27 +586,95 @@ document.getElementById("boostBtn").onclick = () => {
   coins -= 50;
   boostUntil = Date.now() + 5000;
   updateUI();
+  saveGame();
 };
 
 document.getElementById("diamondBtn").onclick = () => {
   diamonds += 1;
   updateUI();
+  saveGame();
 };
 
 document.getElementById("giftCoinsBtn").onclick = () => {
   coins += 500;
   updateUI();
+  saveGame();
+};
+
+document.getElementById("vipBtn").onclick = () => {
+  vipCredits += 2;
+  updateUI();
+  saveGame();
+};
+
+document.getElementById("rebirthBtn").onclick = () => {
+  if (coins < 100000) {
+    alert("Na rebirth potřebuješ aspoň 100 000 Coins.");
+    return;
+  }
+  coins = 0;
+  diamonds = 0;
+  coinsPerSec = 1;
+  clickValue = 1;
+  energy = 100;
+  maxEnergy = 100;
+  buyClickCost = 50;
+  buyCpsCost = 100;
+  buyEnergyCost = 75;
+  buyDiamondCost = 500;
+  prestige += 1;
+  boostUntil = 0;
+  updateUI();
+  saveGame();
+  alert("Rebirth hotový. Prestige +1");
+};
+
+document.getElementById("resetBtn").onclick = () => {
+  const ok = confirm("Opravdu chceš smazat všechna data a začít od 0?");
+  if (!ok) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+};
+
+document.getElementById("withdrawBtn").onclick = () => {
+  const amount = Number(document.getElementById("withdrawInput").value || 0);
+  const status = document.getElementById("withdrawStatus");
+
+  if (amount < 10000) {
+    status.innerText = "Výběr zamítnut: minimální částka je 10 000 Coins.";
+    return;
+  }
+
+  if (referrals < 8) {
+    status.innerText = "Výběr zamítnut: musíš pozvat minimálně 8 lidí.";
+    return;
+  }
+
+  if (coins < amount) {
+    status.innerText = "Výběr zamítnut: nemáš dost Coins.";
+    return;
+  }
+
+  const fee = amount * 0.10;
+  const finalAmount = amount - fee;
+  coins -= amount;
+
+  status.innerText = "Žádost přijata. Po odečtení 10 % by výběr odpovídal " + finalAmount.toFixed(2) + " Coins.";
+  updateUI();
+  saveGame();
 };
 
 setInterval(() => {
   coins += getRealCoinsPerSec();
   updateUI();
+  saveGame();
 }, 1000);
 
 setInterval(() => {
   if (energy < maxEnergy) {
     energy += 1;
     updateUI();
+    saveGame();
   }
 }, 500);
 
@@ -471,6 +693,7 @@ document.querySelectorAll(".nav button").forEach(btn => {
   });
 });
 
+loadGame();
 updateUI();
 </script>
 
