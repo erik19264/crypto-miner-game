@@ -133,7 +133,9 @@ body {
 .bonus-item,
 .invite-item,
 .crypto-item,
-.finance-item {
+.finance-item,
+.vip-item,
+.piggy-item {
   background: #1f2937;
   border-radius: 14px;
   padding: 14px;
@@ -144,7 +146,9 @@ body {
 .bonus-item-title,
 .invite-item-title,
 .crypto-item-title,
-.finance-item-title {
+.finance-item-title,
+.vip-item-title,
+.piggy-item-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 6px;
@@ -154,7 +158,9 @@ body {
 .bonus-item-desc,
 .invite-item-desc,
 .crypto-item-desc,
-.finance-item-desc {
+.finance-item-desc,
+.vip-item-desc,
+.piggy-item-desc {
   opacity: 0.8;
   font-size: 14px;
   margin-bottom: 10px;
@@ -182,6 +188,7 @@ body {
 .btn-yellow { background: linear-gradient(180deg, #f59e0b, #d97706); }
 .btn-red { background: linear-gradient(180deg, #ef4444, #dc2626); }
 .btn-gray { background: linear-gradient(180deg, #64748b, #475569); }
+.btn-pink { background: linear-gradient(180deg, #ec4899, #db2777); }
 
 .btn:disabled {
   opacity: 0.6;
@@ -307,6 +314,13 @@ body {
   font-size: 13px;
   opacity: 0.85;
 }
+
+.piggy-amount {
+  font-size: 28px;
+  font-weight: bold;
+  color: #f9a8d4;
+  margin: 8px 0;
+}
 </style>
 </head>
 <body>
@@ -333,6 +347,7 @@ body {
       <div><b>Pozvaní lidé:</b> <span id="refStat">0</span></div>
       <div><b>Prestige:</b> <span id="prestigeStat">1</span></div>
       <div><b>Boost:</b> <span id="boostStat">Neaktivní</span></div>
+      <div><b>Energy cap bonus:</b> <span id="energyCapBonusText">0</span></div>
     </div>
 
     <div class="boxes">
@@ -433,6 +448,28 @@ body {
           <div class="shop-item-desc">Prémiové navýšení energie.</div>
           <button class="btn btn-blue" id="diamondEnergyBtn">Koupit za 5 Diamonds</button>
         </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+100 energy cap bonus</div>
+          <div class="shop-item-desc">Trvalé navýšení limitu energie.</div>
+          <button class="btn btn-pink" id="energyCapBtn">Koupit za 12 VIP Credits</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>VIP Shop</h3>
+
+        <div class="vip-item">
+          <div class="vip-item-title">VIP Instant +5000 Coins</div>
+          <div class="vip-item-desc">Za VIP Credits získáš okamžitě Coins.</div>
+          <button class="btn btn-purple" id="vipCoinsBtn">Koupit za 5 VIP Credits</button>
+        </div>
+
+        <div class="vip-item">
+          <div class="vip-item-title">VIP +10 Diamonds</div>
+          <div class="vip-item-desc">Prémiový nákup za VIP Credits.</div>
+          <button class="btn btn-blue" id="vipDiamondsBtn">Koupit za 8 VIP Credits</button>
+        </div>
       </div>
     </div>
   </div>
@@ -471,6 +508,13 @@ body {
           <div class="bonus-item-title">Denní bonus</div>
           <div class="bonus-item-desc">Jednou za otevření získáš +2500 Coins a +5 Diamonds.</div>
           <button class="btn btn-green" id="dailyBonusBtn">Vybrat</button>
+        </div>
+
+        <div class="piggy-item">
+          <div class="piggy-item-title">Prasátko</div>
+          <div class="piggy-item-desc">Část z kliků a těžby se ukládá do prasátka. Můžeš ho otevřít za Diamonds.</div>
+          <div class="piggy-amount" id="piggyAmountText">0 Coins</div>
+          <button class="btn btn-pink" id="openPiggyBtn">Otevřít za 10 Diamonds</button>
         </div>
 
         <div class="invite-item">
@@ -552,6 +596,13 @@ body {
             BTC
           </div>
         </div>
+
+        <div class="finance-item">
+          <div class="finance-item-title">Prasátko</div>
+          <div class="finance-item-desc" id="finPiggyText">
+            0 Coins
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -567,7 +618,7 @@ body {
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step7_save";
+const SAVE_KEY = "crypto_miner_empire_step8_save";
 
 let coins = 0;
 let diamonds = 0;
@@ -579,6 +630,7 @@ let prestige = 1;
 
 let energy = 100;
 let maxEnergy = 100;
+let energyCapBonus = 0;
 
 let clickValue = 1;
 
@@ -596,15 +648,18 @@ let ethUnlocked = false;
 let solUnlocked = false;
 let dogeUnlocked = false;
 
+let piggyBank = 0;
+
 const inviteCode = "MINER-0001";
 
 function saveGame() {
   const data = {
     coins, diamonds, coinsPerSec, level, vipCredits, referrals, prestige,
-    energy, maxEnergy, clickValue,
+    energy, maxEnergy, energyCapBonus, clickValue,
     buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
     boostUntil, vipBoostUntil, dailyClaimed,
-    ethUnlocked, solUnlocked, dogeUnlocked
+    ethUnlocked, solUnlocked, dogeUnlocked,
+    piggyBank
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -623,6 +678,7 @@ function loadGame() {
     prestige = data.prestige ?? prestige;
     energy = data.energy ?? energy;
     maxEnergy = data.maxEnergy ?? maxEnergy;
+    energyCapBonus = data.energyCapBonus ?? energyCapBonus;
     clickValue = data.clickValue ?? clickValue;
     buyClickCost = data.buyClickCost ?? buyClickCost;
     buyCpsCost = data.buyCpsCost ?? buyCpsCost;
@@ -634,6 +690,7 @@ function loadGame() {
     ethUnlocked = data.ethUnlocked ?? ethUnlocked;
     solUnlocked = data.solUnlocked ?? solUnlocked;
     dogeUnlocked = data.dogeUnlocked ?? dogeUnlocked;
+    piggyBank = data.piggyBank ?? piggyBank;
   } catch (e) {
     console.error("Chyba načítání save:", e);
   }
@@ -653,6 +710,10 @@ function getRealClickValue() {
 
 function getRealCoinsPerSec() {
   return coinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
+}
+
+function addToPiggy(amount) {
+  piggyBank += Math.floor(amount * 0.10);
 }
 
 function updateLevel() {
@@ -705,6 +766,7 @@ function updateUI() {
   document.getElementById("vipStat").innerText = vipCredits.toLocaleString("cs-CZ");
   document.getElementById("refStat").innerText = referrals.toLocaleString("cs-CZ");
   document.getElementById("prestigeStat").innerText = prestige.toLocaleString("cs-CZ");
+  document.getElementById("energyCapBonusText").innerText = energyCapBonus.toLocaleString("cs-CZ");
 
   document.getElementById("energyText").innerText = energy + "/" + maxEnergy;
   document.getElementById("clickValue").innerText = "+" + getRealClickValue();
@@ -726,6 +788,8 @@ function updateUI() {
   document.getElementById("finPrestige").innerText = prestige.toLocaleString("cs-CZ");
   document.getElementById("finPerMinute").innerText = Math.floor(getRealCoinsPerSec() * 60).toLocaleString("cs-CZ");
   document.getElementById("unlockedCryptosText").innerText = unlockedCryptosList();
+  document.getElementById("finPiggyText").innerText = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
+  document.getElementById("piggyAmountText").innerText = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
 
   const boostActive = Date.now() < boostUntil;
   const vipActive = Date.now() < vipBoostUntil;
@@ -750,7 +814,9 @@ function updateUI() {
 
 function mine() {
   if (energy <= 0) return;
-  coins += getRealClickValue();
+  const gain = getRealClickValue();
+  coins += gain;
+  addToPiggy(gain);
   energy--;
   updateUI();
   saveGame();
@@ -804,10 +870,36 @@ document.getElementById("diamondEnergyBtn").onclick = () => {
   saveGame();
 };
 
+document.getElementById("energyCapBtn").onclick = () => {
+  if (vipCredits < 12) return alert("Nemáš dost VIP Credits.");
+  vipCredits -= 12;
+  energyCapBonus += 100;
+  maxEnergy += 100;
+  energy += 100;
+  updateUI();
+  saveGame();
+};
+
 document.getElementById("vipBoostBtn").onclick = () => {
   if (vipCredits < 10) return alert("Nemáš dost VIP Credits.");
   vipCredits -= 10;
   vipBoostUntil = Date.now() + 10000;
+  updateUI();
+  saveGame();
+};
+
+document.getElementById("vipCoinsBtn").onclick = () => {
+  if (vipCredits < 5) return alert("Nemáš dost VIP Credits.");
+  vipCredits -= 5;
+  coins += 5000;
+  updateUI();
+  saveGame();
+};
+
+document.getElementById("vipDiamondsBtn").onclick = () => {
+  if (vipCredits < 8) return alert("Nemáš dost VIP Credits.");
+  vipCredits -= 8;
+  diamonds += 10;
   updateUI();
   saveGame();
 };
@@ -849,6 +941,17 @@ document.getElementById("dailyBonusBtn").onclick = () => {
   updateUI();
   saveGame();
   alert("Denní bonus získán.");
+};
+
+document.getElementById("openPiggyBtn").onclick = () => {
+  if (diamonds < 10) return alert("Nemáš dost Diamonds.");
+  if (piggyBank <= 0) return alert("Prasátko je prázdné.");
+  diamonds -= 10;
+  coins += piggyBank;
+  piggyBank = 0;
+  updateUI();
+  saveGame();
+  alert("Prasátko otevřeno.");
 };
 
 document.getElementById("copyInviteBtn").onclick = async () => {
@@ -909,6 +1012,7 @@ document.getElementById("rebirthBtn").onclick = () => {
   clickValue = 1;
   energy = 100;
   maxEnergy = 100;
+  energyCapBonus = 0;
   buyClickCost = 50;
   buyCpsCost = 100;
   buyEnergyCost = 75;
@@ -917,26 +1021,12 @@ document.getElementById("rebirthBtn").onclick = () => {
   vipBoostUntil = 0;
   dailyClaimed = false;
   prestige += 1;
+  piggyBank = 0;
   ethUnlocked = false;
   solUnlocked = false;
   dogeUnlocked = false;
-
-  document.getElementById("ethCard").innerHTML = `
-    <div class="crypto-item-title">ETH 🔒</div>
-    <div class="crypto-item-desc">Odemkneš za 5 000 Coins. Přidá +3 Coins/sec.</div>
-    <button class="btn btn-blue" id="unlockEthBtn">Odemknout za 5 000 Coins</button>
-  `;
-  document.getElementById("solCard").innerHTML = `
-    <div class="crypto-item-title">SOL 🔒</div>
-    <div class="crypto-item-desc">Odemkneš za 20 000 Coins. Přidá +8 Coins/sec.</div>
-    <button class="btn btn-purple" id="unlockSolBtn">Odemknout za 20 000 Coins</button>
-  `;
-  document.getElementById("dogeCard").innerHTML = `
-    <div class="crypto-item-title">DOGE 🔒</div>
-    <div class="crypto-item-desc">Odemkneš za 50 000 Coins. Přidá +20 Coins/sec.</div>
-    <button class="btn btn-yellow" id="unlockDogeBtn">Odemknout za 50 000 Coins</button>
-  `;
-
+  localStorage.removeItem(SAVE_KEY);
+  saveGame();
   location.reload();
 };
 
@@ -976,7 +1066,9 @@ document.getElementById("withdrawBtn").onclick = () => {
 };
 
 setInterval(() => {
-  coins += getRealCoinsPerSec();
+  const gain = getRealCoinsPerSec();
+  coins += gain;
+  addToPiggy(gain);
   updateUI();
   saveGame();
 }, 1000);
