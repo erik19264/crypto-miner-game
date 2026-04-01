@@ -1,459 +1,466 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Crypto Miner Empire</title>
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #020617, #0a1a3a);
-  color: white;
-  display: flex;
-  justify-content: center;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Miner Empire</title>
+  <style>
+    * { box-sizing: border-box; }
 
-.app {
-  width: 100%;
-  max-width: 430px;
-  min-height: 100vh;
-  background: #081225;
-  border-radius: 25px;
-  overflow: hidden;
-  position: relative;
-  padding-bottom: 92px;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #020617, #0a1a3a);
+      color: white;
+      display: flex;
+      justify-content: center;
+    }
 
-.top {
-  background: #111827;
-  padding: 15px;
-  text-align: center;
-  font-size: 14px;
-}
+    .login-screen,
+    .app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: #081225;
+      border-radius: 25px;
+      overflow: hidden;
+    }
 
-.title {
-  text-align: center;
-  margin-top: 10px;
-}
+    .login-screen {
+      display: none;
+    }
 
-.title h1 {
-  margin: 0;
-  font-size: 30px;
-}
+    .login-screen.active {
+      display: block;
+    }
 
-.title small {
-  opacity: 0.7;
-}
+    .app {
+      display: none;
+      position: relative;
+      padding-bottom: 92px;
+    }
 
-.stats {
-  margin: 15px;
-  background: #06101f;
-  border-radius: 18px;
-  padding: 18px;
-  line-height: 1.8;
-  font-size: 15px;
-}
+    .top {
+      background: #111827;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-.boxes {
-  display: flex;
-  gap: 10px;
-  padding: 0 15px 15px 15px;
-}
+    .title {
+      text-align: center;
+      margin-top: 10px;
+    }
 
-.box {
-  flex: 1;
-  background: #1f2937;
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  font-size: 15px;
-}
+    .title h1 {
+      margin: 0;
+      font-size: 30px;
+    }
 
-.circle-wrap {
-  position: relative;
-  width: 165px;
-  margin: 18px auto;
-}
+    .title small {
+      opacity: 0.7;
+    }
 
-.circle {
-  width: 165px;
-  height: 165px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #d8b4fe, #7c3aed);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.8);
-  border: 4px solid rgba(255,255,255,0.15);
-  user-select: none;
-  overflow: hidden;
-  transition: transform 0.08s ease;
-}
+    .stats {
+      margin: 15px;
+      background: #06101f;
+      border-radius: 18px;
+      padding: 18px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
 
-.circle:active {
-  transform: scale(0.96);
-}
+    .boxes {
+      display: flex;
+      gap: 10px;
+      padding: 0 15px 15px 15px;
+    }
 
-.circle img {
-  width: 78%;
-  height: 78%;
-  object-fit: contain;
-  pointer-events: none;
-}
+    .box {
+      flex: 1;
+      background: #1f2937;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      font-size: 15px;
+    }
 
-.float-text {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  color: #fef08a;
-  font-weight: bold;
-  font-size: 22px;
-  pointer-events: none;
-  opacity: 0;
-  animation: floatUp 0.9s ease-out forwards;
-  text-shadow: 0 0 10px rgba(255,255,255,0.35);
-}
+    .circle-wrap {
+      position: relative;
+      width: 165px;
+      margin: 18px auto;
+    }
 
-@keyframes floatUp {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -120px);
-  }
-}
+    .circle {
+      width: 165px;
+      height: 165px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #d8b4fe, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.8);
+      border: 4px solid rgba(255,255,255,0.15);
+      user-select: none;
+      overflow: hidden;
+      transition: transform 0.08s ease;
+    }
 
-.coins {
-  text-align: center;
-  margin-top: 10px;
-}
+    .circle:active {
+      transform: scale(0.96);
+    }
 
-.coins h2 {
-  margin: 10px 0 0 0;
-  font-size: 36px;
-}
+    .circle img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      pointer-events: none;
+    }
 
-.panel {
-  display: none;
-  padding-bottom: 20px;
-}
+    .float-text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #fef08a;
+      font-weight: bold;
+      font-size: 22px;
+      pointer-events: none;
+      opacity: 0;
+      animation: floatUp 0.9s ease-out forwards;
+      text-shadow: 0 0 10px rgba(255,255,255,0.35);
+    }
 
-.panel.active {
-  display: block;
-}
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -120px);
+      }
+    }
 
-.section {
-  padding: 15px;
-}
+    .coins {
+      text-align: center;
+      margin-top: 10px;
+    }
 
-.card {
-  background: #111827;
-  border-radius: 16px;
-  padding: 15px;
-  margin-bottom: 12px;
-}
+    .coins h2 {
+      margin: 10px 0 0 0;
+      font-size: 36px;
+    }
 
-.card h3 {
-  margin-top: 0;
-}
+    .panel {
+      display: none;
+      padding-bottom: 20px;
+    }
 
-.shop-item,
-.bonus-item,
-.invite-item,
-.crypto-item,
-.finance-item,
-.vip-item,
-.piggy-item,
-.profile-item {
-  background: #1f2937;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-}
+    .panel.active {
+      display: block;
+    }
 
-.shop-item-title,
-.bonus-item-title,
-.invite-item-title,
-.crypto-item-title,
-.finance-item-title,
-.vip-item-title,
-.piggy-item-title,
-.profile-item-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+    .section {
+      padding: 15px;
+    }
 
-.shop-item-desc,
-.bonus-item-desc,
-.invite-item-desc,
-.crypto-item-desc,
-.finance-item-desc,
-.vip-item-desc,
-.piggy-item-desc,
-.profile-item-desc {
-  opacity: 0.8;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
+    .card {
+      background: #111827;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
 
-.locked {
-  opacity: 0.55;
-  filter: grayscale(0.5);
-}
+    .card h3 {
+      margin-top: 0;
+    }
 
-.btn {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 15px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-}
+    .shop-item,
+    .bonus-item,
+    .invite-item,
+    .crypto-item,
+    .finance-item,
+    .vip-item,
+    .piggy-item,
+    .profile-item,
+    .achievement-item {
+      background: #1f2937;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
 
-.btn-green { background: linear-gradient(180deg, #22c55e, #16a34a); }
-.btn-blue { background: linear-gradient(180deg, #3b82f6, #2563eb); }
-.btn-purple { background: linear-gradient(180deg, #a855f7, #7c3aed); }
-.btn-yellow { background: linear-gradient(180deg, #f59e0b, #d97706); }
-.btn-red { background: linear-gradient(180deg, #ef4444, #dc2626); }
-.btn-gray { background: linear-gradient(180deg, #64748b, #475569); }
-.btn-pink { background: linear-gradient(180deg, #ec4899, #db2777); }
+    .shop-item-title,
+    .bonus-item-title,
+    .invite-item-title,
+    .crypto-item-title,
+    .finance-item-title,
+    .vip-item-title,
+    .piggy-item-title,
+    .profile-item-title,
+    .achievement-item-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    .shop-item-desc,
+    .bonus-item-desc,
+    .invite-item-desc,
+    .crypto-item-desc,
+    .finance-item-desc,
+    .vip-item-desc,
+    .piggy-item-desc,
+    .profile-item-desc,
+    .achievement-item-desc {
+      opacity: 0.8;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
 
-.shop-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
-}
+    .locked {
+      opacity: 0.55;
+      filter: grayscale(0.5);
+    }
 
-.shop-tab {
-  border: none;
-  border-radius: 12px;
-  padding: 10px;
-  background: #1f2937;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  opacity: 0.7;
-}
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
 
-.shop-tab.active {
-  opacity: 1;
-  background: linear-gradient(180deg, #a855f7, #7c3aed);
-}
+    .btn-green { background: linear-gradient(180deg, #22c55e, #16a34a); }
+    .btn-blue { background: linear-gradient(180deg, #3b82f6, #2563eb); }
+    .btn-purple { background: linear-gradient(180deg, #a855f7, #7c3aed); }
+    .btn-yellow { background: linear-gradient(180deg, #f59e0b, #d97706); }
+    .btn-red { background: linear-gradient(180deg, #ef4444, #dc2626); }
+    .btn-gray { background: linear-gradient(180deg, #64748b, #475569); }
+    .btn-pink { background: linear-gradient(180deg, #ec4899, #db2777); }
 
-.shop-group {
-  display: none;
-}
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-.shop-group.active {
-  display: block;
-}
+    .shop-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
 
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  max-width: 430px;
-  background: rgba(17,24,39,0.96);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  padding: 10px 0;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
-}
+    .shop-tab {
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      background: #1f2937;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: 0.7;
+    }
 
-.nav button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  opacity: 0.7;
-  padding: 6px 4px;
-}
+    .shop-tab.active {
+      opacity: 1;
+      background: linear-gradient(180deg, #a855f7, #7c3aed);
+    }
 
-.nav button.active {
-  opacity: 1;
-  color: #c084fc;
-}
+    .shop-group {
+      display: none;
+    }
 
-.small {
-  font-size: 14px;
-  opacity: 0.8;
-  line-height: 1.6;
-}
+    .shop-group.active {
+      display: block;
+    }
 
-.input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background: #0b1220;
-  color: white;
-  font-size: 16px;
-  margin-top: 10px;
-  margin-bottom: 12px;
-}
+    .nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(17,24,39,0.96);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+    }
 
-.withdraw-balance {
-  text-align: center;
-  background: linear-gradient(180deg, #111827, #1f2937);
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 14px;
-}
+    .nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 6px 4px;
+    }
 
-.withdraw-balance .big {
-  font-size: 36px;
-  font-weight: bold;
-  margin: 8px 0;
-}
+    .nav button.active {
+      opacity: 1;
+      color: #c084fc;
+    }
 
-.withdraw-balance .money {
-  font-size: 20px;
-  color: #c084fc;
-  font-weight: bold;
-}
+    .small {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
 
-.status {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #cbd5e1;
-}
+    .input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #0b1220;
+      color: white;
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
 
-.row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 12px;
-}
+    .withdraw-balance {
+      text-align: center;
+      background: linear-gradient(180deg, #111827, #1f2937);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
 
-.row-1 {
-  display: grid;
-  gap: 12px;
-  margin-top: 12px;
-}
+    .withdraw-balance .big {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
 
-.code-box {
-  background: #0b1220;
-  border-radius: 12px;
-  padding: 12px;
-  font-size: 13px;
-  word-break: break-all;
-  margin-bottom: 10px;
-}
+    .withdraw-balance .money {
+      font-size: 20px;
+      color: #c084fc;
+      font-weight: bold;
+    }
 
-.info-badge {
-  display: inline-block;
-  background: rgba(168,85,247,0.15);
-  color: #d8b4fe;
-  border: 1px solid rgba(168,85,247,0.25);
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
+    .status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
 
-.hr {
-  height: 1px;
-  background: rgba(255,255,255,0.08);
-  margin: 12px 0;
-}
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
 
-.inline-stat {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 13px;
-  opacity: 0.85;
-}
+    .row-1 {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
 
-.piggy-amount {
-  font-size: 28px;
-  font-weight: bold;
-  color: #f9a8d4;
-  margin: 8px 0;
-}
+    .code-box {
+      background: #0b1220;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      word-break: break-all;
+      margin-bottom: 10px;
+    }
 
-.login-screen {
-  display: none;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 430px;
-  background: linear-gradient(180deg, #081225, #0b1730);
-  border-radius: 25px;
-  overflow: hidden;
-}
+    .info-badge {
+      display: inline-block;
+      background: rgba(168,85,247,0.15);
+      color: #d8b4fe;
+      border: 1px solid rgba(168,85,247,0.25);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
 
-.login-screen.active {
-  display: block;
-}
+    .hr {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 12px 0;
+    }
 
-.login-wrap {
-  padding: 28px 20px;
-  text-align: center;
-}
+    .inline-stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
 
-.login-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #d8b4fe, #7c3aed);
-  margin: 30px auto 20px;
-  box-shadow: 0 0 40px rgba(124,58,237,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  font-weight: bold;
-  overflow: hidden;
-}
+    .piggy-amount {
+      font-size: 28px;
+      font-weight: bold;
+      color: #f9a8d4;
+      margin: 8px 0;
+    }
 
-.login-logo img {
-  width: 78%;
-  height: 78%;
-  object-fit: contain;
-}
+    .login-wrap {
+      padding: 28px 20px;
+      text-align: center;
+    }
 
-.login-title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+    .login-logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #d8b4fe, #7c3aed);
+      margin: 30px auto 20px;
+      box-shadow: 0 0 40px rgba(124,58,237,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: bold;
+      overflow: hidden;
+    }
 
-.login-sub {
-  opacity: 0.75;
-  margin-bottom: 24px;
-}
+    .login-logo img {
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+    }
 
-.login-card {
-  background: #111827;
-  padding: 18px;
-  border-radius: 18px;
-  text-align: left;
-}
+    .login-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-.profile-grid {
-  display: grid;
-  gap: 10px;
-}
-</style>
+    .login-sub {
+      opacity: 0.75;
+      margin-bottom: 24px;
+    }
+
+    .login-card {
+      background: #111827;
+      padding: 18px;
+      border-radius: 18px;
+      text-align: left;
+      margin: 0 20px 20px 20px;
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -478,7 +485,7 @@ body {
   </div>
 </div>
 
-<div class="app" id="gameApp" style="display:none;">
+<div class="app" id="gameApp">
 
   <div class="top">
     Crypto Miner Empire
@@ -557,6 +564,11 @@ body {
           <div class="crypto-item-desc">Odemkneš za 50 000 Coins. Přidá +20 Coins/sec.</div>
           <button class="btn btn-yellow" id="unlockDogeBtn">Odemknout za 50 000 Coins</button>
         </div>
+      </div>
+
+      <div class="card">
+        <h3>Achievements</h3>
+        <div id="achievementsList"></div>
       </div>
     </div>
   </div>
@@ -649,21 +661,21 @@ body {
         </div>
 
         <div class="bonus-item">
-          <div class="bonus-item-title">+1 Diamond</div>
-          <div class="bonus-item-desc">Rychlý bonus zdarma.</div>
-          <button class="btn btn-blue" id="diamondBtn">Vzít zdarma</button>
+          <div class="bonus-item-title">Sledovat reklamu → +1 Diamond</div>
+          <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+          <button class="btn btn-blue" id="diamondBtn">Sledovat reklamu</button>
         </div>
 
         <div class="bonus-item">
-          <div class="bonus-item-title">+500 Coins</div>
-          <div class="bonus-item-desc">Bonus na rozjezd.</div>
-          <button class="btn btn-green" id="giftCoinsBtn">Vzít zdarma</button>
+          <div class="bonus-item-title">Sledovat reklamu → +500 Coins</div>
+          <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+          <button class="btn btn-green" id="giftCoinsBtn">Sledovat reklamu</button>
         </div>
 
         <div class="bonus-item">
-          <div class="bonus-item-title">+2 VIP Credits</div>
-          <div class="bonus-item-desc">Simulace odměny za reklamu.</div>
-          <button class="btn btn-purple" id="vipBtn">Získat</button>
+          <div class="bonus-item-title">Sledovat reklamu → +2 VIP Credits</div>
+          <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+          <button class="btn btn-purple" id="vipBtn">Sledovat reklamu</button>
         </div>
 
         <div class="bonus-item">
@@ -714,8 +726,15 @@ body {
           <div class="small">1 Coin = 0.0900 Kč</div>
         </div>
 
+        <div class="small">Jméno příjemce</div>
+        <input class="input" id="withdrawNameInput" placeholder="Zadej jméno" />
+
+        <div class="small">Číslo účtu</div>
+        <input class="input" id="withdrawAccountInput" placeholder="123456789/0100" />
+
         <div class="small">Částka k výběru</div>
         <input class="input" id="withdrawInput" type="number" placeholder="Zadejte částku výběru" />
+
         <button class="btn btn-purple" id="withdrawBtn">Vybrat</button>
 
         <div class="small">
@@ -776,7 +795,7 @@ body {
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step10_save";
+const SAVE_KEY = "crypto_miner_empire_step11_full_save";
 const LOGIN_KEY = "crypto_miner_empire_login";
 
 let playerName = "Miner";
@@ -812,6 +831,70 @@ let dogeUnlocked = false;
 let piggyBank = 0;
 
 const inviteCode = "MINER-0001";
+
+function getAchievements() {
+  return [
+    {
+      title: "První klik",
+      desc: "Klikni poprvé na kruh.",
+      done: coins > 0
+    },
+    {
+      title: "První diamant",
+      desc: "Získej aspoň 1 Diamond.",
+      done: diamonds >= 1
+    },
+    {
+      title: "Malý těžař",
+      desc: "Dostaň se na 1000 Coins.",
+      done: coins >= 1000
+    },
+    {
+      title: "Referral start",
+      desc: "Získej 1 pozvaného člověka.",
+      done: referrals >= 1
+    },
+    {
+      title: "VIP hráč",
+      desc: "Získej 10 VIP Credits.",
+      done: vipCredits >= 10
+    },
+    {
+      title: "ETH unlocked",
+      desc: "Odemkni ETH.",
+      done: ethUnlocked
+    },
+    {
+      title: "SOL unlocked",
+      desc: "Odemkni SOL.",
+      done: solUnlocked
+    },
+    {
+      title: "DOGE unlocked",
+      desc: "Odemkni DOGE.",
+      done: dogeUnlocked
+    },
+    {
+      title: "První rebirth",
+      desc: "Udělej 1 rebirth.",
+      done: prestige >= 2
+    }
+  ];
+}
+
+function renderAchievements() {
+  const box = document.getElementById("achievementsList");
+  if (!box) return;
+  const items = getAchievements()
+    .map(a => `
+      <div class="achievement-item">
+        <div class="achievement-item-title">${a.done ? "✅" : "⬜"} ${a.title}</div>
+        <div class="achievement-item-desc">${a.desc}</div>
+      </div>
+    `)
+    .join("");
+  box.innerHTML = items;
+}
 
 function saveGame() {
   const data = {
@@ -1005,6 +1088,7 @@ function updateUI() {
   }
 
   updateCryptoCards();
+  renderAchievements();
 }
 
 function mine() {
@@ -1052,7 +1136,6 @@ document.getElementById("buyEnergyBtn").onclick = () => {
   coins -= buyEnergyCost;
   maxEnergy += 25;
   energy += 25;
-  buyEnergyCost = Math.floor(buyEnergyCost * 1.9);
   updateUI();
   saveGame();
 };
@@ -1121,18 +1204,21 @@ document.getElementById("diamondBtn").onclick = () => {
   diamonds += 1;
   updateUI();
   saveGame();
+  alert("Fake reklama dokončena. Získal jsi +1 Diamond.");
 };
 
 document.getElementById("giftCoinsBtn").onclick = () => {
   coins += 500;
   updateUI();
   saveGame();
+  alert("Fake reklama dokončena. Získal jsi +500 Coins.");
 };
 
 document.getElementById("vipBtn").onclick = () => {
   vipCredits += 2;
   updateUI();
   saveGame();
+  alert("Fake reklama dokončena. Získal jsi +2 VIP Credits.");
 };
 
 document.getElementById("dailyBonusBtn").onclick = () => {
@@ -1257,19 +1343,27 @@ document.getElementById("logoutBtn").onclick = () => {
 };
 
 document.getElementById("withdrawBtn").onclick = () => {
+  const name = document.getElementById("withdrawNameInput").value.trim();
+  const account = document.getElementById("withdrawAccountInput").value.trim();
   const amount = Number(document.getElementById("withdrawInput").value || 0);
   const status = document.getElementById("withdrawStatus");
 
+  if (!name) {
+    status.innerText = "Výběr zamítnut: zadej jméno.";
+    return;
+  }
+  if (!account) {
+    status.innerText = "Výběr zamítnut: zadej číslo účtu.";
+    return;
+  }
   if (amount < 10000) {
     status.innerText = "Výběr zamítnut: minimální částka je 10 000 Coins.";
     return;
   }
-
   if (referrals < 8) {
     status.innerText = "Výběr zamítnut: musíš pozvat minimálně 8 lidí.";
     return;
   }
-
   if (coins < amount) {
     status.innerText = "Výběr zamítnut: nemáš dost Coins.";
     return;
@@ -1279,7 +1373,9 @@ document.getElementById("withdrawBtn").onclick = () => {
   const finalAmount = amount - fee;
   coins -= amount;
 
-  status.innerText = "Žádost přijata. Po odečtení 10 % by výběr odpovídal " + finalAmount.toFixed(2) + " Coins.";
+  status.innerText =
+    "Žádost přijata pro " + name + " na účet " + account +
+    ". Po odečtení 10 % by výběr odpovídal " + finalAmount.toFixed(2) + " Coins.";
   updateUI();
   saveGame();
 };
