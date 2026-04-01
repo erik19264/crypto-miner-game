@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Crypto Miner Empire</title>
-
 <style>
 body {
   margin: 0;
@@ -40,7 +39,7 @@ body {
 
 .title h1 {
   margin: 0;
-  font-size: 38px;
+  font-size: 34px;
 }
 
 .title small {
@@ -72,8 +71,8 @@ body {
 }
 
 .circle {
-  width: 170px;
-  height: 170px;
+  width: 165px;
+  height: 165px;
   border-radius: 50%;
   margin: 18px auto;
   background: radial-gradient(circle, #d8b4fe, #7c3aed);
@@ -103,7 +102,7 @@ body {
 
 .coins h2 {
   margin: 10px 0 0 0;
-  font-size: 38px;
+  font-size: 36px;
 }
 
 .panel {
@@ -132,7 +131,9 @@ body {
 
 .shop-item,
 .bonus-item,
-.invite-item {
+.invite-item,
+.crypto-item,
+.finance-item {
   background: #1f2937;
   border-radius: 14px;
   padding: 14px;
@@ -141,7 +142,9 @@ body {
 
 .shop-item-title,
 .bonus-item-title,
-.invite-item-title {
+.invite-item-title,
+.crypto-item-title,
+.finance-item-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 6px;
@@ -149,10 +152,17 @@ body {
 
 .shop-item-desc,
 .bonus-item-desc,
-.invite-item-desc {
+.invite-item-desc,
+.crypto-item-desc,
+.finance-item-desc {
   opacity: 0.8;
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+.locked {
+  opacity: 0.55;
+  filter: grayscale(0.5);
 }
 
 .btn {
@@ -166,29 +176,12 @@ body {
   cursor: pointer;
 }
 
-.btn-green {
-  background: linear-gradient(180deg, #22c55e, #16a34a);
-}
-
-.btn-blue {
-  background: linear-gradient(180deg, #3b82f6, #2563eb);
-}
-
-.btn-purple {
-  background: linear-gradient(180deg, #a855f7, #7c3aed);
-}
-
-.btn-yellow {
-  background: linear-gradient(180deg, #f59e0b, #d97706);
-}
-
-.btn-red {
-  background: linear-gradient(180deg, #ef4444, #dc2626);
-}
-
-.btn-gray {
-  background: linear-gradient(180deg, #64748b, #475569);
-}
+.btn-green { background: linear-gradient(180deg, #22c55e, #16a34a); }
+.btn-blue { background: linear-gradient(180deg, #3b82f6, #2563eb); }
+.btn-purple { background: linear-gradient(180deg, #a855f7, #7c3aed); }
+.btn-yellow { background: linear-gradient(180deg, #f59e0b, #d97706); }
+.btn-red { background: linear-gradient(180deg, #ef4444, #dc2626); }
+.btn-gray { background: linear-gradient(180deg, #64748b, #475569); }
 
 .btn:disabled {
   opacity: 0.6;
@@ -201,8 +194,8 @@ body {
   width: 100%;
   max-width: 430px;
   background: rgba(17,24,39,0.96);
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   padding: 10px 0;
   border-top: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(8px);
@@ -212,11 +205,11 @@ body {
   background: none;
   border: none;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   cursor: pointer;
   opacity: 0.7;
-  padding: 6px 8px;
+  padding: 6px 4px;
 }
 
 .nav button.active {
@@ -306,6 +299,14 @@ body {
   background: rgba(255,255,255,0.08);
   margin: 12px 0;
 }
+
+.inline-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  opacity: 0.85;
+}
 </style>
 </head>
 <body>
@@ -353,6 +354,39 @@ body {
     <div class="coins">
       💎 Zůstatek Coins
       <h2 id="coins">0</h2>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <h3>Kryptoměny</h3>
+
+        <div class="crypto-item">
+          <div class="crypto-item-title">BTC ✅</div>
+          <div class="crypto-item-desc">Základní těžba. Vždy aktivní.</div>
+          <div class="inline-stat">
+            <span>Bonus:</span>
+            <span>+0 Coins/sec</span>
+          </div>
+        </div>
+
+        <div class="crypto-item locked" id="ethCard">
+          <div class="crypto-item-title">ETH 🔒</div>
+          <div class="crypto-item-desc">Odemkneš za 5 000 Coins. Přidá +3 Coins/sec.</div>
+          <button class="btn btn-blue" id="unlockEthBtn">Odemknout za 5 000 Coins</button>
+        </div>
+
+        <div class="crypto-item locked" id="solCard">
+          <div class="crypto-item-title">SOL 🔒</div>
+          <div class="crypto-item-desc">Odemkneš za 20 000 Coins. Přidá +8 Coins/sec.</div>
+          <button class="btn btn-purple" id="unlockSolBtn">Odemknout za 20 000 Coins</button>
+        </div>
+
+        <div class="crypto-item locked" id="dogeCard">
+          <div class="crypto-item-title">DOGE 🔒</div>
+          <div class="crypto-item-desc">Odemkneš za 50 000 Coins. Přidá +20 Coins/sec.</div>
+          <button class="btn btn-yellow" id="unlockDogeBtn">Odemknout za 50 000 Coins</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -489,6 +523,39 @@ body {
     </div>
   </div>
 
+  <!-- FINANCE -->
+  <div class="panel" id="panel-finance">
+    <div class="section">
+      <div class="card">
+        <h3>Finance</h3>
+
+        <div class="finance-item">
+          <div class="finance-item-title">Přehled účtu</div>
+          <div class="finance-item-desc">
+            Coins: <span id="finCoins">0</span><br>
+            Diamonds: <span id="finDiamonds">0</span><br>
+            VIP Credits: <span id="finVip">0</span><br>
+            Prestige: <span id="finPrestige">1</span>
+          </div>
+        </div>
+
+        <div class="finance-item">
+          <div class="finance-item-title">Výdělek za minutu</div>
+          <div class="finance-item-desc">
+            <span id="finPerMinute">60</span> Coins / min
+          </div>
+        </div>
+
+        <div class="finance-item">
+          <div class="finance-item-title">Odemčené kryptoměny</div>
+          <div class="finance-item-desc" id="unlockedCryptosText">
+            BTC
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="nav">
@@ -496,10 +563,11 @@ body {
   <button data-panel="shop">Shop</button>
   <button data-panel="bonus">Bonus</button>
   <button data-panel="withdraw">Výběr</button>
+  <button data-panel="finance">Finance</button>
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step6_save";
+const SAVE_KEY = "crypto_miner_empire_step7_save";
 
 let coins = 0;
 let diamonds = 0;
@@ -524,27 +592,19 @@ let vipBoostUntil = 0;
 
 let dailyClaimed = false;
 
+let ethUnlocked = false;
+let solUnlocked = false;
+let dogeUnlocked = false;
+
 const inviteCode = "MINER-0001";
 
 function saveGame() {
   const data = {
-    coins,
-    diamonds,
-    coinsPerSec,
-    level,
-    vipCredits,
-    referrals,
-    prestige,
-    energy,
-    maxEnergy,
-    clickValue,
-    buyClickCost,
-    buyCpsCost,
-    buyEnergyCost,
-    buyDiamondCost,
-    boostUntil,
-    vipBoostUntil,
-    dailyClaimed
+    coins, diamonds, coinsPerSec, level, vipCredits, referrals, prestige,
+    energy, maxEnergy, clickValue,
+    buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
+    boostUntil, vipBoostUntil, dailyClaimed,
+    ethUnlocked, solUnlocked, dogeUnlocked
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -571,6 +631,9 @@ function loadGame() {
     boostUntil = data.boostUntil ?? boostUntil;
     vipBoostUntil = data.vipBoostUntil ?? vipBoostUntil;
     dailyClaimed = data.dailyClaimed ?? dailyClaimed;
+    ethUnlocked = data.ethUnlocked ?? ethUnlocked;
+    solUnlocked = data.solUnlocked ?? solUnlocked;
+    dogeUnlocked = data.dogeUnlocked ?? dogeUnlocked;
   } catch (e) {
     console.error("Chyba načítání save:", e);
   }
@@ -594,6 +657,41 @@ function getRealCoinsPerSec() {
 
 function updateLevel() {
   level = Math.floor(coins / 1000) + 1;
+}
+
+function unlockedCryptosList() {
+  const list = ["BTC"];
+  if (ethUnlocked) list.push("ETH");
+  if (solUnlocked) list.push("SOL");
+  if (dogeUnlocked) list.push("DOGE");
+  return list.join(", ");
+}
+
+function updateCryptoCards() {
+  if (ethUnlocked) {
+    document.getElementById("ethCard").classList.remove("locked");
+    document.getElementById("ethCard").innerHTML = `
+      <div class="crypto-item-title">ETH ✅</div>
+      <div class="crypto-item-desc">Odemčeno. Přidává +3 Coins/sec.</div>
+      <div class="inline-stat"><span>Bonus:</span><span>+3 Coins/sec</span></div>
+    `;
+  }
+  if (solUnlocked) {
+    document.getElementById("solCard").classList.remove("locked");
+    document.getElementById("solCard").innerHTML = `
+      <div class="crypto-item-title">SOL ✅</div>
+      <div class="crypto-item-desc">Odemčeno. Přidává +8 Coins/sec.</div>
+      <div class="inline-stat"><span>Bonus:</span><span>+8 Coins/sec</span></div>
+    `;
+  }
+  if (dogeUnlocked) {
+    document.getElementById("dogeCard").classList.remove("locked");
+    document.getElementById("dogeCard").innerHTML = `
+      <div class="crypto-item-title">DOGE ✅</div>
+      <div class="crypto-item-desc">Odemčeno. Přidává +20 Coins/sec.</div>
+      <div class="inline-stat"><span>Bonus:</span><span>+20 Coins/sec</span></div>
+    `;
+  }
 }
 
 function updateUI() {
@@ -622,6 +720,13 @@ function updateUI() {
   document.getElementById("inviteLinkBox").innerText =
     "https://example.com/invite?code=" + inviteCode;
 
+  document.getElementById("finCoins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
+  document.getElementById("finDiamonds").innerText = diamonds.toLocaleString("cs-CZ");
+  document.getElementById("finVip").innerText = vipCredits.toLocaleString("cs-CZ");
+  document.getElementById("finPrestige").innerText = prestige.toLocaleString("cs-CZ");
+  document.getElementById("finPerMinute").innerText = Math.floor(getRealCoinsPerSec() * 60).toLocaleString("cs-CZ");
+  document.getElementById("unlockedCryptosText").innerText = unlockedCryptosList();
+
   const boostActive = Date.now() < boostUntil;
   const vipActive = Date.now() < vipBoostUntil;
 
@@ -639,6 +744,8 @@ function updateUI() {
   } else {
     document.getElementById("boostStat").innerText = "Neaktivní";
   }
+
+  updateCryptoCards();
 }
 
 function mine() {
@@ -761,6 +868,36 @@ document.getElementById("simulateReferralBtn").onclick = () => {
   alert("Simulováno +1 pozvaný člověk.");
 };
 
+document.getElementById("unlockEthBtn").onclick = () => {
+  if (ethUnlocked) return;
+  if (coins < 5000) return alert("Nemáš dost Coins.");
+  coins -= 5000;
+  ethUnlocked = true;
+  coinsPerSec += 3;
+  updateUI();
+  saveGame();
+};
+
+document.getElementById("unlockSolBtn").onclick = () => {
+  if (solUnlocked) return;
+  if (coins < 20000) return alert("Nemáš dost Coins.");
+  coins -= 20000;
+  solUnlocked = true;
+  coinsPerSec += 8;
+  updateUI();
+  saveGame();
+};
+
+document.getElementById("unlockDogeBtn").onclick = () => {
+  if (dogeUnlocked) return;
+  if (coins < 50000) return alert("Nemáš dost Coins.");
+  coins -= 50000;
+  dogeUnlocked = true;
+  coinsPerSec += 20;
+  updateUI();
+  saveGame();
+};
+
 document.getElementById("rebirthBtn").onclick = () => {
   if (coins < 100000) {
     alert("Na rebirth potřebuješ aspoň 100 000 Coins.");
@@ -776,13 +913,31 @@ document.getElementById("rebirthBtn").onclick = () => {
   buyCpsCost = 100;
   buyEnergyCost = 75;
   buyDiamondCost = 500;
-  prestige += 1;
   boostUntil = 0;
   vipBoostUntil = 0;
   dailyClaimed = false;
-  updateUI();
-  saveGame();
-  alert("Rebirth hotový. Prestige +1");
+  prestige += 1;
+  ethUnlocked = false;
+  solUnlocked = false;
+  dogeUnlocked = false;
+
+  document.getElementById("ethCard").innerHTML = `
+    <div class="crypto-item-title">ETH 🔒</div>
+    <div class="crypto-item-desc">Odemkneš za 5 000 Coins. Přidá +3 Coins/sec.</div>
+    <button class="btn btn-blue" id="unlockEthBtn">Odemknout za 5 000 Coins</button>
+  `;
+  document.getElementById("solCard").innerHTML = `
+    <div class="crypto-item-title">SOL 🔒</div>
+    <div class="crypto-item-desc">Odemkneš za 20 000 Coins. Přidá +8 Coins/sec.</div>
+    <button class="btn btn-purple" id="unlockSolBtn">Odemknout za 20 000 Coins</button>
+  `;
+  document.getElementById("dogeCard").innerHTML = `
+    <div class="crypto-item-title">DOGE 🔒</div>
+    <div class="crypto-item-desc">Odemkneš za 50 000 Coins. Přidá +20 Coins/sec.</div>
+    <button class="btn btn-yellow" id="unlockDogeBtn">Odemknout za 50 000 Coins</button>
+  `;
+
+  location.reload();
 };
 
 document.getElementById("resetBtn").onclick = () => {
