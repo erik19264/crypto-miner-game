@@ -86,6 +86,14 @@ body {
   box-shadow: 0 0 40px rgba(124, 58, 237, 0.8);
   border: 4px solid rgba(255,255,255,0.15);
   user-select: none;
+  overflow: hidden;
+}
+
+.circle img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .coins {
@@ -123,7 +131,8 @@ body {
 }
 
 .shop-item,
-.bonus-item {
+.bonus-item,
+.invite-item {
   background: #1f2937;
   border-radius: 14px;
   padding: 14px;
@@ -131,14 +140,16 @@ body {
 }
 
 .shop-item-title,
-.bonus-item-title {
+.bonus-item-title,
+.invite-item-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 6px;
 }
 
 .shop-item-desc,
-.bonus-item-desc {
+.bonus-item-desc,
+.invite-item-desc {
   opacity: 0.8;
   font-size: 14px;
   margin-bottom: 10px;
@@ -261,6 +272,32 @@ body {
   gap: 12px;
   margin-top: 12px;
 }
+
+.row-1 {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.code-box {
+  background: #0b1220;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+  word-break: break-all;
+  margin-bottom: 10px;
+}
+
+.info-badge {
+  display: inline-block;
+  background: rgba(168,85,247,0.15);
+  color: #d8b4fe;
+  border: 1px solid rgba(168,85,247,0.25);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
 </style>
 </head>
 <body>
@@ -301,7 +338,8 @@ body {
     </div>
 
     <div class="circle" id="mine">
-      CM
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('fallbackText').style.display='block';">
+      <span id="fallbackText">CM</span>
     </div>
 
     <div class="coins">
@@ -339,6 +377,12 @@ body {
           <div class="shop-item-desc">Koupíš 1 Diamond za Coins.</div>
           <button class="btn btn-yellow" id="buyDiamondShopBtn">Koupit za <span id="buyDiamondCostText">500</span> Coins</button>
         </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">VIP x2 income na 10s</div>
+          <div class="shop-item-desc">Kupuje se za VIP Credits.</div>
+          <button class="btn btn-gray" id="vipBoostBtn">Koupit za 10 VIP Credits</button>
+        </div>
       </div>
     </div>
   </div>
@@ -371,6 +415,20 @@ body {
           <div class="bonus-item-title">+2 VIP Credits</div>
           <div class="bonus-item-desc">Simulace odměny za reklamu.</div>
           <button class="btn btn-purple" id="vipBtn">Získat</button>
+        </div>
+
+        <div class="invite-item">
+          <div class="invite-item-title">Pozvi kamarády</div>
+          <div class="invite-item-desc">Každý pozvaný člověk ti přiblíží výběr a může se hodit do budoucna.</div>
+
+          <div class="info-badge">Referral systém - jednoduchá verze</div>
+
+          <div class="code-box" id="inviteLinkBox">https://example.com/invite?code=MINER-0001</div>
+
+          <div class="row-1">
+            <button class="btn btn-blue" id="copyInviteBtn">Kopírovat odkaz</button>
+            <button class="btn btn-green" id="simulateReferralBtn">Simulovat +1 pozvaného</button>
+          </div>
         </div>
 
         <div class="row-2">
@@ -419,7 +477,7 @@ body {
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step4_save";
+const SAVE_KEY = "crypto_miner_empire_step5_save";
 
 let coins = 0;
 let diamonds = 0;
@@ -440,6 +498,9 @@ let buyEnergyCost = 75;
 let buyDiamondCost = 500;
 
 let boostUntil = 0;
+let vipBoostUntil = 0;
+
+const inviteCode = "MINER-0001";
 
 function saveGame() {
   const data = {
@@ -457,7 +518,8 @@ function saveGame() {
     buyCpsCost,
     buyEnergyCost,
     buyDiamondCost,
-    boostUntil
+    boostUntil,
+    vipBoostUntil
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -482,6 +544,7 @@ function loadGame() {
     buyEnergyCost = data.buyEnergyCost ?? buyEnergyCost;
     buyDiamondCost = data.buyDiamondCost ?? buyDiamondCost;
     boostUntil = data.boostUntil ?? boostUntil;
+    vipBoostUntil = data.vipBoostUntil ?? vipBoostUntil;
   } catch (e) {
     console.error("Chyba načítání save:", e);
   }
@@ -491,12 +554,16 @@ function getBoostMultiplier() {
   return Date.now() < boostUntil ? 2 : 1;
 }
 
+function getVipMultiplier() {
+  return Date.now() < vipBoostUntil ? 2 : 1;
+}
+
 function getRealClickValue() {
-  return clickValue * getBoostMultiplier() * prestige;
+  return clickValue * getBoostMultiplier() * getVipMultiplier() * prestige;
 }
 
 function getRealCoinsPerSec() {
-  return coinsPerSec * getBoostMultiplier() * prestige;
+  return coinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
 }
 
 function updateLevel() {
@@ -526,9 +593,23 @@ function updateUI() {
   document.getElementById("withdrawCoinBalance").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   document.getElementById("withdrawKcBalance").innerText = (coins * 0.09).toFixed(2) + " Kč";
 
-  if (Date.now() < boostUntil) {
+  document.getElementById("inviteLinkBox").innerText =
+    "https://example.com/invite?code=" + inviteCode;
+
+  const boostActive = Date.now() < boostUntil;
+  const vipActive = Date.now() < vipBoostUntil;
+
+  if (boostActive && vipActive) {
+    const a = Math.ceil((boostUntil - Date.now()) / 1000);
+    const b = Math.ceil((vipBoostUntil - Date.now()) / 1000);
+    document.getElementById("boostStat").innerText =
+      "Boost " + a + "s / VIP Boost " + b + "s";
+  } else if (boostActive) {
     const secondsLeft = Math.ceil((boostUntil - Date.now()) / 1000);
     document.getElementById("boostStat").innerText = "Aktivní (" + secondsLeft + "s)";
+  } else if (vipActive) {
+    const secondsLeft = Math.ceil((vipBoostUntil - Date.now()) / 1000);
+    document.getElementById("boostStat").innerText = "VIP Boost (" + secondsLeft + "s)";
   } else {
     document.getElementById("boostStat").innerText = "Neaktivní";
   }
@@ -581,6 +662,14 @@ document.getElementById("buyDiamondShopBtn").onclick = () => {
   saveGame();
 };
 
+document.getElementById("vipBoostBtn").onclick = () => {
+  if (vipCredits < 10) return alert("Nemáš dost VIP Credits.");
+  vipCredits -= 10;
+  vipBoostUntil = Date.now() + 10000;
+  updateUI();
+  saveGame();
+};
+
 document.getElementById("boostBtn").onclick = () => {
   if (coins < 50) return;
   coins -= 50;
@@ -607,6 +696,23 @@ document.getElementById("vipBtn").onclick = () => {
   saveGame();
 };
 
+document.getElementById("copyInviteBtn").onclick = async () => {
+  const link = "https://example.com/invite?code=" + inviteCode;
+  try {
+    await navigator.clipboard.writeText(link);
+    alert("Odkaz zkopírován.");
+  } catch {
+    alert("Kopírování se nepovedlo.");
+  }
+};
+
+document.getElementById("simulateReferralBtn").onclick = () => {
+  referrals += 1;
+  updateUI();
+  saveGame();
+  alert("Simulováno +1 pozvaný člověk.");
+};
+
 document.getElementById("rebirthBtn").onclick = () => {
   if (coins < 100000) {
     alert("Na rebirth potřebuješ aspoň 100 000 Coins.");
@@ -624,6 +730,7 @@ document.getElementById("rebirthBtn").onclick = () => {
   buyDiamondCost = 500;
   prestige += 1;
   boostUntil = 0;
+  vipBoostUntil = 0;
   updateUI();
   saveGame();
   alert("Rebirth hotový. Prestige +1");
