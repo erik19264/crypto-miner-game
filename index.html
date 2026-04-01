@@ -8,7 +8,7 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #020617, #0a1a3a);
   color: white;
   display: flex;
@@ -22,9 +22,10 @@ body {
   background: #081225;
   border-radius: 25px;
   overflow: hidden;
+  position: relative;
+  padding-bottom: 80px;
 }
 
-/* TOP */
 .top {
   background: #111827;
   padding: 15px;
@@ -32,7 +33,6 @@ body {
   font-size: 14px;
 }
 
-/* TITLE */
 .title {
   text-align: center;
   margin-top: 10px;
@@ -40,17 +40,26 @@ body {
 
 .title h1 {
   margin: 0;
+  font-size: 42px;
 }
 
 .title small {
   opacity: 0.7;
 }
 
-/* BOXES */
+.stats {
+  margin: 15px;
+  background: #06101f;
+  border-radius: 18px;
+  padding: 18px;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
 .boxes {
   display: flex;
   gap: 10px;
-  padding: 15px;
+  padding: 0 15px 15px 15px;
 }
 
 .box {
@@ -59,33 +68,122 @@ body {
   border-radius: 15px;
   padding: 15px;
   text-align: center;
+  font-size: 15px;
 }
 
-/* CIRCLE */
 .circle {
-  width: 180px;   /* menší */
+  width: 180px;
   height: 180px;
   border-radius: 50%;
   margin: 20px auto;
-  background: radial-gradient(circle, #c084fc, #7c3aed);
+  background: radial-gradient(circle, #d8b4fe, #7c3aed);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  font-size: 42px;
+  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 0 40px #7c3aed;
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.8);
+  border: 4px solid rgba(255,255,255,0.15);
+  user-select: none;
 }
 
-/* COINS */
 .coins {
   text-align: center;
+  margin-top: 10px;
 }
 
 .coins h2 {
-  margin: 10px 0;
+  margin: 10px 0 0 0;
+  font-size: 42px;
 }
 
-/* NAV */
+.panel {
+  display: none;
+  padding-bottom: 20px;
+}
+
+.panel.active {
+  display: block;
+}
+
+.section {
+  padding: 15px;
+}
+
+.card {
+  background: #111827;
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.shop-item,
+.bonus-item {
+  background: #1f2937;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.shop-item-title,
+.bonus-item-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.shop-item-desc,
+.bonus-item-desc {
+  opacity: 0.8;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-green {
+  background: linear-gradient(180deg, #22c55e, #16a34a);
+}
+
+.btn-blue {
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+}
+
+.btn-purple {
+  background: linear-gradient(180deg, #a855f7, #7c3aed);
+}
+
+.btn-yellow {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+}
+
+.btn-red {
+  background: linear-gradient(180deg, #ef4444, #dc2626);
+}
+
+.btn-gray {
+  background: linear-gradient(180deg, #64748b, #475569);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .nav {
   position: fixed;
   bottom: 0;
@@ -95,6 +193,7 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 12px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .nav button {
@@ -102,9 +201,22 @@ body {
   border: none;
   color: white;
   font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.nav button.active {
+  opacity: 1;
+  color: #c084fc;
+}
+
+.small {
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.6;
 }
 </style>
-
 </head>
 <body>
 
@@ -114,76 +226,252 @@ body {
     Crypto Miner Empire
   </div>
 
-  <div class="title">
-    <h1>Crypto Miner</h1>
-    <small>neon edition</small>
-  </div>
-
-  <div class="boxes">
-    <div class="box">
-      Za kliknutí<br>
-      <b id="clickValue">+1</b>
+  <!-- DOMŮ -->
+  <div class="panel active" id="panel-home">
+    <div class="title">
+      <h1>Crypto Miner</h1>
+      <small>neon edition</small>
     </div>
-    <div class="box">
-      Energie<br>
-      <b id="energyText">100/100</b>
+
+    <div class="stats">
+      <div><b>Coins:</b> <span id="coinsStat">0</span></div>
+      <div><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
+      <div><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
+      <div><b>Level:</b> <span id="levelStat">1</span></div>
+      <div><b>Boost:</b> <span id="boostStat">Neaktivní</span></div>
+    </div>
+
+    <div class="boxes">
+      <div class="box">
+        Za jedno kliknutí<br>
+        <b id="clickValue">+1</b>
+      </div>
+      <div class="box">
+        Energie<br>
+        <b id="energyText">100/100</b>
+      </div>
+    </div>
+
+    <div class="circle" id="mine">
+      CM
+    </div>
+
+    <div class="coins">
+      💎 Zůstatek Coins
+      <h2 id="coins">0</h2>
     </div>
   </div>
 
-  <div class="circle" id="mine">
-    CM
+  <!-- SHOP -->
+  <div class="panel" id="panel-shop">
+    <div class="section">
+      <div class="card">
+        <h3>Shop</h3>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+1 za kliknutí</div>
+          <div class="shop-item-desc">Zvýší zisk za klik.</div>
+          <button class="btn btn-blue" id="buyClickBtn">Koupit za <span id="buyClickCostText">50</span> Coins</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+1 Coins/sec</div>
+          <div class="shop-item-desc">Zvýší automatickou těžbu.</div>
+          <button class="btn btn-green" id="buyCpsBtn">Koupit za <span id="buyCpsCostText">100</span> Coins</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+25 energie</div>
+          <div class="shop-item-desc">Zvýší maximální energii.</div>
+          <button class="btn btn-purple" id="buyEnergyBtn">Koupit za <span id="buyEnergyCostText">75</span> Coins</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="coins">
-    💎 Zůstatek Coins
-    <h2 id="coins">0</h2>
+  <!-- BONUS -->
+  <div class="panel" id="panel-bonus">
+    <div class="section">
+      <div class="card">
+        <h3>Bonus</h3>
+
+        <div class="bonus-item">
+          <div class="bonus-item-title">BOOST 5s</div>
+          <div class="bonus-item-desc">Na 5 sekund zdvojnásobí zisk za klik i Coins/sec.</div>
+          <button class="btn btn-yellow" id="boostBtn">Aktivovat za 50 Coins</button>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-item-title">+1 Diamond</div>
+          <div class="bonus-item-desc">Jednoduchý bonus.</div>
+          <button class="btn btn-blue" id="diamondBtn">Vzít zdarma</button>
+        </div>
+
+        <div class="bonus-item">
+          <div class="bonus-item-title">+500 Coins</div>
+          <div class="bonus-item-desc">Rychlý bonus na rozjezd.</div>
+          <button class="btn btn-green" id="giftCoinsBtn">Vzít zdarma</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VÝBĚR -->
+  <div class="panel" id="panel-withdraw">
+    <div class="section">
+      <div class="card">
+        <h3>Výběr</h3>
+        <div class="small">
+          Minimální částka pro výběr: <b>10 000 Coins</b><br>
+          Poplatek za výběr: <b>10 %</b><br>
+          Minimální počet pozvaných lidí: <b>8</b>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <div class="nav">
-  <button>Domů</button>
-  <button>Shop</button>
-  <button>Bonus</button>
-  <button>Výběr</button>
+  <button class="active" data-panel="home">Domů</button>
+  <button data-panel="shop">Shop</button>
+  <button data-panel="bonus">Bonus</button>
+  <button data-panel="withdraw">Výběr</button>
 </div>
 
 <script>
 let coins = 0;
+let diamonds = 0;
+let coinsPerSec = 1;
+let level = 1;
+
 let energy = 100;
 let maxEnergy = 100;
+
 let clickValue = 1;
 
-function update() {
-  document.getElementById("coins").innerText = coins;
+let buyClickCost = 50;
+let buyCpsCost = 100;
+let buyEnergyCost = 75;
+
+let boostUntil = 0;
+
+function getBoostMultiplier() {
+  return Date.now() < boostUntil ? 2 : 1;
+}
+
+function getRealClickValue() {
+  return clickValue * getBoostMultiplier();
+}
+
+function getRealCoinsPerSec() {
+  return coinsPerSec * getBoostMultiplier();
+}
+
+function updateLevel() {
+  level = Math.floor(coins / 1000) + 1;
+}
+
+function updateUI() {
+  updateLevel();
+
+  document.getElementById("coins").innerText = coins.toLocaleString("cs-CZ");
+  document.getElementById("coinsStat").innerText = coins.toLocaleString("cs-CZ");
+  document.getElementById("diamondsStat").innerText = diamonds.toLocaleString("cs-CZ");
+  document.getElementById("cpsStat").innerText = getRealCoinsPerSec().toLocaleString("cs-CZ");
+  document.getElementById("levelStat").innerText = level;
   document.getElementById("energyText").innerText = energy + "/" + maxEnergy;
-  document.getElementById("clickValue").innerText = "+" + clickValue;
+  document.getElementById("clickValue").innerText = "+" + getRealClickValue();
+
+  document.getElementById("buyClickCostText").innerText = buyClickCost;
+  document.getElementById("buyCpsCostText").innerText = buyCpsCost;
+  document.getElementById("buyEnergyCostText").innerText = buyEnergyCost;
+
+  if (Date.now() < boostUntil) {
+    const secondsLeft = Math.ceil((boostUntil - Date.now()) / 1000);
+    document.getElementById("boostStat").innerText = "Aktivní (" + secondsLeft + "s)";
+  } else {
+    document.getElementById("boostStat").innerText = "Neaktivní";
+  }
 }
 
 document.getElementById("mine").onclick = () => {
   if (energy <= 0) return;
-
-  coins += clickValue;
+  coins += getRealClickValue();
   energy--;
-
-  update();
+  updateUI();
 };
 
-// obnova energie
+document.getElementById("buyClickBtn").onclick = () => {
+  if (coins < buyClickCost) return;
+  coins -= buyClickCost;
+  clickValue += 1;
+  buyClickCost = Math.floor(buyClickCost * 1.8);
+  updateUI();
+};
+
+document.getElementById("buyCpsBtn").onclick = () => {
+  if (coins < buyCpsCost) return;
+  coins -= buyCpsCost;
+  coinsPerSec += 1;
+  buyCpsCost = Math.floor(buyCpsCost * 2);
+  updateUI();
+};
+
+document.getElementById("buyEnergyBtn").onclick = () => {
+  if (coins < buyEnergyCost) return;
+  coins -= buyEnergyCost;
+  maxEnergy += 25;
+  energy += 25;
+  buyEnergyCost = Math.floor(buyEnergyCost * 1.9);
+  updateUI();
+};
+
+document.getElementById("boostBtn").onclick = () => {
+  if (coins < 50) return;
+  coins -= 50;
+  boostUntil = Date.now() + 5000;
+  updateUI();
+};
+
+document.getElementById("diamondBtn").onclick = () => {
+  diamonds += 1;
+  updateUI();
+};
+
+document.getElementById("giftCoinsBtn").onclick = () => {
+  coins += 500;
+  updateUI();
+};
+
+setInterval(() => {
+  coins += getRealCoinsPerSec();
+  updateUI();
+}, 1000);
+
 setInterval(() => {
   if (energy < maxEnergy) {
-    energy++;
-    update();
+    energy += 1;
+    updateUI();
   }
 }, 500);
 
-// auto income
 setInterval(() => {
-  coins += 1;
-  update();
-}, 1000);
+  updateUI();
+}, 300);
 
-update();
+document.querySelectorAll(".nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const target = btn.dataset.panel;
+    document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+    document.getElementById("panel-" + target).classList.add("active");
+  });
+});
+
+updateUI();
 </script>
 
 </body>
