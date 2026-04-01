@@ -22,7 +22,7 @@ body {
   border-radius: 25px;
   overflow: hidden;
   position: relative;
-  padding-bottom: 88px;
+  padding-bottom: 92px;
 }
 
 .top {
@@ -39,7 +39,7 @@ body {
 
 .title h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 30px;
 }
 
 .title small {
@@ -70,11 +70,16 @@ body {
   font-size: 15px;
 }
 
+.circle-wrap {
+  position: relative;
+  width: 165px;
+  margin: 18px auto;
+}
+
 .circle {
   width: 165px;
   height: 165px;
   border-radius: 50%;
-  margin: 18px auto;
   background: radial-gradient(circle, #d8b4fe, #7c3aed);
   display: flex;
   align-items: center;
@@ -86,6 +91,11 @@ body {
   border: 4px solid rgba(255,255,255,0.15);
   user-select: none;
   overflow: hidden;
+  transition: transform 0.08s ease;
+}
+
+.circle:active {
+  transform: scale(0.96);
 }
 
 .circle img {
@@ -93,6 +103,31 @@ body {
   height: 78%;
   object-fit: contain;
   pointer-events: none;
+}
+
+.float-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #fef08a;
+  font-weight: bold;
+  font-size: 22px;
+  pointer-events: none;
+  opacity: 0;
+  animation: floatUp 0.9s ease-out forwards;
+  text-shadow: 0 0 10px rgba(255,255,255,0.35);
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120px);
+  }
 }
 
 .coins {
@@ -196,6 +231,37 @@ body {
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.shop-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.shop-tab {
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  background: #1f2937;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.shop-tab.active {
+  opacity: 1;
+  background: linear-gradient(180deg, #a855f7, #7c3aed);
+}
+
+.shop-group {
+  display: none;
+}
+
+.shop-group.active {
+  display: block;
 }
 
 .nav {
@@ -404,11 +470,9 @@ body {
     <div class="login-card">
       <label>Jméno</label>
       <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
-
       <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
-
       <div class="small" style="margin-top:12px;">
-        Tohle je jednoduchá vstupní obrazovka. Data se ukládají lokálně v prohlížeči.
+        Jednoduchá vstupní obrazovka. Data se ukládají lokálně v prohlížeči.
       </div>
     </div>
   </div>
@@ -451,9 +515,11 @@ body {
       </div>
     </div>
 
-    <div class="circle" id="mine">
-      <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('fallbackText').style.display='block';">
-      <span id="fallbackText">CM</span>
+    <div class="circle-wrap">
+      <div class="circle" id="mine">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('fallbackText').style.display='block';">
+        <span id="fallbackText">CM</span>
+      </div>
     </div>
 
     <div class="coins">
@@ -501,64 +567,70 @@ body {
       <div class="card">
         <h3>Shop</h3>
 
-        <div class="shop-item">
-          <div class="shop-item-title">+1 za kliknutí</div>
-          <div class="shop-item-desc">Zvýší zisk za klik.</div>
-          <button class="btn btn-blue" id="buyClickBtn">Koupit za <span id="buyClickCostText">50</span> Coins</button>
+        <div class="shop-tabs">
+          <button class="shop-tab active" data-group="basic">Basic</button>
+          <button class="shop-tab" data-group="premium">Premium</button>
+          <button class="shop-tab" data-group="vip">VIP</button>
         </div>
 
-        <div class="shop-item">
-          <div class="shop-item-title">+1 Coins/sec</div>
-          <div class="shop-item-desc">Zvýší automatickou těžbu.</div>
-          <button class="btn btn-green" id="buyCpsBtn">Koupit za <span id="buyCpsCostText">100</span> Coins</button>
+        <div class="shop-group active" id="shop-basic">
+          <div class="shop-item">
+            <div class="shop-item-title">+1 za kliknutí</div>
+            <div class="shop-item-desc">Zvýší zisk za klik.</div>
+            <button class="btn btn-blue" id="buyClickBtn">Koupit za <span id="buyClickCostText">50</span> Coins</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="shop-item-title">+1 Coins/sec</div>
+            <div class="shop-item-desc">Zvýší automatickou těžbu.</div>
+            <button class="btn btn-green" id="buyCpsBtn">Koupit za <span id="buyCpsCostText">100</span> Coins</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="shop-item-title">+25 energie</div>
+            <div class="shop-item-desc">Zvýší maximální energii.</div>
+            <button class="btn btn-purple" id="buyEnergyBtn">Koupit za <span id="buyEnergyCostText">75</span> Coins</button>
+          </div>
         </div>
 
-        <div class="shop-item">
-          <div class="shop-item-title">+25 energie</div>
-          <div class="shop-item-desc">Zvýší maximální energii.</div>
-          <button class="btn btn-purple" id="buyEnergyBtn">Koupit za <span id="buyEnergyCostText">75</span> Coins</button>
+        <div class="shop-group" id="shop-premium">
+          <div class="shop-item">
+            <div class="shop-item-title">+1 Diamond za Coins</div>
+            <div class="shop-item-desc">Koupíš 1 Diamond za Coins.</div>
+            <button class="btn btn-yellow" id="buyDiamondShopBtn">Koupit za <span id="buyDiamondCostText">500</span> Coins</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="shop-item-title">+50 energie za Diamonds</div>
+            <div class="shop-item-desc">Prémiové navýšení energie.</div>
+            <button class="btn btn-blue" id="diamondEnergyBtn">Koupit za 5 Diamonds</button>
+          </div>
         </div>
 
-        <div class="shop-item">
-          <div class="shop-item-title">+1 Diamond za Coins</div>
-          <div class="shop-item-desc">Koupíš 1 Diamond za Coins.</div>
-          <button class="btn btn-yellow" id="buyDiamondShopBtn">Koupit za <span id="buyDiamondCostText">500</span> Coins</button>
-        </div>
+        <div class="shop-group" id="shop-vip">
+          <div class="shop-item">
+            <div class="shop-item-title">VIP x2 income na 10s</div>
+            <div class="shop-item-desc">Kupuje se za VIP Credits.</div>
+            <button class="btn btn-gray" id="vipBoostBtn">Koupit za 10 VIP Credits</button>
+          </div>
 
-        <div class="hr"></div>
+          <div class="shop-item">
+            <div class="shop-item-title">+100 energy cap bonus</div>
+            <div class="shop-item-desc">Trvalé navýšení limitu energie.</div>
+            <button class="btn btn-pink" id="energyCapBtn">Koupit za 12 VIP Credits</button>
+          </div>
 
-        <div class="shop-item">
-          <div class="shop-item-title">VIP x2 income na 10s</div>
-          <div class="shop-item-desc">Kupuje se za VIP Credits.</div>
-          <button class="btn btn-gray" id="vipBoostBtn">Koupit za 10 VIP Credits</button>
-        </div>
+          <div class="shop-item">
+            <div class="shop-item-title">VIP Instant +5000 Coins</div>
+            <div class="shop-item-desc">Za VIP Credits získáš okamžitě Coins.</div>
+            <button class="btn btn-purple" id="vipCoinsBtn">Koupit za 5 VIP Credits</button>
+          </div>
 
-        <div class="shop-item">
-          <div class="shop-item-title">+50 energie za Diamonds</div>
-          <div class="shop-item-desc">Prémiové navýšení energie.</div>
-          <button class="btn btn-blue" id="diamondEnergyBtn">Koupit za 5 Diamonds</button>
-        </div>
-
-        <div class="shop-item">
-          <div class="shop-item-title">+100 energy cap bonus</div>
-          <div class="shop-item-desc">Trvalé navýšení limitu energie.</div>
-          <button class="btn btn-pink" id="energyCapBtn">Koupit za 12 VIP Credits</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>VIP Shop</h3>
-
-        <div class="vip-item">
-          <div class="vip-item-title">VIP Instant +5000 Coins</div>
-          <div class="vip-item-desc">Za VIP Credits získáš okamžitě Coins.</div>
-          <button class="btn btn-purple" id="vipCoinsBtn">Koupit za 5 VIP Credits</button>
-        </div>
-
-        <div class="vip-item">
-          <div class="vip-item-title">VIP +10 Diamonds</div>
-          <div class="vip-item-desc">Prémiový nákup za VIP Credits.</div>
-          <button class="btn btn-blue" id="vipDiamondsBtn">Koupit za 8 VIP Credits</button>
+          <div class="shop-item">
+            <div class="shop-item-title">VIP +10 Diamonds</div>
+            <div class="shop-item-desc">Prémiový nákup za VIP Credits.</div>
+            <button class="btn btn-blue" id="vipDiamondsBtn">Koupit za 8 VIP Credits</button>
+          </div>
         </div>
       </div>
     </div>
@@ -704,7 +776,7 @@ body {
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step9_save";
+const SAVE_KEY = "crypto_miner_empire_step10_save";
 const LOGIN_KEY = "crypto_miner_empire_login";
 
 let playerName = "Miner";
@@ -868,6 +940,16 @@ function updateCryptoCards() {
   }
 }
 
+function createFloatText(text) {
+  const wrap = document.querySelector(".circle-wrap");
+  if (!wrap) return;
+  const el = document.createElement("div");
+  el.className = "float-text";
+  el.textContent = text;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
 function updateUI() {
   updateLevel();
 
@@ -931,6 +1013,7 @@ function mine() {
   coins += gain;
   addToPiggy(gain);
   energy--;
+  createFloatText("+" + gain);
   updateUI();
   saveGame();
 }
@@ -1200,6 +1283,17 @@ document.getElementById("withdrawBtn").onclick = () => {
   updateUI();
   saveGame();
 };
+
+document.querySelectorAll(".shop-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".shop-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const group = tab.dataset.group;
+    document.querySelectorAll(".shop-group").forEach(g => g.classList.remove("active"));
+    document.getElementById("shop-" + group).classList.add("active");
+  });
+});
 
 setInterval(() => {
   if (!isLoggedIn()) return;
