@@ -17,13 +17,13 @@ body {
 
 .app {
   width: 100%;
-  max-width: 420px;
+  max-width: 430px;
   min-height: 100vh;
   background: #081225;
   border-radius: 25px;
   overflow: hidden;
   position: relative;
-  padding-bottom: 80px;
+  padding-bottom: 88px;
 }
 
 .top {
@@ -40,7 +40,7 @@ body {
 
 .title h1 {
   margin: 0;
-  font-size: 42px;
+  font-size: 38px;
 }
 
 .title small {
@@ -53,7 +53,7 @@ body {
   border-radius: 18px;
   padding: 18px;
   line-height: 1.8;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .boxes {
@@ -72,10 +72,10 @@ body {
 }
 
 .circle {
-  width: 180px;
-  height: 180px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
-  margin: 20px auto;
+  margin: 18px auto;
   background: radial-gradient(circle, #d8b4fe, #7c3aed);
   display: flex;
   align-items: center;
@@ -90,8 +90,8 @@ body {
 }
 
 .circle img {
-  width: 80%;
-  height: 80%;
+  width: 78%;
+  height: 78%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -103,7 +103,7 @@ body {
 
 .coins h2 {
   margin: 10px 0 0 0;
-  font-size: 42px;
+  font-size: 38px;
 }
 
 .panel {
@@ -160,7 +160,7 @@ body {
   border: none;
   border-radius: 14px;
   padding: 14px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: white;
   cursor: pointer;
@@ -199,22 +199,24 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
-  max-width: 420px;
-  background: #111827;
+  max-width: 430px;
+  background: rgba(17,24,39,0.96);
   display: flex;
   justify-content: space-around;
-  padding: 12px 0;
+  padding: 10px 0;
   border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
 }
 
 .nav button {
   background: none;
   border: none;
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.7;
+  padding: 6px 8px;
 }
 
 .nav button.active {
@@ -249,7 +251,7 @@ body {
 }
 
 .withdraw-balance .big {
-  font-size: 40px;
+  font-size: 36px;
   font-weight: bold;
   margin: 8px 0;
 }
@@ -297,6 +299,12 @@ body {
   border-radius: 999px;
   font-size: 12px;
   margin-bottom: 10px;
+}
+
+.hr {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 12px 0;
 }
 </style>
 </head>
@@ -378,10 +386,18 @@ body {
           <button class="btn btn-yellow" id="buyDiamondShopBtn">Koupit za <span id="buyDiamondCostText">500</span> Coins</button>
         </div>
 
+        <div class="hr"></div>
+
         <div class="shop-item">
           <div class="shop-item-title">VIP x2 income na 10s</div>
           <div class="shop-item-desc">Kupuje se za VIP Credits.</div>
           <button class="btn btn-gray" id="vipBoostBtn">Koupit za 10 VIP Credits</button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-title">+50 energie za Diamonds</div>
+          <div class="shop-item-desc">Prémiové navýšení energie.</div>
+          <button class="btn btn-blue" id="diamondEnergyBtn">Koupit za 5 Diamonds</button>
         </div>
       </div>
     </div>
@@ -417,9 +433,15 @@ body {
           <button class="btn btn-purple" id="vipBtn">Získat</button>
         </div>
 
+        <div class="bonus-item">
+          <div class="bonus-item-title">Denní bonus</div>
+          <div class="bonus-item-desc">Jednou za otevření získáš +2500 Coins a +5 Diamonds.</div>
+          <button class="btn btn-green" id="dailyBonusBtn">Vybrat</button>
+        </div>
+
         <div class="invite-item">
           <div class="invite-item-title">Pozvi kamarády</div>
-          <div class="invite-item-desc">Každý pozvaný člověk ti přiblíží výběr a může se hodit do budoucna.</div>
+          <div class="invite-item-desc">Každý pozvaný člověk ti přiblíží výběr a pomůže ve hře.</div>
 
           <div class="info-badge">Referral systém - jednoduchá verze</div>
 
@@ -477,7 +499,7 @@ body {
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step5_save";
+const SAVE_KEY = "crypto_miner_empire_step6_save";
 
 let coins = 0;
 let diamonds = 0;
@@ -500,6 +522,8 @@ let buyDiamondCost = 500;
 let boostUntil = 0;
 let vipBoostUntil = 0;
 
+let dailyClaimed = false;
+
 const inviteCode = "MINER-0001";
 
 function saveGame() {
@@ -519,7 +543,8 @@ function saveGame() {
     buyEnergyCost,
     buyDiamondCost,
     boostUntil,
-    vipBoostUntil
+    vipBoostUntil,
+    dailyClaimed
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -545,6 +570,7 @@ function loadGame() {
     buyDiamondCost = data.buyDiamondCost ?? buyDiamondCost;
     boostUntil = data.boostUntil ?? boostUntil;
     vipBoostUntil = data.vipBoostUntil ?? vipBoostUntil;
+    dailyClaimed = data.dailyClaimed ?? dailyClaimed;
   } catch (e) {
     console.error("Chyba načítání save:", e);
   }
@@ -662,6 +688,15 @@ document.getElementById("buyDiamondShopBtn").onclick = () => {
   saveGame();
 };
 
+document.getElementById("diamondEnergyBtn").onclick = () => {
+  if (diamonds < 5) return alert("Nemáš dost Diamonds.");
+  diamonds -= 5;
+  maxEnergy += 50;
+  energy += 50;
+  updateUI();
+  saveGame();
+};
+
 document.getElementById("vipBoostBtn").onclick = () => {
   if (vipCredits < 10) return alert("Nemáš dost VIP Credits.");
   vipCredits -= 10;
@@ -694,6 +729,19 @@ document.getElementById("vipBtn").onclick = () => {
   vipCredits += 2;
   updateUI();
   saveGame();
+};
+
+document.getElementById("dailyBonusBtn").onclick = () => {
+  if (dailyClaimed) {
+    alert("Denní bonus už jsi vybral.");
+    return;
+  }
+  coins += 2500;
+  diamonds += 5;
+  dailyClaimed = true;
+  updateUI();
+  saveGame();
+  alert("Denní bonus získán.");
 };
 
 document.getElementById("copyInviteBtn").onclick = async () => {
@@ -731,6 +779,7 @@ document.getElementById("rebirthBtn").onclick = () => {
   prestige += 1;
   boostUntil = 0;
   vipBoostUntil = 0;
+  dailyClaimed = false;
   updateUI();
   saveGame();
   alert("Rebirth hotový. Prestige +1");
