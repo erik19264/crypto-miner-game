@@ -1,836 +1,190 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Miner Empire</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Miner</title>
 
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top, rgba(123, 58, 237, 0.15), transparent 30%),
-        linear-gradient(180deg, #050816 0%, #081226 100%);
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 14px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(180deg, #020617, #0a1a3a);
+  color: white;
+  display: flex;
+  justify-content: center;
+}
 
-    .app {
-      width: 100%;
-      max-width: 430px;
-      min-height: 92vh;
-      background: linear-gradient(180deg, #081225 0%, #0a1630 100%);
-      border-radius: 28px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-    }
+.app {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background: #081225;
+  border-radius: 25px;
+  overflow: hidden;
+}
 
-    .topbar {
-      padding: 16px 18px 12px;
-      background: rgba(17, 24, 39, 0.95);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+/* TOP */
+.top {
+  background: #111827;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+}
 
-    .mini-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #7aa2ff;
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
+/* TITLE */
+.title {
+  text-align: center;
+  margin-top: 10px;
+}
 
-    .app-title {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 2px;
-    }
+.title h1 {
+  margin: 0;
+}
 
-    .game-name {
-      font-size: 18px;
-      font-weight: bold;
-    }
+.title small {
+  opacity: 0.7;
+}
 
-    .screen {
-      display: none;
-      flex: 1;
-      padding: 16px 16px 92px;
-    }
+/* BOXES */
+.boxes {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+}
 
-    .screen.active {
-      display: block;
-    }
+.box {
+  flex: 1;
+  background: #1f2937;
+  border-radius: 15px;
+  padding: 15px;
+  text-align: center;
+}
 
-    .hero-title {
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 8px;
-      margin-bottom: 4px;
-    }
+/* CIRCLE */
+.circle {
+  width: 180px;   /* menší */
+  height: 180px;
+  border-radius: 50%;
+  margin: 20px auto;
+  background: radial-gradient(circle, #c084fc, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  cursor: pointer;
+  box-shadow: 0 0 40px #7c3aed;
+}
 
-    .hero-sub {
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.75;
-      margin-bottom: 16px;
-    }
+/* COINS */
+.coins {
+  text-align: center;
+}
 
-    .top-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
+.coins h2 {
+  margin: 10px 0;
+}
 
-    .card {
-      background: linear-gradient(180deg, rgba(22, 34, 62, 0.95), rgba(10, 20, 40, 0.95));
-      border: 1px solid rgba(168, 85, 247, 0.22);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
-    }
+/* NAV */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  background: #111827;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+}
 
-    .card-title {
-      font-size: 12px;
-      opacity: 0.72;
-      margin-bottom: 8px;
-    }
+.nav button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+}
+</style>
 
-    .card-value {
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .big-mine-wrap {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0 18px;
-    }
-
-    .big-mine {
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 35% 30%, #d8a4ff 0%, #b25cff 28%, #7c2cff 65%, #3b136a 100%);
-      border: 4px solid rgba(212, 170, 255, 0.35);
-      box-shadow:
-        0 0 0 8px rgba(168,85,247,0.08),
-        0 0 40px rgba(168,85,247,0.35),
-        inset 0 0 40px rgba(255,255,255,0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .big-mine::after {
-      content: "";
-      position: absolute;
-      inset: 12px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.16);
-      pointer-events: none;
-    }
-
-    .big-mine img {
-      width: 72%;
-      height: 72%;
-      object-fit: contain;
-      pointer-events: none;
-      filter: drop-shadow(0 0 12px rgba(255,255,255,0.2));
-    }
-
-    .mine-fallback {
-      font-size: 64px;
-      font-weight: bold;
-      pointer-events: none;
-      color: rgba(255,255,255,0.9);
-      text-shadow: 0 0 20px rgba(255,255,255,0.2);
-    }
-
-    .coins-label {
-      text-align: center;
-      font-size: 16px;
-      opacity: 0.9;
-      margin-bottom: 8px;
-    }
-
-    .coins-balance {
-      text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-bottom: 18px;
-    }
-
-    .stats-list {
-      background: linear-gradient(180deg, rgba(14,22,38,0.95), rgba(8,14,28,0.95));
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 16px;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-
-    .progress-wrap {
-      margin: 10px 0 16px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 12px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #22c55e, #4ade80);
-      border-radius: 999px;
-      transition: width 0.2s ease;
-    }
-
-    .main-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 12px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-      transition: transform 0.08s ease, opacity 0.2s ease;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-blue {
-      background: linear-gradient(180deg, #3b82f6, #2563eb);
-      box-shadow: 0 6px 0 #1d4ed8;
-    }
-
-    .btn-green {
-      background: linear-gradient(180deg, #22c55e, #16a34a);
-      box-shadow: 0 6px 0 #15803d;
-    }
-
-    .btn-yellow {
-      background: linear-gradient(180deg, #f59e0b, #d97706);
-      box-shadow: 0 6px 0 #b45309;
-    }
-
-    .btn-purple {
-      background: linear-gradient(180deg, #a855f7, #7e22ce);
-      box-shadow: 0 6px 0 #6b21a8;
-    }
-
-    .btn-red {
-      background: linear-gradient(180deg, #ef4444, #dc2626);
-      box-shadow: 0 6px 0 #b91c1c;
-    }
-
-    .btn-gray {
-      background: linear-gradient(180deg, #64748b, #475569);
-      box-shadow: 0 6px 0 #334155;
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .shop-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .shop-item {
-      background: linear-gradient(180deg, rgba(16,24,40,0.95), rgba(9,16,30,0.95));
-      border-radius: 16px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .shop-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .shop-name {
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .shop-desc {
-      font-size: 12px;
-      opacity: 0.76;
-      margin-top: 4px;
-    }
-
-    .bonus-list, .withdraw-box, .profile-box {
-      background: linear-gradient(180deg, rgba(16,24,40,0.95), rgba(9,16,30,0.95));
-      border-radius: 18px;
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .bonus-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .bonus-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .withdraw-total {
-      text-align: center;
-      padding: 14px;
-      background: rgba(255,255,255,0.02);
-      border-radius: 16px;
-      margin-bottom: 16px;
-    }
-
-    .withdraw-total .big {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 8px 0;
-    }
-
-    .withdraw-total .money {
-      font-size: 18px;
-      color: #c084fc;
-      font-weight: bold;
-    }
-
-    .input {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 13px;
-      font-size: 16px;
-      background: #0b1220;
-      color: white;
-      outline: none;
-      margin: 10px 0 12px;
-    }
-
-    .small {
-      font-size: 13px;
-      line-height: 1.6;
-      opacity: 0.84;
-    }
-
-    .note {
-      margin-top: 12px;
-    }
-
-    .bottom-nav {
-      position: sticky;
-      bottom: 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: rgba(15, 23, 42, 0.98);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      z-index: 12;
-    }
-
-    .nav-btn {
-      border: none;
-      background: transparent;
-      color: #cbd5e1;
-      padding: 12px 6px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    .nav-btn.active {
-      color: #d8b4fe;
-      background: rgba(168,85,247,0.08);
-    }
-
-    .hidden-in-withdraw {
-      display: block;
-    }
-
-    .withdraw-mode .bottom-nav .nav-btn.center-orb {
-      display: none;
-    }
-
-    .center-orb {
-      position: relative;
-    }
-
-    .center-orb span {
-      display: inline-flex;
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 35% 30%, #d8a4ff, #7c2cff);
-      color: white;
-      font-weight: bold;
-      margin-top: -24px;
-      box-shadow: 0 0 20px rgba(168,85,247,0.45);
-      border: 3px solid rgba(255,255,255,0.15);
-    }
-
-    .status-text {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #cbd5e1;
-    }
-  </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <div class="topbar">
-      <div class="mini-top">
-        <div>Zavřít</div>
-        <div>•••</div>
-      </div>
-      <div class="game-name">Crypto Miner Empire</div>
-      <div class="app-title">miniaplikace</div>
+
+<div class="app">
+
+  <div class="top">
+    Crypto Miner Empire
+  </div>
+
+  <div class="title">
+    <h1>Crypto Miner</h1>
+    <small>neon edition</small>
+  </div>
+
+  <div class="boxes">
+    <div class="box">
+      Za kliknutí<br>
+      <b id="clickValue">+1</b>
     </div>
-
-    <div class="screen active" id="screen-home">
-      <div class="hero-title">Crypto Miner Empire</div>
-      <div class="hero-sub">neon edition</div>
-
-      <div class="top-cards">
-        <div class="card">
-          <div class="card-title">Za kliknutí</div>
-          <div class="card-value" id="clickGainBox">+5</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Energie</div>
-          <div class="card-value" id="energyBox">960/1050</div>
-        </div>
-      </div>
-
-      <div class="big-mine-wrap">
-        <div class="big-mine" id="mineCircle">
-          <img src="logo.png" alt="Logo hry" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
-          <div class="mine-fallback" id="mineFallback">CM</div>
-        </div>
-      </div>
-
-      <div class="coins-label">💎 Zůstatek Coins</div>
-      <div class="coins-balance" id="coinsBalance">0</div>
-    </div>
-
-    <div class="screen" id="screen-shop">
-      <div class="hero-title">🛒 Crypto Miner Empire</div>
-      <div class="stats-list">
-        <div><strong>Coins:</strong> <span id="shopCoins">0</span></div>
-        <div><strong>Diamonds:</strong> <span id="shopDiamonds">0</span></div>
-        <div><strong>Coins/sec:</strong> <span id="shopCps">0</span></div>
-        <div><strong>Level:</strong> <span id="shopLevel">1</span></div>
-        <div><strong>Prestige:</strong> <span id="shopPrestige">1</span></div>
-      </div>
-
-      <div class="progress-wrap">
-        <div class="progress-bar">
-          <div class="progress-fill" id="levelProgress"></div>
-        </div>
-      </div>
-
-      <div class="main-buttons">
-        <button class="btn btn-blue" id="goHomeBtn">🎮 Hra</button>
-        <button class="btn btn-blue" id="goShopBtn">🛒 Shop</button>
-      </div>
-
-      <div class="main-buttons">
-        <button class="btn btn-green" id="mineBtn">⛏️ Těžit</button>
-      </div>
-
-      <div class="main-buttons">
-        <button class="btn btn-yellow" id="boostBtn">🚀 Boost</button>
-        <button class="btn btn-purple" id="boostTimerBtn" disabled>⏳ <span id="boostTimerText">0s</span></button>
-      </div>
-
-      <div class="main-buttons">
-        <button class="btn btn-blue" id="coinsGiftBtn">💰 +5000 Coins</button>
-        <button class="btn btn-purple" id="diamondGiftBtn">💎 +1 Diamond</button>
-      </div>
-
-      <div class="main-buttons">
-        <button class="btn btn-purple" id="rebirthBtn">♻️ Rebirth</button>
-        <button class="btn btn-red" id="resetBtn">🗑️ Reset</button>
-      </div>
-
-      <div class="small">
-        Rebirth vyžaduje 100 000 coins a dá ti +20 % income navždy.
-      </div>
-    </div>
-
-    <div class="screen" id="screen-bonus">
-      <div class="hero-title">🎁 Bonus</div>
-      <div class="bonus-list">
-        <div class="bonus-item">
-          <div>
-            <div><strong>Reklama → VIP Credits</strong></div>
-            <div class="small">Získáš +2 VIP Credits</div>
-          </div>
-          <button class="btn btn-purple" id="vipAdBtn">Sledovat</button>
-        </div>
-
-        <div class="bonus-item">
-          <div>
-            <div><strong>Reklama → Diamonds</strong></div>
-            <div class="small">Získáš +3 Diamonds</div>
-          </div>
-          <button class="btn btn-blue" id="diamondAdBtn">Sledovat</button>
-        </div>
-
-        <div class="bonus-item">
-          <div>
-            <div><strong>Denní bonus</strong></div>
-            <div class="small">+2500 Coins a +5 Diamonds</div>
-          </div>
-          <button class="btn btn-green" id="dailyBonusBtn">Vybrat</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="screen" id="screen-withdraw">
-      <div class="hero-title">💳 Výběr</div>
-
-      <div class="withdraw-box">
-        <div class="withdraw-total">
-          <div class="small">Celkový zůstatek</div>
-          <div class="big"><span id="withdrawCoinsTotal">0</span> 💎</div>
-          <div class="money"><span id="withdrawMoneyTotal">0</span> Kč</div>
-          <div class="small">1 💎 = 0.0900 Kč</div>
-        </div>
-
-        <div class="small">Částka k výběru 💎</div>
-        <input class="input" id="withdrawInput" type="number" placeholder="Zadejte částku" />
-        <button class="btn btn-purple" id="withdrawBtn">Vybrat ↗</button>
-
-        <div class="note small">
-          Minimální částka k výběru: <strong>150 000 Coins</strong><br>
-          <span style="color:#c084fc;">10 % za výběr</span><br>
-          Minimální počet pozvaných lidí pro výběr: <strong>8 lidí</strong>
-        </div>
-
-        <div class="status-text" id="withdrawStatus">Zatím žádná žádost.</div>
-      </div>
-    </div>
-
-    <div class="screen" id="screen-profile">
-      <div class="hero-title">👤 Profil</div>
-      <div class="profile-box">
-        <div class="small">
-          Hráč: Miner<br>
-          Coins: <span id="profileCoins">0</span><br>
-          Diamonds: <span id="profileDiamonds">0</span><br>
-          Coins/sec: <span id="profileCps">0</span><br>
-          Level: <span id="profileLevel">1</span><br>
-          Prestige: <span id="profilePrestige">1</span><br>
-          VIP Credits: <span id="profileVip">0</span><br>
-          Pozvaní lidé: <span id="profileReferrals">0</span>
-        </div>
-        <div style="margin-top:14px;">
-          <button class="btn btn-red" id="profileResetBtn">Smazat všechna data</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="nav-btn" data-target="profile">Profil</button>
-      <button class="nav-btn" data-target="shop">Shop</button>
-      <button class="nav-btn center-orb active" data-target="home"><span>CM</span></button>
-      <button class="nav-btn" data-target="withdraw">Výběr</button>
-      <button class="nav-btn" data-target="bonus">Info</button>
+    <div class="box">
+      Energie<br>
+      <b id="energyText">100/100</b>
     </div>
   </div>
 
-  <script>
-    const SAVE_KEY = "crypto_miner_empire_restore_from_mockup_v1";
+  <div class="circle" id="mine">
+    CM
+  </div>
 
-    const game = {
-      coins: 7404828,
-      diamonds: 627,
-      coinsPerSec: 20,
-      level: 1414,
-      prestige: 1,
-      vipCredits: 0,
-      referrals: 0,
+  <div class="coins">
+    💎 Zůstatek Coins
+    <h2 id="coins">0</h2>
+  </div>
 
-      clickPower: 5,
-      maxEnergy: 1050,
-      energy: 960,
+</div>
 
-      boostActiveUntil: 0,
-      permanentIncomeBonus: 1.0,
+<div class="nav">
+  <button>Domů</button>
+  <button>Shop</button>
+  <button>Bonus</button>
+  <button>Výběr</button>
+</div>
 
-      totalClicks: 0,
-      dailyBonusClaim: 0
-    };
+<script>
+let coins = 0;
+let energy = 100;
+let maxEnergy = 100;
+let clickValue = 1;
 
-    function loadGame() {
-      const saved = localStorage.getItem(SAVE_KEY);
-      if (!saved) return;
-      try {
-        Object.assign(game, JSON.parse(saved));
-      } catch (e) {
-        console.error("Chyba načítání:", e);
-      }
-    }
+function update() {
+  document.getElementById("coins").innerText = coins;
+  document.getElementById("energyText").innerText = energy + "/" + maxEnergy;
+  document.getElementById("clickValue").innerText = "+" + clickValue;
+}
 
-    function saveGame() {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(game));
-    }
+document.getElementById("mine").onclick = () => {
+  if (energy <= 0) return;
 
-    function now() {
-      return Date.now();
-    }
+  coins += clickValue;
+  energy--;
 
-    function boostMultiplier() {
-      return now() < game.boostActiveUntil ? 2 : 1;
-    }
+  update();
+};
 
-    function effectiveCoinsPerSec() {
-      return Math.floor(game.coinsPerSec * boostMultiplier() * game.permanentIncomeBonus);
-    }
+// obnova energie
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy++;
+    update();
+  }
+}, 500);
 
-    function effectiveClickPower() {
-      return Math.floor(game.clickPower * boostMultiplier() * game.permanentIncomeBonus);
-    }
+// auto income
+setInterval(() => {
+  coins += 1;
+  update();
+}, 1000);
 
-    function formatNumber(num) {
-      return Math.floor(num).toLocaleString("cs-CZ");
-    }
+update();
+</script>
 
-    function updateUI() {
-      document.getElementById("clickGainBox").textContent = "+" + effectiveClickPower();
-      document.getElementById("energyBox").textContent = game.energy + "/" + game.maxEnergy;
-      document.getElementById("coinsBalance").textContent = formatNumber(game.coins);
-
-      document.getElementById("shopCoins").textContent = formatNumber(game.coins);
-      document.getElementById("shopDiamonds").textContent = formatNumber(game.diamonds);
-      document.getElementById("shopCps").textContent = formatNumber(effectiveCoinsPerSec());
-      document.getElementById("shopLevel").textContent = game.level;
-      document.getElementById("shopPrestige").textContent = game.prestige;
-
-      document.getElementById("profileCoins").textContent = formatNumber(game.coins);
-      document.getElementById("profileDiamonds").textContent = formatNumber(game.diamonds);
-      document.getElementById("profileCps").textContent = formatNumber(effectiveCoinsPerSec());
-      document.getElementById("profileLevel").textContent = game.level;
-      document.getElementById("profilePrestige").textContent = game.prestige;
-      document.getElementById("profileVip").textContent = formatNumber(game.vipCredits);
-      document.getElementById("profileReferrals").textContent = formatNumber(game.referrals);
-
-      document.getElementById("withdrawCoinsTotal").textContent = formatNumber(game.coins);
-      document.getElementById("withdrawMoneyTotal").textContent = (game.coins * 0.09).toFixed(2);
-
-      const nextLevelRequirement = (game.level + 1) * 100;
-      const progress = Math.min(100, (game.coins % nextLevelRequirement) / nextLevelRequirement * 100);
-      document.getElementById("levelProgress").style.width = progress + "%";
-
-      const left = Math.max(0, Math.ceil((game.boostActiveUntil - now()) / 1000));
-      document.getElementById("boostTimerText").textContent = left + "s";
-    }
-
-    function mine() {
-      if (game.energy <= 0) return;
-      game.coins += effectiveClickPower();
-      game.totalClicks += 1;
-      game.energy -= 1;
-      updateUI();
-      saveGame();
-    }
-
-    function autoMineTick() {
-      game.coins += effectiveCoinsPerSec();
-      updateUI();
-      saveGame();
-    }
-
-    function restoreEnergyTick() {
-      if (game.energy < game.maxEnergy) {
-        game.energy += 1;
-        updateUI();
-      }
-    }
-
-    function activateBoost() {
-      if (game.coins < 5000) return alert("Nemáš dost Coins na Boost.");
-      game.coins -= 5000;
-      game.boostActiveUntil = now() + 5000;
-      updateUI();
-      saveGame();
-    }
-
-    function addGiftCoins() {
-      game.coins += 5000;
-      updateUI();
-      saveGame();
-    }
-
-    function addGiftDiamond() {
-      game.diamonds += 1;
-      updateUI();
-      saveGame();
-    }
-
-    function rebirth() {
-      if (game.coins < 100000) {
-        alert("Na rebirth potřebuješ aspoň 100 000 coins.");
-        return;
-      }
-      game.coins = 0;
-      game.diamonds = 0;
-      game.energy = game.maxEnergy;
-      game.level = 1;
-      game.prestige += 1;
-      game.permanentIncomeBonus += 0.20;
-      updateUI();
-      saveGame();
-      alert("Rebirth hotový. Získal jsi +20 % income navždy.");
-    }
-
-    function resetData() {
-      if (!confirm("Opravdu chceš smazat všechna data?")) return;
-      localStorage.removeItem(SAVE_KEY);
-      location.reload();
-    }
-
-    function watchVipAd() {
-      game.vipCredits += 2;
-      updateUI();
-      saveGame();
-      alert("Získal jsi 2 VIP Credits.");
-    }
-
-    function watchDiamondAd() {
-      game.diamonds += 3;
-      updateUI();
-      saveGame();
-      alert("Získal jsi 3 Diamonds.");
-    }
-
-    function dailyBonus() {
-      const oneDay = 24 * 60 * 60 * 1000;
-      if (now() - game.dailyBonusClaim < oneDay) {
-        alert("Denní bonus už jsi dnes vybral.");
-        return;
-      }
-      game.dailyBonusClaim = now();
-      game.coins += 2500;
-      game.diamonds += 5;
-      updateUI();
-      saveGame();
-      alert("Denní bonus: +2500 Coins a +5 Diamonds");
-    }
-
-    function withdrawRequest() {
-      const amount = Number(document.getElementById("withdrawInput").value || 0);
-      const status = document.getElementById("withdrawStatus");
-
-      if (amount < 150000) {
-        status.textContent = "Výběr zamítnut: minimální částka je 150 000 Coins.";
-        return;
-      }
-      if (game.referrals < 8) {
-        status.textContent = "Výběr zamítnut: musíš pozvat minimálně 8 lidí.";
-        return;
-      }
-      if (game.coins < amount) {
-        status.textContent = "Výběr zamítnut: nemáš dost Coins.";
-        return;
-      }
-
-      const fee = amount * 0.10;
-      const finalAmount = amount - fee;
-      game.coins -= amount;
-      status.textContent =
-        "Žádost přijata. Po odečtení 10 % by výběr odpovídal " +
-        finalAmount.toLocaleString("cs-CZ") + " Coins.";
-      updateUI();
-      saveGame();
-    }
-
-    function showScreen(name) {
-      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
-      document.getElementById("screen-" + name).classList.add("active");
-
-      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll('.nav-btn[data-target="' + name + '"]').forEach(btn => btn.classList.add("active"));
-
-      document.getElementById("app").classList.toggle("withdraw-mode", name === "withdraw");
-    }
-
-    document.getElementById("mineCircle").addEventListener("click", mine);
-    document.getElementById("mineBtn").addEventListener("click", mine);
-    document.getElementById("boostBtn").addEventListener("click", activateBoost);
-    document.getElementById("coinsGiftBtn").addEventListener("click", addGiftCoins);
-    document.getElementById("diamondGiftBtn").addEventListener("click", addGiftDiamond);
-    document.getElementById("rebirthBtn").addEventListener("click", rebirth);
-    document.getElementById("resetBtn").addEventListener("click", resetData);
-    document.getElementById("profileResetBtn").addEventListener("click", resetData);
-    document.getElementById("vipAdBtn").addEventListener("click", watchVipAd);
-    document.getElementById("diamondAdBtn").addEventListener("click", watchDiamondAd);
-    document.getElementById("dailyBonusBtn").addEventListener("click", dailyBonus);
-    document.getElementById("withdrawBtn").addEventListener("click", withdrawRequest);
-    document.getElementById("goHomeBtn").addEventListener("click", () => showScreen("home"));
-    document.getElementById("goShopBtn").addEventListener("click", () => showScreen("shop"));
-
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.dataset.target;
-        if (target) showScreen(target);
-      });
-    });
-
-    loadGame();
-    updateUI();
-
-    setInterval(autoMineTick, 1000);
-    setInterval(restoreEnergyTick, 350);
-    setInterval(updateUI, 300);
-  </script>
 </body>
 </html>
