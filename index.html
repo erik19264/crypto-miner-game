@@ -5,15 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Crypto Miner Empire</title>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     html, body {
       margin: 0;
       padding: 0;
-      background: #050816;
+      background: #020617;
       font-family: Arial, sans-serif;
       color: white;
-      overflow-x: hidden;
+      overflow: hidden;
+      height: 100%;
     }
 
     body {
@@ -24,87 +28,94 @@
     .app-shell {
       width: 100%;
       max-width: 430px;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at top, rgba(140, 82, 255, 0.25), transparent 28%),
-        radial-gradient(circle at bottom, rgba(0, 153, 255, 0.10), transparent 22%),
-        linear-gradient(180deg, #030712 0%, #07132a 50%, #081a39 100%);
-      position: relative;
+      height: 100vh;
       overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.35), transparent 30%),
+        radial-gradient(circle at 80% 90%, rgba(59, 130, 246, 0.25), transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.15), transparent 40%),
+        linear-gradient(180deg, #020617 0%, #050b1a 40%, #07132a 100%);
     }
 
     .topbar {
-      background: rgba(24, 24, 31, 0.95);
-      padding: 14px 16px 10px;
-      text-align: center;
+      height: 58px;
+      padding: 10px 14px 8px;
+      background: rgba(13, 18, 32, 0.92);
       border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(12px);
+      z-index: 50;
+      backdrop-filter: blur(10px);
     }
 
     .topbar-title {
       font-size: 17px;
       font-weight: bold;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
     .topbar-sub {
       font-size: 12px;
-      opacity: 0.7;
+      opacity: 0.72;
       margin-top: 2px;
     }
 
-    .login-screen {
+    .screen {
       display: none;
-      min-height: 100vh;
-      padding: 26px 18px;
+      height: calc(100vh - 58px);
+      overflow-y: auto;
+      padding-bottom: 86px;
     }
 
-    .login-screen.active {
+    .screen.active {
       display: block;
     }
 
+    .screen-inner {
+      padding: 12px 14px 0;
+    }
+
     .login-logo {
-      width: 120px;
-      height: 120px;
+      width: 108px;
+      height: 108px;
       border-radius: 50%;
-      margin: 24px auto 18px;
+      margin: 18px auto 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: radial-gradient(circle, #d8b4fe, #7c3aed);
-      box-shadow: 0 0 35px rgba(124, 58, 237, 0.65);
+      box-shadow: 0 0 32px rgba(124, 58, 237, 0.68);
       overflow: hidden;
-      font-size: 34px;
+      font-size: 32px;
       font-weight: bold;
     }
 
     .login-logo img {
-      width: 78%;
-      height: 78%;
+      width: 76%;
+      height: 76%;
       object-fit: contain;
     }
 
     .login-title {
       text-align: center;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: bold;
       margin-bottom: 6px;
     }
 
     .login-sub {
       text-align: center;
-      opacity: 0.75;
-      margin-bottom: 22px;
+      opacity: 0.76;
+      margin-bottom: 18px;
     }
 
     .card {
       background: rgba(16, 22, 38, 0.95);
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 18px;
-      padding: 16px;
+      padding: 14px;
       margin-bottom: 12px;
       box-shadow: inset 0 0 20px rgba(255,255,255,0.015);
     }
@@ -149,50 +160,23 @@
 
     .small {
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.55;
       opacity: 0.82;
-    }
-
-    .game {
-      display: none;
-      min-height: 100vh;
-      padding-bottom: 84px;
-    }
-
-    .game.active {
-      display: block;
-    }
-
-    .swipe-wrap {
-      overflow: hidden;
-      width: 100%;
-      touch-action: pan-y;
-    }
-
-    .swipe-track {
-      display: flex;
-      width: 200%;
-      transition: transform 0.28s ease;
-    }
-
-    .page {
-      width: 50%;
-      padding: 14px 14px 10px;
-      flex-shrink: 0;
     }
 
     .page-title {
       text-align: center;
       font-size: 18px;
       font-weight: bold;
-      margin-top: 8px;
+      margin-top: 6px;
       margin-bottom: 3px;
     }
 
     .page-sub {
       text-align: center;
-      opacity: 0.75;
-      margin-bottom: 12px;
+      opacity: 0.72;
+      margin-bottom: 10px;
+      font-size: 13px;
     }
 
     .mini-boxes {
@@ -206,7 +190,7 @@
       background: rgba(24, 33, 56, 0.95);
       border: 1px solid rgba(168,85,247,0.15);
       border-radius: 16px;
-      padding: 14px;
+      padding: 13px;
       text-align: center;
     }
 
@@ -221,11 +205,7 @@
       font-weight: bold;
     }
 
-    .player-card {
-      margin-bottom: 12px;
-    }
-
-    .player-line {
+    .player-card .player-line {
       font-size: 14px;
       line-height: 1.75;
     }
@@ -233,7 +213,7 @@
     .circle-wrap {
       position: relative;
       width: 130px;
-      margin: 12px auto 14px;
+      margin: 10px auto 12px;
     }
 
     .mine-circle {
@@ -248,7 +228,7 @@
       border: 4px solid rgba(255,255,255,0.16);
       box-shadow:
         0 0 0 8px rgba(168,85,247,0.06),
-        0 0 35px rgba(124,58,237,0.55),
+        0 0 35px rgba(124,58,237,0.62),
         inset 0 0 22px rgba(255,255,255,0.14);
       cursor: pointer;
       user-select: none;
@@ -268,7 +248,7 @@
     }
 
     .mine-fallback {
-      font-size: 44px;
+      font-size: 42px;
       font-weight: bold;
       color: rgba(255,255,255,0.92);
       pointer-events: none;
@@ -281,7 +261,7 @@
       transform: translate(-50%, -50%);
       color: #fef08a;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 19px;
       pointer-events: none;
       opacity: 0;
       animation: floatUp 0.9s ease-out forwards;
@@ -290,7 +270,7 @@
 
     @keyframes floatUp {
       0% { opacity: 1; transform: translate(-50%, -50%); }
-      100% { opacity: 0; transform: translate(-50%, -110px); }
+      100% { opacity: 0; transform: translate(-50%, -105px); }
     }
 
     .balance {
@@ -304,48 +284,71 @@
     }
 
     .balance-value {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: bold;
       margin-top: 8px;
     }
 
-    .achievement-box {
-      position: relative;
-    }
-
-    .achievement-title {
+    .achievement-title,
+    .section-title {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
-    .achievement-item {
+    .achievement-item,
+    .shop-item,
+    .bonus-item,
+    .profile-item,
+    .crypto-item {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       margin-bottom: 8px;
     }
 
-    .achievement-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .achievement-item-title {
+    .achievement-item-title,
+    .shop-item-title,
+    .bonus-item-title,
+    .profile-item-title {
       font-size: 14px;
       font-weight: bold;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
-    .achievement-item-desc {
+    .achievement-item-desc,
+    .shop-item-desc,
+    .bonus-item-desc,
+    .profile-item-desc {
       font-size: 12px;
-      opacity: 0.75;
+      opacity: 0.76;
       line-height: 1.45;
+      margin-bottom: 8px;
     }
 
-    .section-title {
-      font-size: 17px;
-      font-weight: bold;
-      margin-bottom: 12px;
+    .swipe-wrap {
+      overflow: hidden;
+      width: 100%;
+      touch-action: pan-y;
+    }
+
+    .swipe-track {
+      display: flex;
+      width: 200%;
+      transition: transform 0.28s ease;
+    }
+
+    .swipe-page {
+      width: 50%;
+      flex-shrink: 0;
+    }
+
+    .swipe-indicator {
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.72;
+      margin-top: -2px;
+      margin-bottom: 10px;
     }
 
     .crypto-list {
@@ -358,6 +361,7 @@
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 15px;
       padding: 14px;
+      margin-bottom: 0;
     }
 
     .crypto-item.locked {
@@ -393,12 +397,11 @@
     .crypto-req {
       font-size: 12px;
       opacity: 0.72;
-      margin-bottom: 10px;
     }
 
     .panel {
       display: none;
-      padding: 0 14px 10px;
+      padding: 12px 14px 0;
     }
 
     .panel.active {
@@ -436,28 +439,8 @@
       display: block;
     }
 
-    .shop-item, .bonus-item, .profile-item {
-      background: rgba(18, 25, 43, 0.95);
-      border-radius: 15px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-
-    .shop-item-title, .bonus-item-title, .profile-item-title {
-      font-size: 15px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .shop-item-desc, .bonus-item-desc, .profile-item-desc {
-      font-size: 13px;
-      opacity: 0.8;
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-
     .piggy-amount {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
       color: #f9a8d4;
       margin: 8px 0 12px;
@@ -478,8 +461,8 @@
     .invite-box {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
-      padding: 12px;
-      margin-top: 6px;
+      padding: 10px;
+      margin-top: 4px;
     }
 
     .invite-top {
@@ -496,7 +479,7 @@
     }
 
     .invite-count {
-      font-size: 13px;
+      font-size: 12px;
       color: #d8b4fe;
       font-weight: bold;
     }
@@ -540,14 +523,6 @@
       color: #c084fc;
     }
 
-    .swipe-indicator {
-      text-align: center;
-      font-size: 12px;
-      opacity: 0.72;
-      margin-top: -4px;
-      margin-bottom: 10px;
-    }
-
     .hidden {
       display: none !important;
     }
@@ -561,89 +536,94 @@
       <div class="topbar-sub">miniaplikace</div>
     </div>
 
-    <div class="login-screen active" id="loginScreen">
-      <div class="login-logo">
-        <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('loginFallback').style.display='block';">
-        <span id="loginFallback">CM</span>
-      </div>
+    <div class="screen active" id="loginScreen">
+      <div class="screen-inner">
+        <div class="login-logo">
+          <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('loginFallback').style.display='block';">
+          <span id="loginFallback">CM</span>
+        </div>
 
-      <div class="login-title">Crypto Miner Empire</div>
-      <div class="login-sub">Přihlášení</div>
+        <div class="login-title">Crypto Miner Empire</div>
+        <div class="login-sub">Přihlášení</div>
 
-      <div class="card">
-        <label class="label">Jméno hráče</label>
-        <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
-        <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
-        <div class="small" style="margin-top: 12px;">
-          Tohle je herní simulace. Některé prvky, jako pozvánky a výběr, jsou zatím lokální verze bez serveru.
+        <div class="card">
+          <label class="label">Jméno hráče</label>
+          <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
+          <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
+          <div class="small" style="margin-top: 12px;">
+            Tohle je herní simulace. Pozvánky a výběr jsou zatím lokální verze bez serveru.
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="game" id="gameApp">
+    <div class="screen" id="homeScreen">
       <div class="swipe-wrap" id="swipeWrap">
         <div class="swipe-track" id="swipeTrack">
 
-          <!-- PAGE 1 -->
-          <div class="page">
-            <div class="page-title">Crypto Miner Empire</div>
-            <div class="page-sub">klikací těžba</div>
+          <div class="swipe-page">
+            <div class="screen-inner">
+              <div class="page-title">Crypto Miner Empire</div>
+              <div class="page-sub">klikací těžba</div>
 
-            <div class="mini-boxes">
-              <div class="mini-box">
-                <div class="mini-box-title">Za jedno kliknutí</div>
-                <div class="mini-box-value" id="clickValue">+1</div>
+              <div class="mini-boxes">
+                <div class="mini-box">
+                  <div class="mini-box-title">Za jedno kliknutí</div>
+                  <div class="mini-box-value" id="clickValue">+1</div>
+                </div>
+                <div class="mini-box">
+                  <div class="mini-box-title">Energie</div>
+                  <div class="mini-box-value" id="energyText">100/100</div>
+                </div>
               </div>
-              <div class="mini-box">
-                <div class="mini-box-title">Energie</div>
-                <div class="mini-box-value" id="energyText">100/100</div>
+
+              <div class="card player-card">
+                <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
+                <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
+                <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
+                <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
+                <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
               </div>
-            </div>
 
-            <div class="card player-card">
-              <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
-              <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
-              <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
-              <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
-              <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
-            </div>
-
-            <div class="circle-wrap">
-              <div class="mine-circle" id="mineCircle">
-                <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
-                <div class="mine-fallback" id="mineFallback">CM</div>
+              <div class="circle-wrap">
+                <div class="mine-circle" id="mineCircle">
+                  <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
+                  <div class="mine-fallback" id="mineFallback">CM</div>
+                </div>
               </div>
-            </div>
 
-            <div class="balance">
-              <div class="balance-label">💎 Zůstatek Coins</div>
-              <div class="balance-value" id="coinsBalance">0</div>
-            </div>
+              <div class="balance">
+                <div class="balance-label">💎 Zůstatek Coins</div>
+                <div class="balance-value" id="coinsBalance">0</div>
+              </div>
 
-            <div class="card achievement-box">
-              <div class="achievement-title">Achievements</div>
-              <div id="achievementsList"></div>
-            </div>
+              <div class="card">
+                <div class="achievement-title">Achievements</div>
+                <div id="achievementsList"></div>
+              </div>
 
-            <div class="swipe-indicator">Přejeď doleva pro kryptoměny →</div>
+              <div class="swipe-indicator">Přejeď doleva pro kryptoměny →</div>
+            </div>
           </div>
 
-          <!-- PAGE 2 -->
-          <div class="page">
-            <div class="page-title">Kryptoměny</div>
-            <div class="page-sub">přejeď zpět doprava na klikání</div>
+          <div class="swipe-page">
+            <div class="screen-inner">
+              <div class="page-title">Kryptoměny</div>
+              <div class="page-sub">přejeď doprava zpět</div>
 
-            <div class="card">
-              <div class="section-title">Seznam kryptoměn</div>
-              <div class="crypto-list" id="cryptoList"></div>
+              <div class="card">
+                <div class="section-title">Seznam kryptoměn</div>
+                <div class="crypto-list" id="cryptoList"></div>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
+    </div>
 
-      <!-- SHOP -->
-      <div class="panel" id="panel-shop">
+    <div class="screen" id="shopScreen">
+      <div class="panel active">
         <div class="card">
           <div class="section-title">Shop</div>
 
@@ -714,9 +694,10 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- BONUS -->
-      <div class="panel" id="panel-bonus">
+    <div class="screen" id="bonusScreen">
+      <div class="panel active">
         <div class="card">
           <div class="section-title">Bonus</div>
 
@@ -764,9 +745,10 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- WITHDRAW -->
-      <div class="panel" id="panel-withdraw">
+    <div class="screen" id="withdrawScreen">
+      <div class="panel active">
         <div class="card">
           <div class="section-title">Výběr</div>
 
@@ -790,9 +772,10 @@
           <div class="status" id="withdrawStatus">Zatím žádná žádost.</div>
         </div>
       </div>
+    </div>
 
-      <!-- PROFILE -->
-      <div class="panel" id="panel-profile">
+    <div class="screen" id="profileScreen">
+      <div class="panel active">
         <div class="card">
           <div class="section-title">Profil</div>
 
@@ -819,20 +802,17 @@
                   <div class="invite-name">Pozvi člověka</div>
                   <div class="invite-count">Počet: <span id="inviteCountText">0</span></div>
                 </div>
-                <div class="invite-link" id="inviteLinkText">https://example.com/invite?code=MINER</div>
+                <div class="invite-link" id="inviteLinkText">https://example.com/invite?user=miner</div>
                 <button class="btn btn-blue" id="copyInviteBtn">Kopírovat odkaz</button>
                 <button class="btn btn-green" id="simulateInviteBtn" style="margin-top: 8px;">Simulovat +1 pozvaného</button>
               </div>
             </div>
           </div>
 
-          <div style="height: 10px;"></div>
-
-          <button class="btn btn-gray" id="logoutBtn">Odhlásit</button>
+          <button class="btn btn-gray" id="logoutBtn" style="margin-top: 12px;">Odhlásit</button>
           <button class="btn btn-red" id="resetBtn" style="margin-top: 10px;">Smazat všechna data</button>
         </div>
       </div>
-
     </div>
 
     <div class="nav hidden" id="bottomNav">
@@ -845,8 +825,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_clean_v1";
-    const LOGIN_KEY = "crypto_miner_empire_login_v1";
+    const SAVE_KEY = "crypto_miner_empire_clean_v2";
+    const LOGIN_KEY = "crypto_miner_empire_login_v2";
 
     let playerName = "Miner";
     let coins = 0;
@@ -874,6 +854,7 @@
     let buyDiamondCost = 500;
 
     let lastDailyClaim = 0;
+    let totalClicks = 0;
 
     const cryptoData = [
       { key: "btc", name: "BTC", unlocked: true, condition: "Základní kryptoměna", bonus: 0, type: "default" },
@@ -893,8 +874,6 @@
       { key: "shib", name: "Shiba Inu", unlocked: false, condition: "1000 kliknutí", bonus: 8, type: "clicks", req: 1000 },
       { key: "matic", name: "Polygon", unlocked: false, condition: "75 000 Coins", bonus: 9, type: "coins", req: 75000 }
     ];
-
-    let totalClicks = 0;
 
     function saveGame() {
       const payload = {
@@ -1069,7 +1048,6 @@
 
       document.getElementById("piggyAmountText").textContent = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
 
-      document.getElementById("withdrawStatus").textContent ||= "Zatím žádná žádost.";
       document.getElementById("profileNameText").textContent = playerName;
       document.getElementById("profileStatsText").textContent =
         `${Math.floor(coins).toLocaleString("cs-CZ")} Coins / ${diamonds} Diamonds / ${vipCredits} VIP`;
@@ -1095,16 +1073,15 @@
       saveGame();
     }
 
-    function setMainPanel(name) {
-      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    function setMainScreen(name) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
 
-      if (name === "home") {
-        document.getElementById("swipeWrap").classList.remove("hidden");
-      } else {
-        document.getElementById("swipeWrap").classList.add("hidden");
-        document.getElementById("panel-" + name).classList.add("active");
-      }
+      if (name === "home") document.getElementById("homeScreen").classList.add("active");
+      if (name === "shop") document.getElementById("shopScreen").classList.add("active");
+      if (name === "bonus") document.getElementById("bonusScreen").classList.add("active");
+      if (name === "withdraw") document.getElementById("withdrawScreen").classList.add("active");
+      if (name === "profile") document.getElementById("profileScreen").classList.add("active");
 
       const btn = document.querySelector(`.nav button[data-target="${name}"]`);
       if (btn) btn.classList.add("active");
@@ -1129,7 +1106,7 @@
       loginPlayer();
       saveGame();
       document.getElementById("loginScreen").classList.remove("active");
-      document.getElementById("gameApp").classList.add("active");
+      document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
     });
@@ -1137,7 +1114,7 @@
     document.getElementById("mineCircle").addEventListener("click", mine);
 
     document.querySelectorAll(".nav button").forEach(btn => {
-      btn.addEventListener("click", () => setMainPanel(btn.dataset.target));
+      btn.addEventListener("click", () => setMainScreen(btn.dataset.target));
     });
 
     document.querySelectorAll(".shop-tab").forEach(tab => {
@@ -1363,14 +1340,16 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       logoutPlayer();
-      document.getElementById("gameApp").classList.remove("active");
-      document.getElementById("bottomNav").classList.add("hidden");
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById("loginScreen").classList.add("active");
+      document.getElementById("bottomNav").classList.add("hidden");
     });
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       if (!confirm("Opravdu chceš smazat všechna data a začít od 0?")) return;
-      resetAll();
+      localStorage.removeItem(SAVE_KEY);
+      localStorage.removeItem(LOGIN_KEY);
+      location.reload();
     });
 
     setInterval(() => {
@@ -1396,7 +1375,7 @@
       updateUI();
     }, 400);
 
-    // Swipe
+    // swipe
     let currentPage = 0;
     const swipeWrap = document.getElementById("swipeWrap");
     const swipeTrack = document.getElementById("swipeTrack");
@@ -1426,14 +1405,10 @@
 
     if (isLoggedIn()) {
       document.getElementById("loginScreen").classList.remove("active");
-      document.getElementById("gameApp").classList.add("active");
+      document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
-      setMainPanel("home");
-    } else {
-      document.getElementById("loginScreen").classList.add("active");
-      document.getElementById("gameApp").classList.remove("active");
-      document.getElementById("bottomNav").classList.add("hidden");
+      setMainScreen("home");
     }
   </script>
 </body>
