@@ -39,7 +39,7 @@ body {
 
 .title h1 {
   margin: 0;
-  font-size: 34px;
+  font-size: 32px;
 }
 
 .title small {
@@ -135,7 +135,8 @@ body {
 .crypto-item,
 .finance-item,
 .vip-item,
-.piggy-item {
+.piggy-item,
+.profile-item {
   background: #1f2937;
   border-radius: 14px;
   padding: 14px;
@@ -148,7 +149,8 @@ body {
 .crypto-item-title,
 .finance-item-title,
 .vip-item-title,
-.piggy-item-title {
+.piggy-item-title,
+.profile-item-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 6px;
@@ -160,7 +162,8 @@ body {
 .crypto-item-desc,
 .finance-item-desc,
 .vip-item-desc,
-.piggy-item-desc {
+.piggy-item-desc,
+.profile-item-desc {
   opacity: 0.8;
   font-size: 14px;
   margin-bottom: 10px;
@@ -321,11 +324,97 @@ body {
   color: #f9a8d4;
   margin: 8px 0;
 }
+
+.login-screen {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 430px;
+  background: linear-gradient(180deg, #081225, #0b1730);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.login-screen.active {
+  display: block;
+}
+
+.login-wrap {
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.login-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d8b4fe, #7c3aed);
+  margin: 30px auto 20px;
+  box-shadow: 0 0 40px rgba(124,58,237,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+.login-logo img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+
+.login-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.login-sub {
+  opacity: 0.75;
+  margin-bottom: 24px;
+}
+
+.login-card {
+  background: #111827;
+  padding: 18px;
+  border-radius: 18px;
+  text-align: left;
+}
+
+.profile-grid {
+  display: grid;
+  gap: 10px;
+}
 </style>
 </head>
 <body>
 
-<div class="app">
+<div class="login-screen active" id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('loginFallback').style.display='block';">
+      <span id="loginFallback">CM</span>
+    </div>
+
+    <div class="login-title">Crypto Miner Empire</div>
+    <div class="login-sub">Přihlášení / Registrace</div>
+
+    <div class="login-card">
+      <label>Jméno</label>
+      <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
+
+      <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
+
+      <div class="small" style="margin-top:12px;">
+        Tohle je jednoduchá vstupní obrazovka. Data se ukládají lokálně v prohlížeči.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="gameApp" style="display:none;">
 
   <div class="top">
     Crypto Miner Empire
@@ -339,6 +428,7 @@ body {
     </div>
 
     <div class="stats">
+      <div><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
       <div><b>Coins:</b> <span id="coinsStat">0</span></div>
       <div><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
       <div><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
@@ -567,41 +657,37 @@ body {
     </div>
   </div>
 
-  <!-- FINANCE -->
-  <div class="panel" id="panel-finance">
+  <!-- PROFILE -->
+  <div class="panel" id="panel-profile">
     <div class="section">
       <div class="card">
-        <h3>Finance</h3>
+        <h3>Profil</h3>
 
-        <div class="finance-item">
-          <div class="finance-item-title">Přehled účtu</div>
-          <div class="finance-item-desc">
-            Coins: <span id="finCoins">0</span><br>
-            Diamonds: <span id="finDiamonds">0</span><br>
-            VIP Credits: <span id="finVip">0</span><br>
-            Prestige: <span id="finPrestige">1</span>
+        <div class="profile-grid">
+          <div class="profile-item">
+            <div class="profile-item-title">Hráč</div>
+            <div class="profile-item-desc" id="profileNameText">Miner</div>
+          </div>
+
+          <div class="profile-item">
+            <div class="profile-item-title">Level</div>
+            <div class="profile-item-desc" id="profileLevelText">1</div>
+          </div>
+
+          <div class="profile-item">
+            <div class="profile-item-title">Coins / Diamonds / VIP</div>
+            <div class="profile-item-desc" id="profileBalanceText">0 / 0 / 0</div>
+          </div>
+
+          <div class="profile-item">
+            <div class="profile-item-title">Odemčené kryptoměny</div>
+            <div class="profile-item-desc" id="profileCryptosText">BTC</div>
           </div>
         </div>
 
-        <div class="finance-item">
-          <div class="finance-item-title">Výdělek za minutu</div>
-          <div class="finance-item-desc">
-            <span id="finPerMinute">60</span> Coins / min
-          </div>
-        </div>
-
-        <div class="finance-item">
-          <div class="finance-item-title">Odemčené kryptoměny</div>
-          <div class="finance-item-desc" id="unlockedCryptosText">
-            BTC
-          </div>
-        </div>
-
-        <div class="finance-item">
-          <div class="finance-item-title">Prasátko</div>
-          <div class="finance-item-desc" id="finPiggyText">
-            0 Coins
-          </div>
+        <div class="row-2">
+          <button class="btn btn-blue" id="logoutBtn">Odhlásit</button>
+          <button class="btn btn-red" id="profileResetBtn">Smazat data</button>
         </div>
       </div>
     </div>
@@ -614,11 +700,14 @@ body {
   <button data-panel="shop">Shop</button>
   <button data-panel="bonus">Bonus</button>
   <button data-panel="withdraw">Výběr</button>
-  <button data-panel="finance">Finance</button>
+  <button data-panel="profile">Profil</button>
 </div>
 
 <script>
-const SAVE_KEY = "crypto_miner_empire_step8_save";
+const SAVE_KEY = "crypto_miner_empire_step9_save";
+const LOGIN_KEY = "crypto_miner_empire_login";
+
+let playerName = "Miner";
 
 let coins = 0;
 let diamonds = 0;
@@ -654,6 +743,7 @@ const inviteCode = "MINER-0001";
 
 function saveGame() {
   const data = {
+    playerName,
     coins, diamonds, coinsPerSec, level, vipCredits, referrals, prestige,
     energy, maxEnergy, energyCapBonus, clickValue,
     buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
@@ -669,6 +759,7 @@ function loadGame() {
   if (!raw) return;
   try {
     const data = JSON.parse(raw);
+    playerName = data.playerName ?? playerName;
     coins = data.coins ?? coins;
     diamonds = data.diamonds ?? diamonds;
     coinsPerSec = data.coinsPerSec ?? coinsPerSec;
@@ -694,6 +785,28 @@ function loadGame() {
   } catch (e) {
     console.error("Chyba načítání save:", e);
   }
+}
+
+function saveLoginState() {
+  localStorage.setItem(LOGIN_KEY, "1");
+}
+
+function clearLoginState() {
+  localStorage.removeItem(LOGIN_KEY);
+}
+
+function isLoggedIn() {
+  return localStorage.getItem(LOGIN_KEY) === "1";
+}
+
+function showGame() {
+  document.getElementById("loginScreen").classList.remove("active");
+  document.getElementById("gameApp").style.display = "block";
+}
+
+function showLogin() {
+  document.getElementById("loginScreen").classList.add("active");
+  document.getElementById("gameApp").style.display = "none";
 }
 
 function getBoostMultiplier() {
@@ -758,6 +871,7 @@ function updateCryptoCards() {
 function updateUI() {
   updateLevel();
 
+  document.getElementById("playerNameStat").innerText = playerName;
   document.getElementById("coins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   document.getElementById("coinsStat").innerText = Math.floor(coins).toLocaleString("cs-CZ");
   document.getElementById("diamondsStat").innerText = diamonds.toLocaleString("cs-CZ");
@@ -782,14 +896,13 @@ function updateUI() {
   document.getElementById("inviteLinkBox").innerText =
     "https://example.com/invite?code=" + inviteCode;
 
-  document.getElementById("finCoins").innerText = Math.floor(coins).toLocaleString("cs-CZ");
-  document.getElementById("finDiamonds").innerText = diamonds.toLocaleString("cs-CZ");
-  document.getElementById("finVip").innerText = vipCredits.toLocaleString("cs-CZ");
-  document.getElementById("finPrestige").innerText = prestige.toLocaleString("cs-CZ");
-  document.getElementById("finPerMinute").innerText = Math.floor(getRealCoinsPerSec() * 60).toLocaleString("cs-CZ");
-  document.getElementById("unlockedCryptosText").innerText = unlockedCryptosList();
-  document.getElementById("finPiggyText").innerText = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
   document.getElementById("piggyAmountText").innerText = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
+
+  document.getElementById("profileNameText").innerText = playerName;
+  document.getElementById("profileLevelText").innerText = level;
+  document.getElementById("profileBalanceText").innerText =
+    `${Math.floor(coins).toLocaleString("cs-CZ")} / ${diamonds} / ${vipCredits}`;
+  document.getElementById("profileCryptosText").innerText = unlockedCryptosList();
 
   const boostActive = Date.now() < boostUntil;
   const vipActive = Date.now() < vipBoostUntil;
@@ -821,6 +934,15 @@ function mine() {
   updateUI();
   saveGame();
 }
+
+document.getElementById("startGameBtn").onclick = () => {
+  const input = document.getElementById("playerNameInput").value.trim();
+  if (input) playerName = input;
+  saveLoginState();
+  saveGame();
+  showGame();
+  updateUI();
+};
 
 document.getElementById("mine").onclick = mine;
 
@@ -1034,7 +1156,21 @@ document.getElementById("resetBtn").onclick = () => {
   const ok = confirm("Opravdu chceš smazat všechna data a začít od 0?");
   if (!ok) return;
   localStorage.removeItem(SAVE_KEY);
+  clearLoginState();
   location.reload();
+};
+
+document.getElementById("profileResetBtn").onclick = () => {
+  const ok = confirm("Opravdu chceš smazat všechna data a začít od 0?");
+  if (!ok) return;
+  localStorage.removeItem(SAVE_KEY);
+  clearLoginState();
+  location.reload();
+};
+
+document.getElementById("logoutBtn").onclick = () => {
+  clearLoginState();
+  showLogin();
 };
 
 document.getElementById("withdrawBtn").onclick = () => {
@@ -1066,6 +1202,7 @@ document.getElementById("withdrawBtn").onclick = () => {
 };
 
 setInterval(() => {
+  if (!isLoggedIn()) return;
   const gain = getRealCoinsPerSec();
   coins += gain;
   addToPiggy(gain);
@@ -1074,6 +1211,7 @@ setInterval(() => {
 }, 1000);
 
 setInterval(() => {
+  if (!isLoggedIn()) return;
   if (energy < maxEnergy) {
     energy += 1;
     updateUI();
@@ -1082,6 +1220,7 @@ setInterval(() => {
 }, 500);
 
 setInterval(() => {
+  if (!isLoggedIn()) return;
   updateUI();
 }, 300);
 
@@ -1097,7 +1236,13 @@ document.querySelectorAll(".nav button").forEach(btn => {
 });
 
 loadGame();
-updateUI();
+
+if (isLoggedIn()) {
+  showGame();
+  updateUI();
+} else {
+  showLogin();
+}
 </script>
 
 </body>
