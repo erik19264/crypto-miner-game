@@ -150,6 +150,13 @@
       cursor: pointer;
     }
 
+    .btn-small {
+      padding: 10px 12px;
+      font-size: 13px;
+      border-radius: 10px;
+      width: auto;
+    }
+
     .btn-purple { background: linear-gradient(180deg, #a855f7, #7c3aed); }
     .btn-blue { background: linear-gradient(180deg, #3b82f6, #2563eb); }
     .btn-green { background: linear-gradient(180deg, #22c55e, #16a34a); }
@@ -241,8 +248,8 @@
     }
 
     .mine-circle img {
-      width: 78%;
-      height: 78%;
+      width: 82%;
+      height: 82%;
       object-fit: contain;
       pointer-events: none;
     }
@@ -300,7 +307,7 @@
     .shop-item,
     .bonus-item,
     .profile-item,
-    .crypto-item {
+    .crypto-card {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
       padding: 11px 12px;
@@ -356,7 +363,7 @@
       gap: 10px;
     }
 
-    .crypto-item {
+    .crypto-card {
       background: rgba(18, 25, 43, 0.95);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 15px;
@@ -364,7 +371,7 @@
       margin-bottom: 0;
     }
 
-    .crypto-item.locked {
+    .crypto-card.locked {
       opacity: 0.62;
       filter: grayscale(0.35);
     }
@@ -397,6 +404,39 @@
     .crypto-req {
       font-size: 12px;
       opacity: 0.72;
+      margin-bottom: 10px;
+    }
+
+    .crypto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .crypto-stat-box {
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .crypto-stat-label {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .crypto-stat-value {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .inline-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
     .panel {
@@ -491,6 +531,24 @@
       font-size: 12px;
       word-break: break-all;
       margin-bottom: 8px;
+    }
+
+    .payment-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .payment-chip {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: bold;
+      opacity: 0.9;
     }
 
     .nav {
@@ -612,7 +670,7 @@
               <div class="page-sub">přejeď doprava zpět</div>
 
               <div class="card">
-                <div class="section-title">Seznam kryptoměn</div>
+                <div class="section-title">Těžení kryptoměn</div>
                 <div class="crypto-list" id="cryptoList"></div>
               </div>
             </div>
@@ -642,7 +700,7 @@
 
             <div class="shop-item">
               <div class="shop-item-title">+1 Coins/sec</div>
-              <div class="shop-item-desc">Zvýší automatickou těžbu.</div>
+              <div class="shop-item-desc">Zvýší základní automatickou těžbu klikací hry.</div>
               <button class="btn btn-green" id="buyCpsBtn">Koupit za <span id="buyCpsCostText">100</span> Coins</button>
             </div>
 
@@ -670,7 +728,7 @@
           <div class="shop-group" id="shop-vip">
             <div class="shop-item">
               <div class="shop-item-title">VIP x2 income na 10s</div>
-              <div class="shop-item-desc">Krátký silný boost.</div>
+              <div class="shop-item-desc">Krátký silný boost pro klikací část i kryptoměny.</div>
               <button class="btn btn-gray" id="buyVipBoostBtn">Koupit za 10 VIP Credits</button>
             </div>
 
@@ -703,7 +761,7 @@
 
           <div class="bonus-item">
             <div class="bonus-item-title">BOOST 5s</div>
-            <div class="bonus-item-desc">Na 5 sekund zdvojnásobí klik i Coins/sec.</div>
+            <div class="bonus-item-desc">Na 5 sekund zdvojnásobí klik i těžbu za sekundu.</div>
             <button class="btn btn-yellow" id="boostBtn">Aktivovat za 50 Coins</button>
           </div>
 
@@ -769,6 +827,13 @@
 
           <button class="btn btn-purple" id="withdrawBtn">Požádat o výběr</button>
 
+          <div class="payment-row">
+            <div class="payment-chip">VISA</div>
+            <div class="payment-chip">MASTERCARD</div>
+            <div class="payment-chip">ÚČET</div>
+            <div class="payment-chip">WALLET</div>
+          </div>
+
           <div class="status" id="withdrawStatus">Zatím žádná žádost.</div>
         </div>
       </div>
@@ -825,8 +890,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_clean_v2";
-    const LOGIN_KEY = "crypto_miner_empire_login_v2";
+    const SAVE_KEY = "crypto_miner_empire_crypto_mining_v1";
+    const LOGIN_KEY = "crypto_miner_empire_login_v3";
 
     let playerName = "Miner";
     let coins = 0;
@@ -837,7 +902,7 @@
     let prestige = 1;
 
     let clickValue = 1;
-    let coinsPerSec = 1;
+    let baseCoinsPerSec = 1;
 
     let energy = 100;
     let maxEnergy = 100;
@@ -857,30 +922,38 @@
     let totalClicks = 0;
 
     const cryptoData = [
-      { key: "btc", name: "BTC", unlocked: true, condition: "Základní kryptoměna", bonus: 0, type: "default" },
-      { key: "eth", name: "Ethereum", unlocked: false, condition: "Level 3", bonus: 2, type: "level", req: 3 },
-      { key: "bnb", name: "BNB", unlocked: false, condition: "Level 5", bonus: 3, type: "level", req: 5 },
-      { key: "doge", name: "Dogecoin", unlocked: false, condition: "100 kliknutí", bonus: 2, type: "clicks", req: 100 },
-      { key: "sol", name: "Solana", unlocked: false, condition: "Level 8", bonus: 4, type: "level", req: 8 },
-      { key: "xrp", name: "XRP", unlocked: false, condition: "250 kliknutí", bonus: 3, type: "clicks", req: 250 },
-      { key: "ada", name: "Cardano", unlocked: false, condition: "10 000 Coins", bonus: 4, type: "coins", req: 10000 },
-      { key: "trx", name: "Tron", unlocked: false, condition: "Level 12", bonus: 5, type: "level", req: 12 },
-      { key: "avax", name: "Avalanche", unlocked: false, condition: "500 kliknutí", bonus: 5, type: "clicks", req: 500 },
-      { key: "dot", name: "Polkadot", unlocked: false, condition: "25 000 Coins", bonus: 6, type: "coins", req: 25000 },
-      { key: "link", name: "Chainlink", unlocked: false, condition: "Level 15", bonus: 6, type: "level", req: 15 },
-      { key: "ton", name: "Toncoin", unlocked: false, condition: "750 kliknutí", bonus: 7, type: "clicks", req: 750 },
-      { key: "ltc", name: "Litecoin", unlocked: false, condition: "50 000 Coins", bonus: 7, type: "coins", req: 50000 },
-      { key: "xmr", name: "Monero", unlocked: false, condition: "Level 20", bonus: 8, type: "level", req: 20 },
-      { key: "shib", name: "Shiba Inu", unlocked: false, condition: "1000 kliknutí", bonus: 8, type: "clicks", req: 1000 },
-      { key: "matic", name: "Polygon", unlocked: false, condition: "75 000 Coins", bonus: 9, type: "coins", req: 75000 }
+      { key: "btc", name: "BTC", unlocked: true, condition: "Základní kryptoměna", type: "default", amount: 0, rate: 1, upgradeLevel: 1, upgradeCost: 100 },
+      { key: "eth", name: "Ethereum", unlocked: false, condition: "Level 3", type: "level", req: 3, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 250 },
+      { key: "bnb", name: "BNB", unlocked: false, condition: "Level 5", type: "level", req: 5, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 500 },
+      { key: "doge", name: "Dogecoin", unlocked: false, condition: "100 kliknutí", type: "clicks", req: 100, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 450 },
+      { key: "sol", name: "Solana", unlocked: false, condition: "Level 8", type: "level", req: 8, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 900 },
+      { key: "xrp", name: "XRP", unlocked: false, condition: "250 kliknutí", type: "clicks", req: 250, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 1200 },
+      { key: "ada", name: "Cardano", unlocked: false, condition: "10 000 Coins", type: "coins", req: 10000, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 1600 },
+      { key: "trx", name: "Tron", unlocked: false, condition: "Level 12", type: "level", req: 12, amount: 0, rate: 5, upgradeLevel: 1, upgradeCost: 2200 },
+      { key: "avax", name: "Avalanche", unlocked: false, condition: "500 kliknutí", type: "clicks", req: 500, amount: 0, rate: 6, upgradeLevel: 1, upgradeCost: 3000 },
+      { key: "dot", name: "Polkadot", unlocked: false, condition: "25 000 Coins", type: "coins", req: 25000, amount: 0, rate: 7, upgradeLevel: 1, upgradeCost: 4200 },
+      { key: "link", name: "Chainlink", unlocked: false, condition: "Level 15", type: "level", req: 15, amount: 0, rate: 8, upgradeLevel: 1, upgradeCost: 5600 },
+      { key: "ton", name: "Toncoin", unlocked: false, condition: "750 kliknutí", type: "clicks", req: 750, amount: 0, rate: 9, upgradeLevel: 1, upgradeCost: 7600 },
+      { key: "ltc", name: "Litecoin", unlocked: false, condition: "50 000 Coins", type: "coins", req: 50000, amount: 0, rate: 10, upgradeLevel: 1, upgradeCost: 9800 },
+      { key: "xmr", name: "Monero", unlocked: false, condition: "Level 20", type: "level", req: 20, amount: 0, rate: 12, upgradeLevel: 1, upgradeCost: 12500 },
+      { key: "shib", name: "Shiba Inu", unlocked: false, condition: "1000 kliknutí", type: "clicks", req: 1000, amount: 0, rate: 11, upgradeLevel: 1, upgradeCost: 15000 },
+      { key: "matic", name: "Polygon", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000 }
     ];
 
     function saveGame() {
       const payload = {
         playerName, coins, diamonds, vipCredits, referrals, level, prestige,
-        clickValue, coinsPerSec, energy, maxEnergy, energyCapBonus, piggyBank,
+        clickValue, baseCoinsPerSec, energy, maxEnergy, energyCapBonus, piggyBank,
         boostUntil, vipBoostUntil, buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
-        totalClicks, lastDailyClaim, cryptoUnlocked: Object.fromEntries(cryptoData.map(c => [c.key, c.unlocked]))
+        totalClicks, lastDailyClaim,
+        cryptos: cryptoData.map(c => ({
+          key: c.key,
+          unlocked: c.unlocked,
+          amount: c.amount,
+          rate: c.rate,
+          upgradeLevel: c.upgradeLevel,
+          upgradeCost: c.upgradeCost
+        }))
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
     }
@@ -898,7 +971,7 @@
         level = data.level ?? level;
         prestige = data.prestige ?? prestige;
         clickValue = data.clickValue ?? clickValue;
-        coinsPerSec = data.coinsPerSec ?? coinsPerSec;
+        baseCoinsPerSec = data.baseCoinsPerSec ?? baseCoinsPerSec;
         energy = data.energy ?? energy;
         maxEnergy = data.maxEnergy ?? maxEnergy;
         energyCapBonus = data.energyCapBonus ?? energyCapBonus;
@@ -912,9 +985,15 @@
         totalClicks = data.totalClicks ?? totalClicks;
         lastDailyClaim = data.lastDailyClaim ?? lastDailyClaim;
 
-        if (data.cryptoUnlocked) {
-          cryptoData.forEach(c => {
-            if (typeof data.cryptoUnlocked[c.key] === "boolean") c.unlocked = data.cryptoUnlocked[c.key];
+        if (Array.isArray(data.cryptos)) {
+          data.cryptos.forEach(saved => {
+            const found = cryptoData.find(c => c.key === saved.key);
+            if (!found) return;
+            found.unlocked = typeof saved.unlocked === "boolean" ? saved.unlocked : found.unlocked;
+            found.amount = Number(saved.amount ?? found.amount);
+            found.rate = Number(saved.rate ?? found.rate);
+            found.upgradeLevel = Number(saved.upgradeLevel ?? found.upgradeLevel);
+            found.upgradeCost = Number(saved.upgradeCost ?? found.upgradeCost);
           });
         }
       } catch (e) {
@@ -942,16 +1021,17 @@
       return Date.now() < vipBoostUntil ? 2 : 1;
     }
 
-    function getCryptoBonus() {
-      return cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.bonus, 0);
+    function getCryptoMiningPerSecRaw() {
+      return cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.rate, 0);
+    }
+
+    function getTotalCoinsPerSec() {
+      const total = (baseCoinsPerSec + getCryptoMiningPerSecRaw()) * getBoostMultiplier() * getVipMultiplier() * prestige;
+      return Math.floor(total);
     }
 
     function getRealClickValue() {
       return Math.floor(clickValue * getBoostMultiplier() * getVipMultiplier() * prestige);
-    }
-
-    function getRealCoinsPerSec() {
-      return Math.floor((coinsPerSec + getCryptoBonus()) * getBoostMultiplier() * getVipMultiplier() * prestige);
     }
 
     function updateLevel() {
@@ -984,7 +1064,8 @@
         { title: "První diamant", desc: "Získej aspoň 1 Diamond.", done: diamonds >= 1 },
         { title: "10K Coins", desc: "Dostaň se na 10 000 Coins.", done: coins >= 10000 },
         { title: "Pozvánka", desc: "Získej 1 pozvaného člověka.", done: referrals >= 1 },
-        { title: "VIP start", desc: "Získej 10 VIP Credits.", done: vipCredits >= 10 }
+        { title: "VIP start", desc: "Získej 10 VIP Credits.", done: vipCredits >= 10 },
+        { title: "První krypto upgrade", desc: "Upgraduj jakoukoliv kryptoměnu.", done: cryptoData.some(c => c.upgradeLevel > 1) }
       ];
     }
 
@@ -1009,20 +1090,60 @@
       if (changed) saveGame();
     }
 
+    function upgradeCrypto(key) {
+      const crypto = cryptoData.find(c => c.key === key);
+      if (!crypto || !crypto.unlocked) return;
+      if (coins < crypto.upgradeCost) {
+        alert("Nemáš dost Coins.");
+        return;
+      }
+      coins -= crypto.upgradeCost;
+      crypto.upgradeLevel += 1;
+      crypto.rate += Math.max(1, Math.floor(crypto.upgradeLevel / 2));
+      crypto.upgradeCost = Math.floor(crypto.upgradeCost * 1.7);
+      updateUI();
+      saveGame();
+    }
+
     function renderCryptos() {
       const box = document.getElementById("cryptoList");
       box.innerHTML = cryptoData.map(c => `
-        <div class="crypto-item ${c.unlocked ? "" : "locked"}">
+        <div class="crypto-card ${c.unlocked ? "" : "locked"}">
           <div class="crypto-head">
             <div class="crypto-name">${c.name}</div>
             <div class="crypto-state">${c.unlocked ? "Odemčeno" : "Zamčeno"}</div>
           </div>
+
           <div class="crypto-desc">
-            ${c.unlocked ? `Bonus do těžby: +${c.bonus} Coins/sec` : `Podmínka odemčení: ${c.condition}`}
+            ${c.unlocked
+              ? `Tahle kryptoměna se těží automaticky a můžeš ji vylepšovat.`
+              : `Podmínka odemčení: ${c.condition}`
+            }
           </div>
-          <div class="crypto-req">
-            ${c.unlocked ? "Splněno" : "Ještě nesplněno"}
-          </div>
+
+          ${c.unlocked ? `
+            <div class="crypto-grid">
+              <div class="crypto-stat-box">
+                <div class="crypto-stat-label">Množství</div>
+                <div class="crypto-stat-value">${Math.floor(c.amount).toLocaleString("cs-CZ")}</div>
+              </div>
+              <div class="crypto-stat-box">
+                <div class="crypto-stat-label">Těžba / s</div>
+                <div class="crypto-stat-value">${c.rate.toLocaleString("cs-CZ")}</div>
+              </div>
+              <div class="crypto-stat-box">
+                <div class="crypto-stat-label">Upgrade level</div>
+                <div class="crypto-stat-value">${c.upgradeLevel}</div>
+              </div>
+              <div class="crypto-stat-box">
+                <div class="crypto-stat-label">Cena upgradu</div>
+                <div class="crypto-stat-value">${c.upgradeCost.toLocaleString("cs-CZ")}</div>
+              </div>
+            </div>
+            <button class="btn btn-blue" onclick="upgradeCrypto('${c.key}')">Upgrade za ${c.upgradeCost.toLocaleString("cs-CZ")} Coins</button>
+          ` : `
+            <div class="crypto-req">Ještě nesplněno</div>
+          `}
         </div>
       `).join("");
     }
@@ -1033,7 +1154,7 @@
 
       document.getElementById("playerNameStat").textContent = playerName;
       document.getElementById("levelStat").textContent = level;
-      document.getElementById("cpsStat").textContent = getRealCoinsPerSec().toLocaleString("cs-CZ");
+      document.getElementById("cpsStat").textContent = getTotalCoinsPerSec().toLocaleString("cs-CZ");
       document.getElementById("diamondsStat").textContent = diamonds.toLocaleString("cs-CZ");
       document.getElementById("vipStat").textContent = vipCredits.toLocaleString("cs-CZ");
 
@@ -1094,12 +1215,6 @@
       document.getElementById("shop-" + group).classList.add("active");
     }
 
-    function resetAll() {
-      localStorage.removeItem(SAVE_KEY);
-      localStorage.removeItem(LOGIN_KEY);
-      location.reload();
-    }
-
     document.getElementById("startGameBtn").addEventListener("click", () => {
       const input = document.getElementById("playerNameInput").value.trim();
       if (input) playerName = input;
@@ -1133,7 +1248,7 @@
     document.getElementById("buyCpsBtn").addEventListener("click", () => {
       if (coins < buyCpsCost) return;
       coins -= buyCpsCost;
-      coinsPerSec += 1;
+      baseCoinsPerSec += 1;
       buyCpsCost = Math.floor(buyCpsCost * 2);
       updateUI();
       saveGame();
@@ -1268,7 +1383,7 @@
       referrals = 0;
       level = 1;
       clickValue = 1;
-      coinsPerSec = 1;
+      baseCoinsPerSec = 1;
       energy = 100;
       maxEnergy = 100;
       energyCapBonus = 0;
@@ -1280,10 +1395,24 @@
       buyEnergyCost = 75;
       buyDiamondCost = 500;
       totalClicks = 0;
-      cryptoData.forEach(c => c.unlocked = c.key === "btc");
+      cryptoData.forEach(c => {
+        c.unlocked = c.key === "btc";
+        c.amount = 0;
+        c.upgradeLevel = 1;
+        const base = {
+          btc: 100, eth: 250, bnb: 500, doge: 450, sol: 900, xrp: 1200, ada: 1600, trx: 2200,
+          avax: 3000, dot: 4200, link: 5600, ton: 7600, ltc: 9800, xmr: 12500, shib: 15000, matic: 18000
+        };
+        c.upgradeCost = base[c.key] || 1000;
+        const baseRate = {
+          btc: 1, eth: 2, bnb: 3, doge: 2, sol: 4, xrp: 3, ada: 4, trx: 5,
+          avax: 6, dot: 7, link: 8, ton: 9, ltc: 10, xmr: 12, shib: 11, matic: 13
+        };
+        c.rate = baseRate[c.key] || 1;
+      });
       updateUI();
       saveGame();
-      alert("Rebirth hotový. Začínáš znovu, ale s vyšším Prestige.");
+      alert("Rebirth hotový. Začínáš znovu, ale silnější.");
     });
 
     document.getElementById("withdrawBtn").addEventListener("click", () => {
@@ -1354,9 +1483,20 @@
 
     setInterval(() => {
       if (!isLoggedIn()) return;
-      const gain = getRealCoinsPerSec();
-      coins += gain;
-      addToPiggy(gain);
+
+      const clickSideGain = baseCoinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
+      const cryptoSideGain = cryptoData
+        .filter(c => c.unlocked)
+        .reduce((sum, c) => sum + c.rate, 0) * getBoostMultiplier() * getVipMultiplier() * prestige;
+
+      coins += clickSideGain + cryptoSideGain;
+      addToPiggy(clickSideGain + cryptoSideGain);
+
+      cryptoData.forEach(c => {
+        if (!c.unlocked) return;
+        c.amount += c.rate * getBoostMultiplier() * getVipMultiplier();
+      });
+
       updateUI();
       saveGame();
     }, 1000);
@@ -1373,7 +1513,7 @@
     setInterval(() => {
       if (!isLoggedIn()) return;
       updateUI();
-    }, 400);
+    }, 500);
 
     // swipe
     let currentPage = 0;
