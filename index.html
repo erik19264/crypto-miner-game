@@ -3,67 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Miner Empire</title>
+  <title>Crypto Miner</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
+      font-family: Arial, sans-serif;
       background: #0f172a;
-      color: #ffffff;
+      color: #fff;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
+      padding: 12px;
     }
 
-    .game {
+    .app {
       width: 100%;
       max-width: 430px;
-      background: #1e293b;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 28px;
-    }
-
-    .panel {
+      min-height: 90vh;
       background: #111827;
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 18px;
-      text-align: center;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
     }
 
-    .btc {
-      font-size: 32px;
+    .topbar {
+      padding: 18px 18px 10px;
+      text-align: center;
+      background: #1f2937;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .title {
+      font-size: 30px;
       font-weight: bold;
+      letter-spacing: 1px;
       margin-bottom: 10px;
     }
 
-    .bps {
-      font-size: 18px;
-      opacity: 0.9;
+    .stats {
+      text-align: left;
+      background: #0b1220;
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .stats strong {
+      color: #93c5fd;
+    }
+
+    .boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 14px 18px 8px;
+      background: #111827;
+    }
+
+    .box {
+      background: #1f2937;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      min-height: 82px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .box-title {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-bottom: 6px;
+    }
+
+    .box-value {
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .content {
+      flex: 1;
+      padding: 14px 18px 90px;
+      position: relative;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .main-panel {
+      text-align: center;
+    }
+
+    .boost-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
     .btn {
-      width: 100%;
       border: none;
-      border-radius: 16px;
-      padding: 16px;
-      font-size: 18px;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      margin-bottom: 14px;
       transition: transform 0.08s ease, opacity 0.2s ease;
     }
 
@@ -71,69 +127,349 @@
       transform: scale(0.98);
     }
 
-    .upgrade-btn {
+    .btn-coin {
       background: linear-gradient(180deg, #16a34a, #15803d);
       color: white;
-      box-shadow: 0 6px 0 #0f5c2b;
+      box-shadow: 0 5px 0 #0f5c2b;
     }
 
-    .upgrade-btn:disabled {
-      background: #4b5563;
-      box-shadow: 0 6px 0 #374151;
-      cursor: not-allowed;
-      opacity: 0.75;
+    .btn-diamond {
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      color: white;
+      box-shadow: 0 5px 0 #1e3a8a;
     }
 
-    .info {
-      background: #111827;
+    .btn-purple {
+      background: linear-gradient(180deg, #7c3aed, #6d28d9);
+      color: white;
+      box-shadow: 0 5px 0 #4c1d95;
+    }
+
+    .btn-red {
+      background: linear-gradient(180deg, #dc2626, #b91c1c);
+      color: white;
+      box-shadow: 0 5px 0 #7f1d1d;
+    }
+
+    .btn-gray {
+      background: linear-gradient(180deg, #4b5563, #374151);
+      color: white;
+      box-shadow: 0 5px 0 #1f2937;
+    }
+
+    .circle-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 18px;
+      margin-bottom: 10px;
+    }
+
+    .mine-circle {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #334155, #0f172a);
+      border: 6px solid #334155;
+      box-shadow: inset 0 0 25px rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.45);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .mine-circle img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .mine-circle .fallback {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      color: #cbd5e1;
+      pointer-events: none;
+    }
+
+    .hint {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .card {
+      background: #1f2937;
       border-radius: 16px;
-      padding: 16px;
-      font-size: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small {
+      font-size: 13px;
+      opacity: 0.82;
       line-height: 1.5;
-      opacity: 0.9;
+    }
+
+    .input {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 16px;
+      background: #0b1220;
+      color: white;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #1f2937;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-btn {
+      border: none;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 12px 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: #60a5fa;
+      background: rgba(96,165,250,0.08);
+    }
+
+    .green { color: #4ade80; }
+    .red { color: #f87171; }
+    .blue { color: #60a5fa; }
+    .yellow { color: #facc15; }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
-  <div class="game">
-    <h1>Crypto Miner Empire</h1>
-
-    <div class="panel">
-      <div class="btc" id="btcText">BTC: 0</div>
-      <div class="bps" id="bpsText">BTC/s: 1</div>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">CRYPTO MINER</div>
+      <div class="stats">
+        <div><strong>Coins:</strong> <span id="coinsText">0</span></div>
+        <div><strong>Diamonds:</strong> <span id="diamondsText">0</span></div>
+        <div><strong>Coins/sec:</strong> <span id="coinsPerSecText">1</span></div>
+        <div><strong>Level:</strong> <span id="levelText">1</span></div>
+        <div><strong>VIP Credits:</strong> <span id="vipText">0</span></div>
+        <div><strong>Pozvaní lidé:</strong> <span id="referralsText">0</span></div>
+      </div>
     </div>
 
-    <button class="btn upgrade-btn" id="upgradeBtn">
-      UPGRADE +1 BTC/s<br>
-      <span id="upgradeCostText">COST: 10 BTC</span>
-    </button>
+    <div class="boxes">
+      <div class="box">
+        <div class="box-title">Za jedno kliknutí</div>
+        <div class="box-value" id="clickPowerText">1x</div>
+      </div>
+      <div class="box">
+        <div class="box-title">Max kliky / zbývá</div>
+        <div class="box-value" id="clicksBoxText">100 / 100</div>
+      </div>
+    </div>
 
-    <div class="info">
-      BTC se přičítá automaticky každou sekundu.  
-      Upgrade zvýší těžbu o +1 BTC/s a cena se po každém nákupu zdvojnásobí.
+    <div class="content">
+      <div class="panel active" id="panel-profile">
+        <div class="main-panel">
+          <div class="boost-row">
+            <button class="btn btn-coin" id="coinBoostBtn">BOOST 5s<br><span id="coinBoostCostText">50 Coins</span></button>
+            <button class="btn btn-diamond" id="diamondBoostBtn">DIAMOND BOOST 5s<br><span id="diamondBoostCostText">5 Diamonds</span></button>
+          </div>
+
+          <div class="circle-wrap">
+            <div class="mine-circle" id="mineCircle">
+              <img id="logoImage" src="logo.png" alt="Logo hry" onerror="this.style.display='none';document.getElementById('circleFallback').style.display='block';">
+              <div class="fallback" id="circleFallback" style="display:none;">KLIKNI<br>PRO TĚŽBU</div>
+            </div>
+          </div>
+
+          <div class="hint">
+            Klikáním získáváš Coins. Kliky mají limit.<br>
+            Boost zvyšuje výdělek na 5 sekund.
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <h3>Rychlý přehled</h3>
+            <div class="small">
+              Aktivní boost: <span id="activeBoostText">Žádný</span><br>
+              Do dalšího levelu: <span id="nextLevelText">100 Coins</span><br>
+              Obnova kliků: +1 klik každých 0.3 s
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-shop">
+        <div class="card">
+          <h3>Obchod</h3>
+
+          <div class="row">
+            <div>+1 Coins / klik</div>
+            <button class="btn btn-gray" id="buyClickPowerBtn">Cost: <span id="buyClickPowerCostText">100</span></button>
+          </div>
+
+          <div class="row">
+            <div>+1 Coins / sec</div>
+            <button class="btn btn-gray" id="buyCoinsPerSecBtn">Cost: <span id="buyCoinsPerSecCostText">150</span></button>
+          </div>
+
+          <div class="row">
+            <div>+25 max kliků</div>
+            <button class="btn btn-gray" id="buyMaxClicksBtn">Cost: <span id="buyMaxClicksCostText">200</span></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div>+10 Diamonds</div>
+            <button class="btn btn-purple" id="buyDiamondsBtn">Cost: 500 Coins</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-bonus">
+        <div class="card">
+          <h3>Bonus</h3>
+
+          <div class="row">
+            <div>Reklama → +2 VIP Credits</div>
+            <button class="btn btn-purple" id="watchVipAdBtn">Sledovat</button>
+          </div>
+
+          <div class="row">
+            <div>Reklama → +3 Diamonds</div>
+            <button class="btn btn-diamond" id="watchDiamondAdBtn">Sledovat</button>
+          </div>
+
+          <div class="row">
+            <div>Denní bonus</div>
+            <button class="btn btn-coin" id="dailyBonusBtn">Vybrat</button>
+          </div>
+
+          <div class="small">
+            VIP Credits jsou speciální měna z bonusů a reklam.<br>
+            Tohle je zatím herní simulace, ne skutečné reklamy.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-withdraw">
+        <div class="card">
+          <h3>Výběr</h3>
+
+          <input class="input" id="withdrawAmountInput" type="number" placeholder="Zadejte částku výběru v Coins" />
+
+          <button class="btn btn-coin" id="withdrawBtn">Požádat o výběr</button>
+
+          <div class="small" style="margin-top:12px;">
+            Ikonka s výběrem<br>
+            Minimální částka pro výběr: <span class="yellow">10000 Coins</span><br>
+            <span class="red">10 % za výběr</span><br>
+            Minimální počet pozvaných lidí pro výběr: <span class="blue">8 lidí</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="small">
+            Stav: <span id="withdrawStatusText">Zatím žádná žádost.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="profileCard">
+        <h3>Profil</h3>
+        <div class="small">
+          Hráč: Miner<br>
+          Celkem natěženo: <span id="totalMinedText">0</span><br>
+          Kliknutí celkem: <span id="totalClicksText">0</span><br>
+          Aktivní level: <span id="profileLevelText">1</span>
+        </div>
+        <div class="divider"></div>
+        <button class="btn btn-red" id="resetDataBtn">SMAZAT VŠECHNA DATA</button>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn active" data-panel="profile">Profil</button>
+      <button class="nav-btn" data-panel="shop">Obchod</button>
+      <button class="nav-btn" data-panel="bonus">Bonus</button>
+      <button class="nav-btn" data-panel="withdraw">Výběr</button>
     </div>
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_save";
+    const SAVE_KEY = "crypto_miner_full_restore_v1";
 
     const game = {
-      btc: 0,
-      btcPerSecond: 1,
-      upgradeCost: 10
+      coins: 0,
+      diamonds: 0,
+      coinsPerSec: 1,
+      level: 1,
+      clickPower: 1,
+      maxClicks: 100,
+      clicksLeft: 100,
+      vipCredits: 0,
+      referrals: 0,
+      totalMined: 0,
+      totalClicks: 0,
+
+      coinBoostCost: 50,
+      diamondBoostCost: 5,
+
+      buyClickPowerCost: 100,
+      buyCoinsPerSecCost: 150,
+      buyMaxClicksCost: 200,
+
+      boostMultiplier: 1,
+      boostEndTime: 0,
+      boostType: "",
+
+      dailyClaimedAt: 0
     };
 
     function loadGame() {
       const saved = localStorage.getItem(SAVE_KEY);
       if (!saved) return;
-
       try {
         const parsed = JSON.parse(saved);
-        if (typeof parsed.btc === "number") game.btc = parsed.btc;
-        if (typeof parsed.btcPerSecond === "number") game.btcPerSecond = parsed.btcPerSecond;
-        if (typeof parsed.upgradeCost === "number") game.upgradeCost = parsed.upgradeCost;
+        Object.assign(game, parsed);
       } catch (e) {
-        console.error("Chyba při načítání uložené hry:", e);
+        console.error("Chyba při načítání save:", e);
       }
     }
 
@@ -148,38 +484,264 @@
       return Math.floor(value).toString();
     }
 
-    function updateUI() {
-      document.getElementById("btcText").textContent = "BTC: " + formatNumber(game.btc);
-      document.getElementById("bpsText").textContent = "BTC/s: " + formatNumber(game.btcPerSecond);
-      document.getElementById("upgradeCostText").textContent = "COST: " + formatNumber(game.upgradeCost) + " BTC";
-
-      const upgradeBtn = document.getElementById("upgradeBtn");
-      upgradeBtn.disabled = game.btc < game.upgradeCost;
+    function now() {
+      return Date.now();
     }
 
-    function buyUpgrade() {
-      if (game.btc < game.upgradeCost) return;
+    function isBoostActive() {
+      return now() < game.boostEndTime;
+    }
 
-      game.btc -= game.upgradeCost;
-      game.btcPerSecond += 1;
-      game.upgradeCost *= 2;
+    function getCurrentMultiplier() {
+      return isBoostActive() ? game.boostMultiplier : 1;
+    }
 
-      updateUI();
-      saveGame();
+    function getCurrentCoinsPerSec() {
+      return game.coinsPerSec * getCurrentMultiplier();
+    }
+
+    function getCurrentClickPower() {
+      return game.clickPower * getCurrentMultiplier();
+    }
+
+    function updateLevel() {
+      game.level = Math.max(1, Math.floor(game.totalMined / 100) + 1);
+    }
+
+    function updateUI() {
+      updateLevel();
+
+      document.getElementById("coinsText").textContent = formatNumber(game.coins);
+      document.getElementById("diamondsText").textContent = formatNumber(game.diamonds);
+      document.getElementById("coinsPerSecText").textContent = formatNumber(getCurrentCoinsPerSec());
+      document.getElementById("levelText").textContent = game.level;
+      document.getElementById("vipText").textContent = formatNumber(game.vipCredits);
+      document.getElementById("referralsText").textContent = game.referrals;
+
+      document.getElementById("clickPowerText").textContent = formatNumber(getCurrentClickPower()) + "x";
+      document.getElementById("clicksBoxText").textContent = game.maxClicks + " / " + game.clicksLeft;
+
+      document.getElementById("coinBoostCostText").textContent = game.coinBoostCost + " Coins";
+      document.getElementById("diamondBoostCostText").textContent = game.diamondBoostCost + " Diamonds";
+
+      document.getElementById("buyClickPowerCostText").textContent = formatNumber(game.buyClickPowerCost);
+      document.getElementById("buyCoinsPerSecCostText").textContent = formatNumber(game.buyCoinsPerSecCost);
+      document.getElementById("buyMaxClicksCostText").textContent = formatNumber(game.buyMaxClicksCost);
+
+      document.getElementById("totalMinedText").textContent = formatNumber(game.totalMined);
+      document.getElementById("totalClicksText").textContent = formatNumber(game.totalClicks);
+      document.getElementById("profileLevelText").textContent = game.level;
+      document.getElementById("nextLevelText").textContent = formatNumber(game.level * 100) + " Coins";
+
+      if (isBoostActive()) {
+        const left = Math.max(0, Math.ceil((game.boostEndTime - now()) / 1000));
+        document.getElementById("activeBoostText").textContent =
+          game.boostType + " (" + left + "s)";
+      } else {
+        document.getElementById("activeBoostText").textContent = "Žádný";
+        game.boostMultiplier = 1;
+        game.boostType = "";
+      }
+
+      document.getElementById("profileCard").style.display =
+        document.querySelector('[data-panel="profile"]').classList.contains("active")
+          ? "block"
+          : "none";
+    }
+
+    function addCoins(amount) {
+      game.coins += amount;
+      game.totalMined += amount;
+      updateLevel();
     }
 
     function tick() {
-      game.btc += game.btcPerSecond;
+      const cps = getCurrentCoinsPerSec();
+      addCoins(cps);
       updateUI();
       saveGame();
     }
 
-    document.getElementById("upgradeBtn").addEventListener("click", buyUpgrade);
+    function restoreClicks() {
+      if (game.clicksLeft < game.maxClicks) {
+        game.clicksLeft += 1;
+        if (game.clicksLeft > game.maxClicks) game.clicksLeft = game.maxClicks;
+        updateUI();
+      }
+    }
+
+    function mineClick() {
+      if (game.clicksLeft <= 0) return;
+      const gain = getCurrentClickPower();
+      game.clicksLeft -= 1;
+      game.totalClicks += 1;
+      addCoins(gain);
+      updateUI();
+      saveGame();
+    }
+
+    function activateCoinBoost() {
+      if (game.coins < game.coinBoostCost) return;
+      game.coins -= game.coinBoostCost;
+      game.boostMultiplier = 2;
+      game.boostType = "Coin BOOST x2";
+      game.boostEndTime = now() + 5000;
+      updateUI();
+      saveGame();
+    }
+
+    function activateDiamondBoost() {
+      if (game.diamonds < game.diamondBoostCost) return;
+      game.diamonds -= game.diamondBoostCost;
+      game.boostMultiplier = 5;
+      game.boostType = "Diamond BOOST x5";
+      game.boostEndTime = now() + 5000;
+      updateUI();
+      saveGame();
+    }
+
+    function buyClickPower() {
+      if (game.coins < game.buyClickPowerCost) return;
+      game.coins -= game.buyClickPowerCost;
+      game.clickPower += 1;
+      game.buyClickPowerCost = Math.floor(game.buyClickPowerCost * 1.8);
+      updateUI();
+      saveGame();
+    }
+
+    function buyCoinsPerSec() {
+      if (game.coins < game.buyCoinsPerSecCost) return;
+      game.coins -= game.buyCoinsPerSecCost;
+      game.coinsPerSec += 1;
+      game.buyCoinsPerSecCost = Math.floor(game.buyCoinsPerSecCost * 2);
+      updateUI();
+      saveGame();
+    }
+
+    function buyMaxClicks() {
+      if (game.coins < game.buyMaxClicksCost) return;
+      game.coins -= game.buyMaxClicksCost;
+      game.maxClicks += 25;
+      game.clicksLeft += 25;
+      game.buyMaxClicksCost = Math.floor(game.buyMaxClicksCost * 2);
+      updateUI();
+      saveGame();
+    }
+
+    function buyDiamonds() {
+      if (game.coins < 500) return;
+      game.coins -= 500;
+      game.diamonds += 10;
+      updateUI();
+      saveGame();
+    }
+
+    function watchVipAd() {
+      game.vipCredits += 2;
+      updateUI();
+      saveGame();
+      alert("Získal jsi 2 VIP Credits.");
+    }
+
+    function watchDiamondAd() {
+      game.diamonds += 3;
+      updateUI();
+      saveGame();
+      alert("Získal jsi 3 Diamonds.");
+    }
+
+    function claimDailyBonus() {
+      const oneDay = 24 * 60 * 60 * 1000;
+      if (now() - game.dailyClaimedAt < oneDay) {
+        alert("Denní bonus už jsi dnes vybral.");
+        return;
+      }
+      game.dailyClaimedAt = now();
+      game.coins += 250;
+      game.diamonds += 5;
+      updateUI();
+      saveGame();
+      alert("Denní bonus: +250 Coins a +5 Diamonds");
+    }
+
+    function requestWithdraw() {
+      const amount = Number(document.getElementById("withdrawAmountInput").value || 0);
+      const status = document.getElementById("withdrawStatusText");
+
+      if (amount < 10000) {
+        status.textContent = "Výběr zamítnut: minimální částka je 10000 Coins.";
+        return;
+      }
+      if (game.referrals < 8) {
+        status.textContent = "Výběr zamítnut: musíš pozvat aspoň 8 lidí.";
+        return;
+      }
+      if (game.coins < amount) {
+        status.textContent = "Výběr zamítnut: nemáš dost Coins.";
+        return;
+      }
+
+      const fee = amount * 0.10;
+      const finalAmount = amount - fee;
+      game.coins -= amount;
+
+      status.textContent =
+        "Žádost přijata. Po poplatku 10 % by výběr byl " +
+        formatNumber(finalAmount) +
+        " Coins.";
+      updateUI();
+      saveGame();
+    }
+
+    function resetAllData() {
+      const ok = confirm("Opravdu chceš smazat všechna data a začít od 0?");
+      if (!ok) return;
+      localStorage.removeItem(SAVE_KEY);
+      location.reload();
+    }
+
+    function setupNav() {
+      const buttons = document.querySelectorAll(".nav-btn");
+      const panels = {
+        profile: document.getElementById("panel-profile"),
+        shop: document.getElementById("panel-shop"),
+        bonus: document.getElementById("panel-bonus"),
+        withdraw: document.getElementById("panel-withdraw")
+      };
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          Object.values(panels).forEach(panel => panel.classList.remove("active"));
+          panels[btn.dataset.panel].classList.add("active");
+
+          document.getElementById("profileCard").style.display =
+            btn.dataset.panel === "profile" ? "block" : "none";
+        });
+      });
+    }
+
+    document.getElementById("mineCircle").addEventListener("click", mineClick);
+    document.getElementById("coinBoostBtn").addEventListener("click", activateCoinBoost);
+    document.getElementById("diamondBoostBtn").addEventListener("click", activateDiamondBoost);
+    document.getElementById("buyClickPowerBtn").addEventListener("click", buyClickPower);
+    document.getElementById("buyCoinsPerSecBtn").addEventListener("click", buyCoinsPerSec);
+    document.getElementById("buyMaxClicksBtn").addEventListener("click", buyMaxClicks);
+    document.getElementById("buyDiamondsBtn").addEventListener("click", buyDiamonds);
+    document.getElementById("watchVipAdBtn").addEventListener("click", watchVipAd);
+    document.getElementById("watchDiamondAdBtn").addEventListener("click", watchDiamondAd);
+    document.getElementById("dailyBonusBtn").addEventListener("click", claimDailyBonus);
+    document.getElementById("withdrawBtn").addEventListener("click", requestWithdraw);
+    document.getElementById("resetDataBtn").addEventListener("click", resetAllData);
 
     loadGame();
+    setupNav();
     updateUI();
 
     setInterval(tick, 1000);
+    setInterval(restoreClicks, 300);
   </script>
 </body>
 </html>
