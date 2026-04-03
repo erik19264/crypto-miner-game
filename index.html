@@ -77,38 +77,61 @@
       padding: 12px 14px 0;
     }
 
-    .login-logo {
-      width: 108px;
-      height: 108px;
-      border-radius: 50%;
-      margin: 18px auto 14px;
+    .intro-banner {
+      width: 100%;
+      height: 160px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+      background:
+        linear-gradient(135deg, rgba(34, 0, 68, 0.72), rgba(124, 58, 237, 0.92)),
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 25%);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, #d8b4fe, #7c3aed);
-      box-shadow: 0 0 32px rgba(124, 58, 237, 0.68);
+      position: relative;
       overflow: hidden;
-      font-size: 32px;
-      font-weight: bold;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.28);
     }
 
-    .login-logo img {
-      width: 76%;
-      height: 76%;
-      object-fit: contain;
+    .intro-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.03) 0px,
+          rgba(255,255,255,0.03) 6px,
+          transparent 6px,
+          transparent 24px
+        );
+      opacity: 0.35;
     }
 
-    .login-title {
+    .intro-banner-text {
+      position: relative;
+      z-index: 2;
       text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 6px;
+      line-height: 1.1;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .login-sub {
-      text-align: center;
-      opacity: 0.76;
-      margin-bottom: 18px;
+    .intro-banner-text .small1 {
+      font-size: 18px;
+      opacity: 0.95;
+    }
+
+    .intro-banner-text .big {
+      font-size: 46px;
+      margin: 6px 0;
+    }
+
+    .intro-banner-text .small2 {
+      font-size: 18px;
+      opacity: 0.95;
     }
 
     .card {
@@ -164,11 +187,52 @@
     .btn-red { background: linear-gradient(180deg, #ef4444, #dc2626); }
     .btn-pink { background: linear-gradient(180deg, #ec4899, #db2777); }
     .btn-gray { background: linear-gradient(180deg, #64748b, #475569); }
+    .btn-silver { background: linear-gradient(180deg, #d1d5db, #9ca3af); color: #111827; }
+    .btn-gold { background: linear-gradient(180deg, #fcd34d, #d97706); color: #111827; }
 
     .small {
       font-size: 13px;
-      line-height: 1.55;
-      opacity: 0.82;
+      line-height: 1.58;
+      opacity: 0.88;
+    }
+
+    .small strong {
+      opacity: 1;
+      color: white;
+    }
+
+    .login-logo {
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      margin: 18px auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, #d8b4fe, #7c3aed);
+      box-shadow: 0 0 32px rgba(124, 58, 237, 0.68);
+      overflow: hidden;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .login-logo img {
+      width: 76%;
+      height: 76%;
+      object-fit: contain;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      text-align: center;
+      opacity: 0.76;
+      margin-bottom: 18px;
     }
 
     .page-title {
@@ -307,7 +371,8 @@
     .shop-item,
     .bonus-item,
     .profile-item,
-    .crypto-card {
+    .crypto-card,
+    .pig-card {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
       padding: 11px 12px;
@@ -317,7 +382,8 @@
     .achievement-item-title,
     .shop-item-title,
     .bonus-item-title,
-    .profile-item-title {
+    .profile-item-title,
+    .pig-card-title {
       font-size: 14px;
       font-weight: bold;
       margin-bottom: 4px;
@@ -326,12 +392,74 @@
     .achievement-item-desc,
     .shop-item-desc,
     .bonus-item-desc,
-    .profile-item-desc {
+    .profile-item-desc,
+    .pig-card-desc {
       font-size: 12px;
       opacity: 0.76;
       line-height: 1.45;
       margin-bottom: 8px;
     }
+
+    .pig-strip {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pig-card.classic {
+      border: 1px solid rgba(209,213,219,0.25);
+      background: linear-gradient(180deg, rgba(107,114,128,0.16), rgba(209,213,219,0.06));
+    }
+
+    .pig-card.standard {
+      border: 1px solid rgba(168,85,247,0.24);
+      background: linear-gradient(180deg, rgba(99,102,241,0.14), rgba(168,85,247,0.08));
+    }
+
+    .pig-card.premium {
+      border: 1px solid rgba(252,211,77,0.30);
+      background: linear-gradient(180deg, rgba(245,158,11,0.16), rgba(252,211,77,0.07));
+    }
+
+    .pig-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .pig-price {
+      font-size: 12px;
+      font-weight: bold;
+      opacity: 0.92;
+    }
+
+    .pig-status {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .fill-classic { background: linear-gradient(90deg, #e5e7eb, #9ca3af); }
+    .fill-standard { background: linear-gradient(90deg, #6366f1, #a855f7); }
+    .fill-premium { background: linear-gradient(90deg, #fcd34d, #f59e0b); }
 
     .swipe-wrap {
       overflow: hidden;
@@ -356,6 +484,25 @@
       opacity: 0.72;
       margin-top: -2px;
       margin-bottom: 10px;
+    }
+
+    .crypto-total-box {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .crypto-total-label {
+      font-size: 12px;
+      opacity: 0.74;
+      margin-bottom: 6px;
+    }
+
+    .crypto-total-value {
+      font-size: 22px;
+      font-weight: bold;
     }
 
     .crypto-list {
@@ -437,6 +584,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .panel {
@@ -477,13 +625,6 @@
 
     .shop-group.active {
       display: block;
-    }
-
-    .piggy-amount {
-      font-size: 24px;
-      font-weight: bold;
-      color: #f9a8d4;
-      margin: 8px 0 12px;
     }
 
     .status {
@@ -594,7 +735,50 @@
       <div class="topbar-sub">miniaplikace</div>
     </div>
 
-    <div class="screen active" id="loginScreen">
+    <!-- INTRO -->
+    <div class="screen active" id="introScreen">
+      <div class="screen-inner">
+        <div class="intro-banner">
+          <div class="intro-banner-text">
+            <div class="small1">Start</div>
+            <div class="big">Hraj</div>
+            <div class="small2">a buduj svůj postup</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="small">
+            <strong>Tato hra je momentálně ve zkušební verzi.</strong><br>
+            Postupně do ní budou přibývat další funkce, vylepšení a možnosti. Některé části, jako například výběr na účet nebo další herní systémy, mohou být zatím ve vývoji.<br><br>
+
+            <strong>Co tato hra umí?</strong><br>
+            V této hře získáváš Coins klikáním na obrazovku a postupně si buduješ vlastní krypto postup. Každé kliknutí ti přidá Coins, ale zároveň spotřebuje část energie.<br><br>
+
+            <strong>Jak hra funguje?</strong><br>
+            • Klikáním získáváš Coins<br>
+            • Energie se postupně obnovuje<br>
+            • Můžeš nakupovat upgrady a boosty<br>
+            • Postupně odemykáš další kryptoměny<br>
+            • Získáváš Diamonds a VIP Credits<br>
+            • Po splnění podmínek můžeš požádat o výběr<br><br>
+
+            <strong>Důležité informace</strong><br>
+            • Lepší upgrady zvyšují počet Coins za sekundu<br>
+            • Bonusy ti pomáhají růst rychleji<br>
+            • Pozvaní hráči se započítávají pro odemknutí výběru<br>
+            • Rebirth ti dá nový začátek, ale se silnějším postupem<br><br>
+
+            <strong>Než začneš</strong><br>
+            Tato verze je pouze herní simulace. Některé funkce mohou být zatím ve zkušební fázi.
+          </div>
+        </div>
+
+        <button class="btn btn-purple" id="goToLoginBtn">Hrát</button>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="screen" id="loginScreen">
       <div class="screen-inner">
         <div class="login-logo">
           <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('loginFallback').style.display='block';">
@@ -609,16 +793,18 @@
           <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
           <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
           <div class="small" style="margin-top: 12px;">
-            Tohle je herní simulace. Pozvánky a výběr jsou zatím lokální verze bez serveru.
+            Pozvánky, prasátka i výběr jsou zatím testovací herní verze bez skutečné platební brány.
           </div>
         </div>
       </div>
     </div>
 
+    <!-- HOME -->
     <div class="screen" id="homeScreen">
       <div class="swipe-wrap" id="swipeWrap">
         <div class="swipe-track" id="swipeTrack">
 
+          <!-- CLICK PAGE -->
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Crypto Miner Empire</div>
@@ -643,6 +829,8 @@
                 <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
               </div>
 
+              <div class="pig-strip" id="pigStripHome"></div>
+
               <div class="circle-wrap">
                 <div class="mine-circle" id="mineCircle">
                   <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
@@ -664,10 +852,18 @@
             </div>
           </div>
 
+          <!-- CRYPTO PAGE -->
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Kryptoměny</div>
               <div class="page-sub">přejeď doprava zpět</div>
+
+              <div class="pig-strip" id="pigStripCrypto"></div>
+
+              <div class="crypto-total-box">
+                <div class="crypto-total-label">Celkem vytěženo ze všech kryptoměn</div>
+                <div class="crypto-total-value" id="totalCryptoMined">0</div>
+              </div>
 
               <div class="card">
                 <div class="section-title">Těžení kryptoměn</div>
@@ -680,6 +876,7 @@
       </div>
     </div>
 
+    <!-- SHOP -->
     <div class="screen" id="shopScreen">
       <div class="panel active">
         <div class="card">
@@ -754,6 +951,7 @@
       </div>
     </div>
 
+    <!-- BONUS -->
     <div class="screen" id="bonusScreen">
       <div class="panel active">
         <div class="card">
@@ -790,13 +988,6 @@
           </div>
 
           <div class="bonus-item">
-            <div class="bonus-item-title">Prasátko</div>
-            <div class="bonus-item-desc">Část těžby se ukládá do prasátka. Otevřeš ho za Diamonds.</div>
-            <div class="piggy-amount" id="piggyAmountText">0 Coins</div>
-            <button class="btn btn-pink" id="openPiggyBtn">Otevřít za 10 Diamonds</button>
-          </div>
-
-          <div class="bonus-item">
             <div class="bonus-item-title">Rebirth</div>
             <div class="bonus-item-desc">Vyžaduje 100 000 Coins. Začneš znovu, ale silnější.</div>
             <button class="btn btn-purple" id="rebirthBtn">Rebirth</button>
@@ -805,15 +996,17 @@
       </div>
     </div>
 
+    <!-- WITHDRAW -->
     <div class="screen" id="withdrawScreen">
       <div class="panel active">
         <div class="card">
           <div class="section-title">Výběr</div>
 
           <div class="small" style="margin-bottom: 10px;">
-            Minimální výběr: <b>100 000 Coins</b><br>
-            Poplatek: <b>10 %</b><br>
-            Počet pozvaných pro výběr: <b>8 lidí</b>
+            <strong>Minimální výběr:</strong> 100 000 Coins ( 1 Coins je 0,16 Kč )<br>
+            <strong>Minimální vklad pro ověření účtu:</strong> 250 Kč<br>
+            <strong>Poplatek:</strong> 10 %<br>
+            <strong>Počet pozvaných pro výběr:</strong> 8 lidí
           </div>
 
           <label class="label">Jméno příjemce</label>
@@ -839,6 +1032,7 @@
       </div>
     </div>
 
+    <!-- PROFILE -->
     <div class="screen" id="profileScreen">
       <div class="panel active">
         <div class="card">
@@ -890,8 +1084,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_crypto_mining_v1";
-    const LOGIN_KEY = "crypto_miner_empire_login_v3";
+    const SAVE_KEY = "crypto_miner_empire_final_v1";
+    const LOGIN_KEY = "crypto_miner_empire_login_v4";
 
     let playerName = "Miner";
     let coins = 0;
@@ -908,8 +1102,6 @@
     let maxEnergy = 100;
     let energyCapBonus = 0;
 
-    let piggyBank = 0;
-
     let boostUntil = 0;
     let vipBoostUntil = 0;
 
@@ -920,6 +1112,33 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
+
+    const piggies = {
+      classic: {
+        name: "Classic",
+        priceCzk: 49,
+        purchased: false,
+        fill: 0,
+        fillRate: 0.12,
+        colorClass: "classic"
+      },
+      standard: {
+        name: "Standard",
+        priceCzk: 129,
+        purchased: false,
+        fill: 0,
+        fillRate: 0.06,
+        colorClass: "standard"
+      },
+      premium: {
+        name: "Premium",
+        priceCzk: 299,
+        purchased: false,
+        fill: 0,
+        fillRate: 0.03,
+        colorClass: "premium"
+      }
+    };
 
     const cryptoData = [
       { key: "btc", name: "BTC", unlocked: true, condition: "Základní kryptoměna", type: "default", amount: 0, rate: 1, upgradeLevel: 1, upgradeCost: 100 },
@@ -943,9 +1162,10 @@
     function saveGame() {
       const payload = {
         playerName, coins, diamonds, vipCredits, referrals, level, prestige,
-        clickValue, baseCoinsPerSec, energy, maxEnergy, energyCapBonus, piggyBank,
+        clickValue, baseCoinsPerSec, energy, maxEnergy, energyCapBonus,
         boostUntil, vipBoostUntil, buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
         totalClicks, lastDailyClaim,
+        piggies,
         cryptos: cryptoData.map(c => ({
           key: c.key,
           unlocked: c.unlocked,
@@ -975,7 +1195,6 @@
         energy = data.energy ?? energy;
         maxEnergy = data.maxEnergy ?? maxEnergy;
         energyCapBonus = data.energyCapBonus ?? energyCapBonus;
-        piggyBank = data.piggyBank ?? piggyBank;
         boostUntil = data.boostUntil ?? boostUntil;
         vipBoostUntil = data.vipBoostUntil ?? vipBoostUntil;
         buyClickCost = data.buyClickCost ?? buyClickCost;
@@ -984,6 +1203,14 @@
         buyDiamondCost = data.buyDiamondCost ?? buyDiamondCost;
         totalClicks = data.totalClicks ?? totalClicks;
         lastDailyClaim = data.lastDailyClaim ?? lastDailyClaim;
+
+        if (data.piggies) {
+          for (const key of Object.keys(piggies)) {
+            if (!data.piggies[key]) continue;
+            piggies[key].purchased = !!data.piggies[key].purchased;
+            piggies[key].fill = Number(data.piggies[key].fill ?? piggies[key].fill);
+          }
+        }
 
         if (Array.isArray(data.cryptos)) {
           data.cryptos.forEach(saved => {
@@ -1038,8 +1265,11 @@
       level = Math.floor(coins / 5000) + 1;
     }
 
-    function addToPiggy(amount) {
-      piggyBank += Math.floor(amount * 0.10);
+    function addToPiggies(totalGain) {
+      Object.values(piggies).forEach(p => {
+        if (!p.purchased) return;
+        p.fill += totalGain * p.fillRate;
+      });
     }
 
     function createFloatText(text) {
@@ -1065,7 +1295,7 @@
         { title: "10K Coins", desc: "Dostaň se na 10 000 Coins.", done: coins >= 10000 },
         { title: "Pozvánka", desc: "Získej 1 pozvaného člověka.", done: referrals >= 1 },
         { title: "VIP start", desc: "Získej 10 VIP Credits.", done: vipCredits >= 10 },
-        { title: "První krypto upgrade", desc: "Upgraduj jakoukoliv kryptoměnu.", done: cryptoData.some(c => c.upgradeLevel > 1) }
+        { title: "První crypto upgrade", desc: "Upgraduj jakoukoliv kryptoměnu.", done: cryptoData.some(c => c.upgradeLevel > 1) }
       ];
     }
 
@@ -1103,6 +1333,57 @@
       crypto.upgradeCost = Math.floor(crypto.upgradeCost * 1.7);
       updateUI();
       saveGame();
+    }
+    window.upgradeCrypto = upgradeCrypto;
+
+    function buyPiggy(key) {
+      if (!piggies[key]) return;
+      piggies[key].purchased = true;
+      updateUI();
+      saveGame();
+      alert(`Testovací nákup prasátka ${piggies[key].name} aktivován.`);
+    }
+    window.buyPiggy = buyPiggy;
+
+    function collectPiggy(key) {
+      if (!piggies[key] || !piggies[key].purchased) return;
+      const value = Math.floor(piggies[key].fill);
+      if (value <= 0) {
+        alert("Prasátko je zatím prázdné.");
+        return;
+      }
+      coins += value;
+      piggies[key].fill = 0;
+      updateUI();
+      saveGame();
+      alert(`Vybral jsi ${value.toLocaleString("cs-CZ")} Coins z prasátka ${piggies[key].name}.`);
+    }
+    window.collectPiggy = collectPiggy;
+
+    function renderPiggies(targetId) {
+      const target = document.getElementById(targetId);
+      target.innerHTML = Object.entries(piggies).map(([key, p]) => {
+        const percent = Math.max(0, Math.min(100, (p.fill / 50000) * 100));
+        const button = p.purchased
+          ? `<button class="btn btn-small btn-green" onclick="collectPiggy('${key}')">Vybrat</button>`
+          : `<button class="btn btn-small ${key === 'classic' ? 'btn-silver' : key === 'standard' ? 'btn-purple' : 'btn-gold'}" onclick="buyPiggy('${key}')">Koupit za ${p.priceCzk} Kč</button>`;
+        return `
+          <div class="pig-card ${p.colorClass}">
+            <div class="pig-top">
+              <div class="pig-card-title">${p.name}</div>
+              <div class="pig-price">${p.priceCzk} Kč</div>
+            </div>
+            <div class="pig-card-desc">
+              ${key === 'classic' ? 'Plní se rychle.' : key === 'standard' ? 'Plní se střední rychlostí.' : 'Plní se pomalu.'}
+            </div>
+            <div class="pig-status">${p.purchased ? 'Aktivní' : 'Neaktivní'} • Naplněno: ${Math.floor(p.fill).toLocaleString("cs-CZ")} Coins</div>
+            <div class="progress">
+              <div class="progress-fill fill-${p.colorClass}" style="width:${percent}%"></div>
+            </div>
+            ${button}
+          </div>
+        `;
+      }).join("");
     }
 
     function renderCryptos() {
@@ -1167,8 +1448,6 @@
       document.getElementById("buyEnergyCostText").textContent = buyEnergyCost.toLocaleString("cs-CZ");
       document.getElementById("buyDiamondCostText").textContent = buyDiamondCost.toLocaleString("cs-CZ");
 
-      document.getElementById("piggyAmountText").textContent = Math.floor(piggyBank).toLocaleString("cs-CZ") + " Coins";
-
       document.getElementById("profileNameText").textContent = playerName;
       document.getElementById("profileStatsText").textContent =
         `${Math.floor(coins).toLocaleString("cs-CZ")} Coins / ${diamonds} Diamonds / ${vipCredits} VIP`;
@@ -1178,15 +1457,20 @@
       document.getElementById("inviteCountText").textContent = referrals.toLocaleString("cs-CZ");
       document.getElementById("inviteLinkText").textContent = getInviteLink();
 
+      document.getElementById("totalCryptoMined").textContent =
+        Math.floor(cryptoData.reduce((sum, c) => sum + c.amount, 0)).toLocaleString("cs-CZ");
+
       renderAchievements();
       renderCryptos();
+      renderPiggies("pigStripHome");
+      renderPiggies("pigStripCrypto");
     }
 
     function mine() {
       if (energy <= 0) return;
       const gain = getRealClickValue();
       coins += gain;
-      addToPiggy(gain);
+      addToPiggies(gain);
       energy -= 1;
       totalClicks += 1;
       createFloatText("+" + gain);
@@ -1214,6 +1498,11 @@
       document.querySelector(`.shop-tab[data-group="${group}"]`).classList.add("active");
       document.getElementById("shop-" + group).classList.add("active");
     }
+
+    document.getElementById("goToLoginBtn").addEventListener("click", () => {
+      document.getElementById("introScreen").classList.remove("active");
+      document.getElementById("loginScreen").classList.add("active");
+    });
 
     document.getElementById("startGameBtn").addEventListener("click", () => {
       const input = document.getElementById("playerNameInput").value.trim();
@@ -1359,17 +1648,6 @@
       alert("Denní bonus získán.");
     });
 
-    document.getElementById("openPiggyBtn").addEventListener("click", () => {
-      if (diamonds < 10) return alert("Nemáš dost Diamonds.");
-      if (piggyBank <= 0) return alert("Prasátko je prázdné.");
-      diamonds -= 10;
-      coins += piggyBank;
-      piggyBank = 0;
-      updateUI();
-      saveGame();
-      alert("Prasátko otevřeno.");
-    });
-
     document.getElementById("rebirthBtn").addEventListener("click", () => {
       if (coins < 100000) {
         alert("Na rebirth potřebuješ aspoň 100 000 Coins.");
@@ -1387,7 +1665,6 @@
       energy = 100;
       maxEnergy = 100;
       energyCapBonus = 0;
-      piggyBank = 0;
       boostUntil = 0;
       vipBoostUntil = 0;
       buyClickCost = 50;
@@ -1395,21 +1672,28 @@
       buyEnergyCost = 75;
       buyDiamondCost = 500;
       totalClicks = 0;
+      Object.keys(piggies).forEach(k => {
+        piggies[k].fill = 0;
+        piggies[k].purchased = false;
+      });
       cryptoData.forEach(c => {
         c.unlocked = c.key === "btc";
         c.amount = 0;
         c.upgradeLevel = 1;
-        const base = {
-          btc: 100, eth: 250, bnb: 500, doge: 450, sol: 900, xrp: 1200, ada: 1600, trx: 2200,
-          avax: 3000, dot: 4200, link: 5600, ton: 7600, ltc: 9800, xmr: 12500, shib: 15000, matic: 18000
-        };
-        c.upgradeCost = base[c.key] || 1000;
-        const baseRate = {
-          btc: 1, eth: 2, bnb: 3, doge: 2, sol: 4, xrp: 3, ada: 4, trx: 5,
-          avax: 6, dot: 7, link: 8, ton: 9, ltc: 10, xmr: 12, shib: 11, matic: 13
-        };
-        c.rate = baseRate[c.key] || 1;
       });
+      cryptoData.forEach(c => {
+        const defaults = {
+          btc: { rate: 1, cost: 100 }, eth: { rate: 2, cost: 250 }, bnb: { rate: 3, cost: 500 },
+          doge: { rate: 2, cost: 450 }, sol: { rate: 4, cost: 900 }, xrp: { rate: 3, cost: 1200 },
+          ada: { rate: 4, cost: 1600 }, trx: { rate: 5, cost: 2200 }, avax: { rate: 6, cost: 3000 },
+          dot: { rate: 7, cost: 4200 }, link: { rate: 8, cost: 5600 }, ton: { rate: 9, cost: 7600 },
+          ltc: { rate: 10, cost: 9800 }, xmr: { rate: 12, cost: 12500 }, shib: { rate: 11, cost: 15000 },
+          matic: { rate: 13, cost: 18000 }
+        };
+        c.rate = defaults[c.key].rate;
+        c.upgradeCost = defaults[c.key].cost;
+      });
+
       updateUI();
       saveGame();
       alert("Rebirth hotový. Začínáš znovu, ale silnější.");
@@ -1443,10 +1727,11 @@
       }
 
       const fee = amount * 0.10;
-      const finalAmount = amount - fee;
+      const finalCoins = amount - fee;
+      const finalCzk = finalCoins * 0.16;
       coins -= amount;
       status.textContent =
-        `Žádost přijata pro ${name} na účet ${account}. Po odečtení 10 % by výběr odpovídal ${finalAmount.toFixed(2)} Coins.`;
+        `Žádost přijata pro ${name} na účet ${account}. Po odečtení 10 % zbývá ${finalCoins.toFixed(0)} Coins, což je přibližně ${finalCzk.toFixed(2)} Kč.`;
       updateUI();
       saveGame();
     });
@@ -1470,7 +1755,7 @@
     document.getElementById("logoutBtn").addEventListener("click", () => {
       logoutPlayer();
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      document.getElementById("loginScreen").classList.add("active");
+      document.getElementById("introScreen").classList.add("active");
       document.getElementById("bottomNav").classList.add("hidden");
     });
 
@@ -1485,12 +1770,12 @@
       if (!isLoggedIn()) return;
 
       const clickSideGain = baseCoinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
-      const cryptoSideGain = cryptoData
-        .filter(c => c.unlocked)
-        .reduce((sum, c) => sum + c.rate, 0) * getBoostMultiplier() * getVipMultiplier() * prestige;
+      const cryptoSideGainRaw = cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.rate, 0);
+      const cryptoSideGain = cryptoSideGainRaw * getBoostMultiplier() * getVipMultiplier() * prestige;
+      const totalGain = clickSideGain + cryptoSideGain;
 
-      coins += clickSideGain + cryptoSideGain;
-      addToPiggy(clickSideGain + cryptoSideGain);
+      coins += totalGain;
+      addToPiggies(totalGain);
 
       cryptoData.forEach(c => {
         if (!c.unlocked) return;
@@ -1544,6 +1829,7 @@
     loadGame();
 
     if (isLoggedIn()) {
+      document.getElementById("introScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
