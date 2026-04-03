@@ -77,63 +77,6 @@
       padding: 12px 14px 0;
     }
 
-    .intro-banner {
-      width: 100%;
-      height: 220px;
-      border-radius: 18px;
-      margin-bottom: 14px;
-      background:
-        linear-gradient(135deg, rgba(34, 0, 68, 0.72), rgba(124, 58, 237, 0.92)),
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 25%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 0 30px rgba(124, 58, 237, 0.28);
-    }
-
-    .intro-banner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(255,255,255,0.03) 0px,
-          rgba(255,255,255,0.03) 6px,
-          transparent 6px,
-          transparent 24px
-        );
-      opacity: 0.35;
-    }
-
-    .intro-banner-text {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      line-height: 1.1;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .intro-banner-text .small1 {
-      font-size: 18px;
-      opacity: 0.95;
-    }
-
-    .intro-banner-text .big {
-      font-size: 46px;
-      margin: 6px 0;
-    }
-
-    .intro-banner-text .small2 {
-      font-size: 18px;
-      opacity: 0.95;
-    }
-
     .card {
       background: rgba(16, 22, 38, 0.95);
       border: 1px solid rgba(255,255,255,0.06);
@@ -728,21 +671,7 @@
       <div class="topbar-sub">miniaplikace</div>
     </div>
 
-    <div class="screen active" id="introScreen">
-      <div class="screen-inner">
-        <div class="intro-banner">
-          <div class="intro-banner-text">
-            <div class="small1">Start</div>
-            <div class="big">Hraj</div>
-            <div class="small2">a buduj svůj postup</div>
-          </div>
-        </div>
-
-        <button class="btn btn-purple" id="goToLoginBtn">Hrát</button>
-      </div>
-    </div>
-
-    <div class="screen" id="loginScreen">
+    <div class="screen active" id="loginScreen">
       <div class="screen-inner">
         <div class="login-logo">
           <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('loginFallback').style.display='block';">
@@ -1041,8 +970,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_final_v1_no_intro_text";
-    const LOGIN_KEY = "crypto_miner_empire_login_v4_no_intro_text";
+    const SAVE_KEY = "crypto_miner_empire_login_start_v1";
+    const LOGIN_KEY = "crypto_miner_empire_login_start_v1_flag";
 
     let playerName = "Miner";
     let coins = 0;
@@ -1071,30 +1000,9 @@
     let totalClicks = 0;
 
     const piggies = {
-      classic: {
-        name: "Classic",
-        priceCzk: 49,
-        purchased: false,
-        fill: 0,
-        fillRate: 0.12,
-        colorClass: "classic"
-      },
-      standard: {
-        name: "Standard",
-        priceCzk: 129,
-        purchased: false,
-        fill: 0,
-        fillRate: 0.06,
-        colorClass: "standard"
-      },
-      premium: {
-        name: "Premium",
-        priceCzk: 299,
-        purchased: false,
-        fill: 0,
-        fillRate: 0.03,
-        colorClass: "premium"
-      }
+      classic: { name: "Classic", priceCzk: 49, purchased: false, fill: 0, fillRate: 0.12, colorClass: "classic" },
+      standard: { name: "Standard", priceCzk: 129, purchased: false, fill: 0, fillRate: 0.06, colorClass: "standard" },
+      premium: { name: "Premium", priceCzk: 299, purchased: false, fill: 0, fillRate: 0.03, colorClass: "premium" }
     };
 
     const cryptoData = [
@@ -1456,11 +1364,6 @@
       document.getElementById("shop-" + group).classList.add("active");
     }
 
-    document.getElementById("goToLoginBtn").addEventListener("click", () => {
-      document.getElementById("introScreen").classList.remove("active");
-      document.getElementById("loginScreen").classList.add("active");
-    });
-
     document.getElementById("startGameBtn").addEventListener("click", () => {
       const input = document.getElementById("playerNameInput").value.trim();
       if (input) playerName = input;
@@ -1712,7 +1615,7 @@
     document.getElementById("logoutBtn").addEventListener("click", () => {
       logoutPlayer();
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      document.getElementById("introScreen").classList.add("active");
+      document.getElementById("loginScreen").classList.add("active");
       document.getElementById("bottomNav").classList.add("hidden");
     });
 
@@ -1785,7 +1688,6 @@
     loadGame();
 
     if (isLoggedIn()) {
-      document.getElementById("introScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
