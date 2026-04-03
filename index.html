@@ -213,6 +213,10 @@
       font-weight: bold;
     }
 
+    .player-card {
+      margin-top: 110px;
+    }
+
     .player-card .player-line {
       font-size: 14px;
       line-height: 1.75;
@@ -689,37 +693,37 @@
 
     .side-pigs {
       position: absolute;
-      top: 138px;
-      left: 0;
-      right: 0;
+      top: 118px;
+      left: 10px;
+      width: 150px;
       pointer-events: none;
       z-index: 30;
     }
 
     .pig-widget {
       position: absolute;
-      width: 66px;
+      width: 68px;
       pointer-events: auto;
       text-align: center;
       cursor: pointer;
       user-select: none;
     }
 
-    .pig-widget.left-top { left: 4px; top: 0; }
-    .pig-widget.right-top { right: 4px; top: 0; }
-    .pig-widget.left-bottom { left: 4px; top: 96px; }
+    .pig-widget.left-top { left: 0; top: 0; }
+    .pig-widget.right-top { left: 78px; top: 0; }
+    .pig-widget.left-bottom { left: 0; top: 92px; }
 
     .pig-icon {
-      width: 62px;
-      height: 62px;
+      width: 54px;
+      height: 54px;
       margin: 0 auto 4px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 26px;
       border: 2px solid rgba(255,255,255,0.18);
-      box-shadow: 0 0 18px rgba(0,0,0,0.28);
+      box-shadow: 0 0 12px rgba(0,0,0,0.24);
     }
 
     .pig-classic {
@@ -735,16 +739,18 @@
     }
 
     .pig-label {
-      font-size: 10px;
+      font-size: 8px;
       font-weight: bold;
-      opacity: 0.94;
-      margin-bottom: 2px;
+      opacity: 0.96;
+      margin-bottom: 1px;
+      line-height: 1.1;
+      white-space: nowrap;
       text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
     .pig-mini-fill {
-      font-size: 10px;
-      opacity: 0.84;
+      font-size: 9px;
+      opacity: 0.88;
       text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
@@ -1168,8 +1174,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_crypto_style_v1";
-    const LOGIN_KEY = "crypto_miner_empire_crypto_style_v1_flag";
+    const SAVE_KEY = "crypto_miner_empire_crypto_style_small_pigs_v1";
+    const LOGIN_KEY = "crypto_miner_empire_crypto_style_small_pigs_v1_flag";
 
     let playerName = "Miner";
     let coins = 0;
