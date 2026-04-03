@@ -79,7 +79,7 @@
 
     .intro-banner {
       width: 100%;
-      height: 160px;
+      height: 220px;
       border-radius: 18px;
       margin-bottom: 14px;
       background:
@@ -580,13 +580,6 @@
       font-weight: bold;
     }
 
-    .inline-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
     .panel {
       display: none;
       padding: 12px 14px 0;
@@ -735,7 +728,6 @@
       <div class="topbar-sub">miniaplikace</div>
     </div>
 
-    <!-- INTRO -->
     <div class="screen active" id="introScreen">
       <div class="screen-inner">
         <div class="intro-banner">
@@ -746,38 +738,10 @@
           </div>
         </div>
 
-        <div class="card">
-          <div class="small">
-            <strong>Tato hra je momentálně ve zkušební verzi.</strong><br>
-            Postupně do ní budou přibývat další funkce, vylepšení a možnosti. Některé části, jako například výběr na účet nebo další herní systémy, mohou být zatím ve vývoji.<br><br>
-
-            <strong>Co tato hra umí?</strong><br>
-            V této hře získáváš Coins klikáním na obrazovku a postupně si buduješ vlastní krypto postup. Každé kliknutí ti přidá Coins, ale zároveň spotřebuje část energie.<br><br>
-
-            <strong>Jak hra funguje?</strong><br>
-            • Klikáním získáváš Coins<br>
-            • Energie se postupně obnovuje<br>
-            • Můžeš nakupovat upgrady a boosty<br>
-            • Postupně odemykáš další kryptoměny<br>
-            • Získáváš Diamonds a VIP Credits<br>
-            • Po splnění podmínek můžeš požádat o výběr<br><br>
-
-            <strong>Důležité informace</strong><br>
-            • Lepší upgrady zvyšují počet Coins za sekundu<br>
-            • Bonusy ti pomáhají růst rychleji<br>
-            • Pozvaní hráči se započítávají pro odemknutí výběru<br>
-            • Rebirth ti dá nový začátek, ale se silnějším postupem<br><br>
-
-            <strong>Než začneš</strong><br>
-            Tato verze je pouze herní simulace. Některé funkce mohou být zatím ve zkušební fázi.
-          </div>
-        </div>
-
         <button class="btn btn-purple" id="goToLoginBtn">Hrát</button>
       </div>
     </div>
 
-    <!-- LOGIN -->
     <div class="screen" id="loginScreen">
       <div class="screen-inner">
         <div class="login-logo">
@@ -799,12 +763,10 @@
       </div>
     </div>
 
-    <!-- HOME -->
     <div class="screen" id="homeScreen">
       <div class="swipe-wrap" id="swipeWrap">
         <div class="swipe-track" id="swipeTrack">
 
-          <!-- CLICK PAGE -->
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Crypto Miner Empire</div>
@@ -852,7 +814,6 @@
             </div>
           </div>
 
-          <!-- CRYPTO PAGE -->
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Kryptoměny</div>
@@ -876,7 +837,6 @@
       </div>
     </div>
 
-    <!-- SHOP -->
     <div class="screen" id="shopScreen">
       <div class="panel active">
         <div class="card">
@@ -951,7 +911,6 @@
       </div>
     </div>
 
-    <!-- BONUS -->
     <div class="screen" id="bonusScreen">
       <div class="panel active">
         <div class="card">
@@ -996,7 +955,6 @@
       </div>
     </div>
 
-    <!-- WITHDRAW -->
     <div class="screen" id="withdrawScreen">
       <div class="panel active">
         <div class="card">
@@ -1032,7 +990,6 @@
       </div>
     </div>
 
-    <!-- PROFILE -->
     <div class="screen" id="profileScreen">
       <div class="panel active">
         <div class="card">
@@ -1084,8 +1041,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_final_v1";
-    const LOGIN_KEY = "crypto_miner_empire_login_v4";
+    const SAVE_KEY = "crypto_miner_empire_final_v1_no_intro_text";
+    const LOGIN_KEY = "crypto_miner_empire_login_v4_no_intro_text";
 
     let playerName = "Miner";
     let coins = 0;
@@ -1800,7 +1757,6 @@
       updateUI();
     }, 500);
 
-    // swipe
     let currentPage = 0;
     const swipeWrap = document.getElementById("swipeWrap");
     const swipeTrack = document.getElementById("swipeTrack");
