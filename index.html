@@ -32,21 +32,20 @@
       overflow: hidden;
       position: relative;
       background:
-        radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.35), transparent 30%),
-        radial-gradient(circle at 80% 90%, rgba(59, 130, 246, 0.25), transparent 30%),
-        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.15), transparent 40%),
-        linear-gradient(180deg, #020617 0%, #050b1a 40%, #07132a 100%);
+        radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.18), transparent 30%),
+        radial-gradient(circle at 80% 90%, rgba(59, 130, 246, 0.16), transparent 30%),
+        linear-gradient(180deg, #06111f 0%, #08152a 35%, #0a1730 100%);
     }
 
     .topbar {
       height: 58px;
       padding: 10px 14px 8px;
-      background: rgba(13, 18, 32, 0.92);
+      background: rgba(13, 18, 32, 0.94);
       border-bottom: 1px solid rgba(255,255,255,0.06);
       text-align: center;
       position: sticky;
       top: 0;
-      z-index: 70;
+      z-index: 80;
       backdrop-filter: blur(10px);
     }
 
@@ -308,8 +307,7 @@
     .achievement-item,
     .shop-item,
     .bonus-item,
-    .profile-item,
-    .crypto-card {
+    .profile-item {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
       padding: 11px 12px;
@@ -360,98 +358,194 @@
       margin-bottom: 10px;
     }
 
-    .crypto-total-box {
-      background: rgba(255,255,255,0.03);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .crypto-total-label {
-      font-size: 12px;
-      opacity: 0.74;
-      margin-bottom: 6px;
-    }
-
-    .crypto-total-value {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .crypto-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .crypto-card {
-      background: rgba(18, 25, 43, 0.95);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 15px;
-      padding: 14px;
-      margin-bottom: 0;
-    }
-
-    .crypto-card.locked {
-      opacity: 0.62;
-      filter: grayscale(0.35);
-    }
-
-    .crypto-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .crypto-name {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .crypto-state {
-      font-size: 12px;
-      opacity: 0.78;
-    }
-
-    .crypto-desc {
-      font-size: 13px;
-      line-height: 1.5;
-      opacity: 0.82;
-      margin-bottom: 10px;
-    }
-
-    .crypto-req {
-      font-size: 12px;
-      opacity: 0.72;
-      margin-bottom: 10px;
-    }
-
-    .crypto-grid {
+    .crypto-summary {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    .crypto-stat-box {
-      background: rgba(255,255,255,0.03);
-      border-radius: 10px;
-      padding: 10px;
+    .crypto-summary-box {
+      background: linear-gradient(180deg, rgba(28,37,58,0.98), rgba(16,24,40,0.98));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px;
       text-align: center;
     }
 
-    .crypto-stat-label {
+    .crypto-summary-label {
       font-size: 11px;
-      opacity: 0.7;
+      opacity: 0.72;
       margin-bottom: 6px;
     }
 
-    .crypto-stat-value {
-      font-size: 13px;
+    .crypto-summary-value {
+      font-size: 18px;
       font-weight: bold;
+    }
+
+    .crypto-board {
+      display: grid;
+      gap: 12px;
+    }
+
+    .crypto-machine {
+      background: linear-gradient(180deg, #d7dde7 0%, #aab4c4 100%);
+      border-radius: 22px;
+      padding: 10px;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.2), 0 6px 18px rgba(0,0,0,0.22);
+    }
+
+    .crypto-machine.locked {
+      filter: grayscale(0.55);
+      opacity: 0.72;
+    }
+
+    .crypto-machine-top {
+      background: linear-gradient(180deg, #4b5563, #374151);
+      color: white;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .crypto-machine-main {
+      display: grid;
+      grid-template-columns: 74px 1fr 128px;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .crypto-icon-box {
+      background: #10151e;
+      border-radius: 16px;
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+    }
+
+    .crypto-emoji {
+      font-size: 34px;
+      text-align: center;
+      line-height: 1;
+      margin-top: 4px;
+    }
+
+    .crypto-progress-mini {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .crypto-progress-mini-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22d3ee, #a855f7);
+      transition: width 0.3s ease;
+    }
+
+    .crypto-progress-mini-text {
+      font-size: 10px;
+      text-align: center;
+      margin-top: 4px;
+      color: white;
+      opacity: 0.9;
+      font-weight: bold;
+    }
+
+    .crypto-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #111827;
+      padding: 4px 0;
+    }
+
+    .crypto-name-big {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .crypto-desc-small {
+      font-size: 12px;
+      line-height: 1.35;
+      opacity: 0.8;
+      min-height: 32px;
+    }
+
+    .crypto-right {
+      background: linear-gradient(180deg, #fbbf24, #f59e0b);
+      border-radius: 16px;
+      padding: 8px 10px;
+      color: #111827;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.12);
+    }
+
+    .crypto-level {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1.1;
+    }
+
+    .crypto-level strong {
+      font-size: 22px;
+      display: block;
+      line-height: 1;
+    }
+
+    .crypto-cost {
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.1;
+      margin-top: 8px;
+    }
+
+    .crypto-cost strong {
+      font-size: 17px;
+      display: block;
+      line-height: 1;
+    }
+
+    .crypto-upgrade-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      background: linear-gradient(180deg, #111827, #1f2937);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .crypto-upgrade-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .crypto-lock-text {
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 8px;
+      color: #111827;
+      opacity: 0.8;
     }
 
     .panel {
@@ -593,7 +687,6 @@
       display: none !important;
     }
 
-    /* SIDE PIGS */
     .side-pigs {
       position: absolute;
       top: 138px;
@@ -826,17 +919,20 @@
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Kryptoměny</div>
-              <div class="page-sub">přejeď doprava zpět</div>
+              <div class="page-sub">manager styl</div>
 
-              <div class="crypto-total-box">
-                <div class="crypto-total-label">Celkem vytěženo ze všech kryptoměn</div>
-                <div class="crypto-total-value" id="totalCryptoMined">0</div>
+              <div class="crypto-summary">
+                <div class="crypto-summary-box">
+                  <div class="crypto-summary-label">Celkem vytěženo</div>
+                  <div class="crypto-summary-value" id="totalCryptoMined">0</div>
+                </div>
+                <div class="crypto-summary-box">
+                  <div class="crypto-summary-label">Celkem / sec</div>
+                  <div class="crypto-summary-value" id="totalCryptoPerSec">0</div>
+                </div>
               </div>
 
-              <div class="card">
-                <div class="section-title">Těžení kryptoměn</div>
-                <div class="crypto-list" id="cryptoList"></div>
-              </div>
+              <div class="crypto-board" id="cryptoBoard"></div>
             </div>
           </div>
 
@@ -1072,8 +1168,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_side_pigs_v1";
-    const LOGIN_KEY = "crypto_miner_empire_side_pigs_v1_flag";
+    const SAVE_KEY = "crypto_miner_empire_crypto_style_v1";
+    const LOGIN_KEY = "crypto_miner_empire_crypto_style_v1_flag";
 
     let playerName = "Miner";
     let coins = 0;
@@ -1100,7 +1196,6 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
-
     let currentPigKey = null;
 
     const piggies = {
@@ -1146,22 +1241,22 @@
     ];
 
     const cryptoData = [
-      { key: "btc", name: "BTC", unlocked: true, condition: "Základní kryptoměna", type: "default", amount: 0, rate: 1, upgradeLevel: 1, upgradeCost: 100 },
-      { key: "eth", name: "Ethereum", unlocked: false, condition: "Level 3", type: "level", req: 3, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 250 },
-      { key: "bnb", name: "BNB", unlocked: false, condition: "Level 5", type: "level", req: 5, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 500 },
-      { key: "doge", name: "Dogecoin", unlocked: false, condition: "100 kliknutí", type: "clicks", req: 100, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 450 },
-      { key: "sol", name: "Solana", unlocked: false, condition: "Level 8", type: "level", req: 8, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 900 },
-      { key: "xrp", name: "XRP", unlocked: false, condition: "250 kliknutí", type: "clicks", req: 250, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 1200 },
-      { key: "ada", name: "Cardano", unlocked: false, condition: "10 000 Coins", type: "coins", req: 10000, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 1600 },
-      { key: "trx", name: "Tron", unlocked: false, condition: "Level 12", type: "level", req: 12, amount: 0, rate: 5, upgradeLevel: 1, upgradeCost: 2200 },
-      { key: "avax", name: "Avalanche", unlocked: false, condition: "500 kliknutí", type: "clicks", req: 500, amount: 0, rate: 6, upgradeLevel: 1, upgradeCost: 3000 },
-      { key: "dot", name: "Polkadot", unlocked: false, condition: "25 000 Coins", type: "coins", req: 25000, amount: 0, rate: 7, upgradeLevel: 1, upgradeCost: 4200 },
-      { key: "link", name: "Chainlink", unlocked: false, condition: "Level 15", type: "level", req: 15, amount: 0, rate: 8, upgradeLevel: 1, upgradeCost: 5600 },
-      { key: "ton", name: "Toncoin", unlocked: false, condition: "750 kliknutí", type: "clicks", req: 750, amount: 0, rate: 9, upgradeLevel: 1, upgradeCost: 7600 },
-      { key: "ltc", name: "Litecoin", unlocked: false, condition: "50 000 Coins", type: "coins", req: 50000, amount: 0, rate: 10, upgradeLevel: 1, upgradeCost: 9800 },
-      { key: "xmr", name: "Monero", unlocked: false, condition: "Level 20", type: "level", req: 20, amount: 0, rate: 12, upgradeLevel: 1, upgradeCost: 12500 },
-      { key: "shib", name: "Shiba Inu", unlocked: false, condition: "1000 kliknutí", type: "clicks", req: 1000, amount: 0, rate: 11, upgradeLevel: 1, upgradeCost: 15000 },
-      { key: "matic", name: "Polygon", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000 }
+      { key: "btc", name: "BTC", icon: "₿", unlocked: true, condition: "Základní kryptoměna", type: "default", amount: 0, rate: 1, upgradeLevel: 1, upgradeCost: 100, goal: 200 },
+      { key: "eth", name: "ETH", icon: "◆", unlocked: false, condition: "Level 3", type: "level", req: 3, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 250, goal: 200 },
+      { key: "bnb", name: "BNB", icon: "⬢", unlocked: false, condition: "Level 5", type: "level", req: 5, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 500, goal: 200 },
+      { key: "doge", name: "DOGE", icon: "Ð", unlocked: false, condition: "100 kliknutí", type: "clicks", req: 100, amount: 0, rate: 2, upgradeLevel: 1, upgradeCost: 450, goal: 150 },
+      { key: "sol", name: "SOL", icon: "◫", unlocked: false, condition: "Level 8", type: "level", req: 8, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 900, goal: 220 },
+      { key: "xrp", name: "XRP", icon: "✕", unlocked: false, condition: "250 kliknutí", type: "clicks", req: 250, amount: 0, rate: 3, upgradeLevel: 1, upgradeCost: 1200, goal: 180 },
+      { key: "ada", name: "ADA", icon: "◌", unlocked: false, condition: "10 000 Coins", type: "coins", req: 10000, amount: 0, rate: 4, upgradeLevel: 1, upgradeCost: 1600, goal: 250 },
+      { key: "trx", name: "TRX", icon: "△", unlocked: false, condition: "Level 12", type: "level", req: 12, amount: 0, rate: 5, upgradeLevel: 1, upgradeCost: 2200, goal: 260 },
+      { key: "avax", name: "AVAX", icon: "A", unlocked: false, condition: "500 kliknutí", type: "clicks", req: 500, amount: 0, rate: 6, upgradeLevel: 1, upgradeCost: 3000, goal: 300 },
+      { key: "dot", name: "DOT", icon: "•", unlocked: false, condition: "25 000 Coins", type: "coins", req: 25000, amount: 0, rate: 7, upgradeLevel: 1, upgradeCost: 4200, goal: 280 },
+      { key: "link", name: "LINK", icon: "⬡", unlocked: false, condition: "Level 15", type: "level", req: 15, amount: 0, rate: 8, upgradeLevel: 1, upgradeCost: 5600, goal: 320 },
+      { key: "ton", name: "TON", icon: "◯", unlocked: false, condition: "750 kliknutí", type: "clicks", req: 750, amount: 0, rate: 9, upgradeLevel: 1, upgradeCost: 7600, goal: 300 },
+      { key: "ltc", name: "LTC", icon: "Ł", unlocked: false, condition: "50 000 Coins", type: "coins", req: 50000, amount: 0, rate: 10, upgradeLevel: 1, upgradeCost: 9800, goal: 300 },
+      { key: "xmr", name: "XMR", icon: "ɱ", unlocked: false, condition: "Level 20", type: "level", req: 20, amount: 0, rate: 12, upgradeLevel: 1, upgradeCost: 12500, goal: 350 },
+      { key: "shib", name: "SHIB", icon: "犬", unlocked: false, condition: "1000 kliknutí", type: "clicks", req: 1000, amount: 0, rate: 11, upgradeLevel: 1, upgradeCost: 15000, goal: 330 },
+      { key: "matic", name: "MATIC", icon: "M", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000, goal: 360 }
     ];
 
     function saveGame() {
@@ -1342,6 +1437,57 @@
     }
     window.upgradeCrypto = upgradeCrypto;
 
+    function getCryptoProgressPercent(c) {
+      return Math.min(100, (c.upgradeLevel / c.goal) * 100);
+    }
+
+    function renderCryptoBoard() {
+      const board = document.getElementById("cryptoBoard");
+      board.innerHTML = cryptoData.map(c => {
+        const percent = getCryptoProgressPercent(c);
+        const canAfford = coins >= c.upgradeCost;
+        return `
+          <div class="crypto-machine ${c.unlocked ? "" : "locked"}">
+            <div class="crypto-machine-top">
+              ${c.unlocked ? `${c.rate.toLocaleString("cs-CZ")} / sec` : `Zamčeno • ${c.condition}`}
+            </div>
+
+            <div class="crypto-machine-main">
+              <div class="crypto-icon-box">
+                <div class="crypto-emoji">${c.icon}</div>
+                <div class="crypto-progress-mini">
+                  <div class="crypto-progress-mini-fill" style="width:${percent}%"></div>
+                </div>
+                <div class="crypto-progress-mini-text">${c.upgradeLevel}/${c.goal}</div>
+              </div>
+
+              <div class="crypto-center">
+                <div class="crypto-name-big">${c.name}</div>
+                <div class="crypto-desc-small">
+                  ${c.unlocked ? `Automatická těžba a postupné vylepšování.` : `Odemkneš po splnění podmínky.`}
+                </div>
+              </div>
+
+              <div class="crypto-right">
+                <div class="crypto-level">
+                  <strong>x${c.upgradeLevel}</strong>
+                  Levels
+                </div>
+                <div class="crypto-cost">
+                  <strong>${c.upgradeCost.toLocaleString("cs-CZ")}</strong>
+                  Coins
+                </div>
+                ${c.unlocked
+                  ? `<button class="crypto-upgrade-btn" onclick="upgradeCrypto('${c.key}')" ${canAfford ? "" : "disabled"}>Upgrade</button>`
+                  : `<div class="crypto-lock-text">Zamčeno</div>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
     function renderSidePigs() {
       const container = document.getElementById("sidePigsHome");
       container.innerHTML = pigOrder.map(item => {
@@ -1418,49 +1564,6 @@
       alert(`Vybral jsi ${value.toLocaleString("cs-CZ")} Coins z prasátka ${p.name}.`);
     }
 
-    function renderCryptos() {
-      const box = document.getElementById("cryptoList");
-      box.innerHTML = cryptoData.map(c => `
-        <div class="crypto-card ${c.unlocked ? "" : "locked"}">
-          <div class="crypto-head">
-            <div class="crypto-name">${c.name}</div>
-            <div class="crypto-state">${c.unlocked ? "Odemčeno" : "Zamčeno"}</div>
-          </div>
-
-          <div class="crypto-desc">
-            ${c.unlocked
-              ? `Tahle kryptoměna se těží automaticky a můžeš ji vylepšovat.`
-              : `Podmínka odemčení: ${c.condition}`
-            }
-          </div>
-
-          ${c.unlocked ? `
-            <div class="crypto-grid">
-              <div class="crypto-stat-box">
-                <div class="crypto-stat-label">Množství</div>
-                <div class="crypto-stat-value">${Math.floor(c.amount).toLocaleString("cs-CZ")}</div>
-              </div>
-              <div class="crypto-stat-box">
-                <div class="crypto-stat-label">Těžba / s</div>
-                <div class="crypto-stat-value">${c.rate.toLocaleString("cs-CZ")}</div>
-              </div>
-              <div class="crypto-stat-box">
-                <div class="crypto-stat-label">Upgrade level</div>
-                <div class="crypto-stat-value">${c.upgradeLevel}</div>
-              </div>
-              <div class="crypto-stat-box">
-                <div class="crypto-stat-label">Cena upgradu</div>
-                <div class="crypto-stat-value">${c.upgradeCost.toLocaleString("cs-CZ")}</div>
-              </div>
-            </div>
-            <button class="btn btn-blue" onclick="upgradeCrypto('${c.key}')">Upgrade za ${c.upgradeCost.toLocaleString("cs-CZ")} Coins</button>
-          ` : `
-            <div class="crypto-req">Ještě nesplněno</div>
-          `}
-        </div>
-      `).join("");
-    }
-
     function updateUI() {
       updateLevel();
       tryUnlockCryptos();
@@ -1491,9 +1594,11 @@
 
       document.getElementById("totalCryptoMined").textContent =
         Math.floor(cryptoData.reduce((sum, c) => sum + c.amount, 0)).toLocaleString("cs-CZ");
+      document.getElementById("totalCryptoPerSec").textContent =
+        getCryptoMiningPerSecRaw().toLocaleString("cs-CZ");
 
       renderAchievements();
-      renderCryptos();
+      renderCryptoBoard();
       renderSidePigs();
 
       if (currentPigKey) openPigModal(currentPigKey);
