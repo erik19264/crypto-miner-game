@@ -213,8 +213,24 @@
       font-weight: bold;
     }
 
-    .player-card {
-      margin-top: 110px;
+    .pig-open-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .pig-open-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.18);
+      background: radial-gradient(circle at 35% 30%, #ffd7f6, #ff8ad8 55%, #9d174d);
+      box-shadow: 0 0 14px rgba(236,72,153,0.32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
     }
 
     .player-card .player-line {
@@ -691,69 +707,6 @@
       display: none !important;
     }
 
-    .side-pigs {
-      position: absolute;
-      top: 118px;
-      left: 10px;
-      width: 150px;
-      pointer-events: none;
-      z-index: 30;
-    }
-
-    .pig-widget {
-      position: absolute;
-      width: 68px;
-      pointer-events: auto;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .pig-widget.left-top { left: 0; top: 0; }
-    .pig-widget.right-top { left: 78px; top: 0; }
-    .pig-widget.left-bottom { left: 0; top: 92px; }
-
-    .pig-icon {
-      width: 54px;
-      height: 54px;
-      margin: 0 auto 4px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      border: 2px solid rgba(255,255,255,0.18);
-      box-shadow: 0 0 12px rgba(0,0,0,0.24);
-    }
-
-    .pig-classic {
-      background: radial-gradient(circle at 35% 30%, #f3f4f6, #9ca3af 70%, #6b7280);
-    }
-
-    .pig-standard {
-      background: radial-gradient(circle at 35% 30%, #c4b5fd, #8b5cf6 60%, #4338ca);
-    }
-
-    .pig-premium {
-      background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 60%, #b45309);
-    }
-
-    .pig-label {
-      font-size: 8px;
-      font-weight: bold;
-      opacity: 0.96;
-      margin-bottom: 1px;
-      line-height: 1.1;
-      white-space: nowrap;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    }
-
-    .pig-mini-fill {
-      font-size: 9px;
-      opacity: 0.88;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    }
-
     .pig-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -840,6 +793,108 @@
       flex: 1;
       min-width: 120px;
     }
+
+    .pig-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .pig-item {
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .pig-item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pig-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .pig-item-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px solid rgba(255,255,255,0.18);
+      flex-shrink: 0;
+    }
+
+    .pig-classic {
+      background: radial-gradient(circle at 35% 30%, #f3f4f6, #9ca3af 70%, #6b7280);
+    }
+
+    .pig-standard {
+      background: radial-gradient(circle at 35% 30%, #c4b5fd, #8b5cf6 60%, #4338ca);
+    }
+
+    .pig-premium {
+      background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 60%, #b45309);
+    }
+
+    .pig-item-title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .pig-item-sub {
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .pig-item-price {
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .pig-item-stats {
+      font-size: 12px;
+      opacity: 0.9;
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+
+    .pig-item-progress {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .pig-item-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .pig-item-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pig-item-actions .btn-small {
+      flex: 1;
+      min-width: 110px;
+    }
   </style>
 </head>
 <body>
@@ -872,8 +927,6 @@
     </div>
 
     <div class="screen" id="homeScreen">
-      <div class="side-pigs" id="sidePigsHome"></div>
-
       <div class="swipe-wrap" id="swipeWrap">
         <div class="swipe-track" id="swipeTrack">
 
@@ -881,6 +934,10 @@
             <div class="screen-inner">
               <div class="page-title">Crypto Miner Empire</div>
               <div class="page-sub">klikací těžba</div>
+
+              <div class="pig-open-wrap">
+                <button class="pig-open-btn" id="openPigListBtn" title="Prasátka">🐷</button>
+              </div>
 
               <div class="mini-boxes">
                 <div class="mini-box">
@@ -1150,32 +1207,26 @@
   </div>
 
   <div class="pig-modal-backdrop" id="pigModalBackdrop">
-    <div class="pig-modal">
+    <div class="pig-modal" id="pigModalBox">
       <div class="pig-modal-head">
-        <div class="pig-modal-icon" id="pigModalIcon">🐷</div>
+        <div class="pig-modal-icon pig-standard">🐷</div>
         <div>
-          <div class="pig-modal-title" id="pigModalTitle">Classic</div>
-          <div class="pig-modal-sub" id="pigModalSub">Stříbrné prasátko</div>
+          <div class="pig-modal-title">Prasátka</div>
+          <div class="pig-modal-sub">Classic, Standard, Premium</div>
         </div>
       </div>
 
-      <div class="pig-progress">
-        <div class="pig-progress-fill" id="pigModalProgress"></div>
-      </div>
+      <div class="pig-list" id="pigList"></div>
 
-      <div class="pig-stats" id="pigModalStats"></div>
-
-      <div class="pig-modal-actions">
-        <button class="btn btn-small btn-blue" id="pigBuyBtn">Koupit</button>
-        <button class="btn btn-small btn-green" id="pigCollectBtn">Vybrat</button>
+      <div class="pig-modal-actions" style="margin-top: 12px;">
         <button class="btn btn-small btn-gray" id="pigCloseBtn">Zavřít</button>
       </div>
     </div>
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_crypto_style_small_pigs_v1";
-    const LOGIN_KEY = "crypto_miner_empire_crypto_style_small_pigs_v1_flag";
+    const SAVE_KEY = "crypto_miner_empire_one_pig_icon_v1";
+    const LOGIN_KEY = "crypto_miner_empire_one_pig_icon_v1_flag";
 
     let playerName = "Miner";
     let coins = 0;
@@ -1202,7 +1253,6 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
-    let currentPigKey = null;
 
     const piggies = {
       classic: {
@@ -1239,12 +1289,6 @@
         desc: "Plní se pomalu, ale pojme nejvíc."
       }
     };
-
-    const pigOrder = [
-      { key: "classic", pos: "left-top" },
-      { key: "standard", pos: "right-top" },
-      { key: "premium", pos: "left-bottom" }
-    ];
 
     const cryptoData = [
       { key: "btc", name: "BTC", icon: "₿", unlocked: true, condition: "Základní kryptoměna", type: "default", amount: 0, rate: 1, upgradeLevel: 1, upgradeCost: 100, goal: 200 },
@@ -1494,54 +1538,52 @@
       }).join("");
     }
 
-    function renderSidePigs() {
-      const container = document.getElementById("sidePigsHome");
-      container.innerHTML = pigOrder.map(item => {
-        const key = item.key;
+    function renderPigList() {
+      const box = document.getElementById("pigList");
+      box.innerHTML = Object.keys(piggies).map(key => {
         const p = piggies[key];
-        const percent = Math.floor((p.fill / p.capacity) * 100);
+        const percent = Math.min(100, (p.fill / p.capacity) * 100);
         return `
-          <div class="pig-widget ${item.pos}" onclick="openPigModal('${key}')">
-            <div class="pig-icon ${p.className}">🐷</div>
-            <div class="pig-label">${p.name}</div>
-            <div class="pig-mini-fill">${percent}%</div>
+          <div class="pig-item">
+            <div class="pig-item-top">
+              <div class="pig-item-left">
+                <div class="pig-item-icon ${p.className}">🐷</div>
+                <div>
+                  <div class="pig-item-title">${p.name}</div>
+                  <div class="pig-item-sub">${p.desc}</div>
+                </div>
+              </div>
+              <div class="pig-item-price">${p.priceCzk} Kč</div>
+            </div>
+
+            <div class="pig-item-stats">
+              Stav: <b>${p.purchased ? "Aktivní" : "Neaktivní"}</b><br>
+              Naplněno: <b>${Math.floor(p.fill).toLocaleString("cs-CZ")} / ${p.capacity.toLocaleString("cs-CZ")} Coins</b><br>
+              Plnění: <b>${Math.round(p.fillRate * 100)} %</b> z příjmu
+            </div>
+
+            <div class="pig-item-progress">
+              <div class="pig-item-progress-fill" style="width:${percent}%; background:${p.fillColor};"></div>
+            </div>
+
+            <div class="pig-item-actions">
+              ${p.purchased
+                ? `<button class="btn btn-small btn-green" onclick="collectPiggy('${key}')">Vybrat</button>`
+                : `<button class="btn btn-small btn-blue" onclick="buyPiggy('${key}')">Koupit</button>`
+              }
+            </div>
           </div>
         `;
       }).join("");
     }
-    window.openPigModal = openPigModal;
 
-    function openPigModal(key) {
-      currentPigKey = key;
-      const p = piggies[key];
-      const percent = Math.min(100, (p.fill / p.capacity) * 100);
-
-      document.getElementById("pigModalTitle").textContent = p.name;
-      document.getElementById("pigModalSub").textContent = p.desc;
-      const icon = document.getElementById("pigModalIcon");
-      icon.className = "pig-modal-icon " + p.className;
-      icon.textContent = "🐷";
-
-      const progress = document.getElementById("pigModalProgress");
-      progress.style.width = percent + "%";
-      progress.style.background = p.fillColor;
-
-      document.getElementById("pigModalStats").innerHTML = `
-        Stav: <b>${p.purchased ? "Aktivní" : "Neaktivní"}</b><br>
-        Naplněno: <b>${Math.floor(p.fill).toLocaleString("cs-CZ")} / ${p.capacity.toLocaleString("cs-CZ")} Coins</b><br>
-        Plnění: <b>${Math.round(p.fillRate * 100)} %</b> z příjmu<br>
-        Cena: <b>${p.priceCzk} Kč</b>
-      `;
-
-      document.getElementById("pigBuyBtn").style.display = p.purchased ? "none" : "inline-block";
-      document.getElementById("pigCollectBtn").style.display = p.purchased ? "inline-block" : "none";
-
+    function openPigList() {
+      renderPigList();
       document.getElementById("pigModalBackdrop").classList.add("active");
     }
 
     function closePigModal() {
       document.getElementById("pigModalBackdrop").classList.remove("active");
-      currentPigKey = null;
     }
 
     function buyPiggy(key) {
@@ -1550,9 +1592,10 @@
       p.purchased = true;
       updateUI();
       saveGame();
-      openPigModal(key);
+      renderPigList();
       alert(`Testovací nákup prasátka ${p.name} aktivován.`);
     }
+    window.buyPiggy = buyPiggy;
 
     function collectPiggy(key) {
       const p = piggies[key];
@@ -1566,9 +1609,10 @@
       p.fill = 0;
       updateUI();
       saveGame();
-      openPigModal(key);
+      renderPigList();
       alert(`Vybral jsi ${value.toLocaleString("cs-CZ")} Coins z prasátka ${p.name}.`);
     }
+    window.collectPiggy = collectPiggy;
 
     function updateUI() {
       updateLevel();
@@ -1605,9 +1649,6 @@
 
       renderAchievements();
       renderCryptoBoard();
-      renderSidePigs();
-
-      if (currentPigKey) openPigModal(currentPigKey);
     }
 
     function mine() {
@@ -1655,6 +1696,7 @@
     });
 
     document.getElementById("mineCircle").addEventListener("click", mine);
+    document.getElementById("openPigListBtn").addEventListener("click", openPigList);
 
     document.querySelectorAll(".nav button").forEach(btn => {
       btn.addEventListener("click", () => setMainScreen(btn.dataset.target));
@@ -1915,16 +1957,6 @@
 
     document.getElementById("pigModalBackdrop").addEventListener("click", (e) => {
       if (e.target.id === "pigModalBackdrop") closePigModal();
-    });
-
-    document.getElementById("pigBuyBtn").addEventListener("click", () => {
-      if (!currentPigKey) return;
-      buyPiggy(currentPigKey);
-    });
-
-    document.getElementById("pigCollectBtn").addEventListener("click", () => {
-      if (!currentPigKey) return;
-      collectPiggy(currentPigKey);
     });
 
     setInterval(() => {
