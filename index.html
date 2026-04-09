@@ -240,13 +240,13 @@
 
     .circle-wrap {
       position: relative;
-      width: 138px;
+      width: 148px;
       margin: 26px auto 18px;
     }
 
     .mine-circle {
-      width: 138px;
-      height: 138px;
+      width: 148px;
+      height: 148px;
       border-radius: 50%;
       background:
         radial-gradient(circle at 35% 30%, #d8a4ff 0%, #b25cff 25%, #7c2cff 65%, #34105f 100%);
@@ -620,33 +620,14 @@
       gap: 10px;
     }
 
-    .invite-box {
+    .share-box {
       background: rgba(255,255,255,0.03);
       border-radius: 12px;
       padding: 10px;
       margin-top: 4px;
     }
 
-    .invite-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .invite-name {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .invite-count {
-      font-size: 12px;
-      color: #d8b4fe;
-      font-weight: bold;
-    }
-
-    .invite-link {
+    .share-link {
       background: #0b1220;
       border-radius: 10px;
       padding: 10px;
@@ -759,39 +740,6 @@
       font-size: 12px;
       opacity: 0.75;
       margin-top: 2px;
-    }
-
-    .pig-progress {
-      width: 100%;
-      height: 12px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    .pig-progress-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    .pig-stats {
-      font-size: 13px;
-      line-height: 1.7;
-      opacity: 0.92;
-      margin-bottom: 12px;
-    }
-
-    .pig-modal-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .pig-modal-actions .btn-small {
-      flex: 1;
-      min-width: 120px;
     }
 
     .pig-list {
@@ -920,7 +868,7 @@
           <input class="input" id="playerNameInput" placeholder="Zadej jméno hráče" />
           <button class="btn btn-purple" id="startGameBtn">Vstoupit do hry</button>
           <div class="small" style="margin-top: 12px;">
-            Pozvánky, prasátka i výběr jsou zatím testovací herní verze bez skutečné platební brány.
+            Tato hra je zatím testovací verze. Některé funkce jsou pouze herní simulace.
           </div>
         </div>
       </div>
@@ -1129,8 +1077,7 @@
           <div class="small" style="margin-bottom: 10px;">
             <strong>Minimální výběr:</strong> 100 000 Coins (1 Coins je 0,16 Kč)<br>
             <strong>Minimální vklad pro ověření účtu:</strong> 250 Kč<br>
-            <strong>Poplatek:</strong> 10 %<br>
-            <strong>Počet pozvaných pro výběr:</strong> 8 lidí
+            <strong>Poplatek:</strong> 10 %
           </div>
 
           <label class="label">Jméno příjemce</label>
@@ -1178,15 +1125,10 @@
             </div>
 
             <div class="profile-item">
-              <div class="profile-item-title">Pozvi člověka</div>
-              <div class="invite-box">
-                <div class="invite-top">
-                  <div class="invite-name">Pozvi člověka</div>
-                  <div class="invite-count">Počet: <span id="inviteCountText">0</span></div>
-                </div>
-                <div class="invite-link" id="inviteLinkText">https://example.com/invite?user=miner</div>
-                <button class="btn btn-blue" id="copyInviteBtn">Kopírovat odkaz</button>
-                <button class="btn btn-green" id="simulateInviteBtn" style="margin-top: 8px;">Simulovat +1 pozvaného</button>
+              <div class="profile-item-title">Sdílej hru</div>
+              <div class="share-box">
+                <div class="share-link" id="shareLinkText">https://t.me/cryptominerempire_bot?startapp=start</div>
+                <button class="btn btn-blue" id="copyShareBtn">Kopírovat odkaz</button>
               </div>
             </div>
           </div>
@@ -1207,7 +1149,7 @@
   </div>
 
   <div class="pig-modal-backdrop" id="pigModalBackdrop">
-    <div class="pig-modal" id="pigModalBox">
+    <div class="pig-modal">
       <div class="pig-modal-head">
         <div class="pig-modal-icon pig-standard">🐷</div>
         <div>
@@ -1218,21 +1160,19 @@
 
       <div class="pig-list" id="pigList"></div>
 
-      <div class="pig-modal-actions" style="margin-top: 12px;">
+      <div class="pig-item-actions" style="margin-top: 12px;">
         <button class="btn btn-small btn-gray" id="pigCloseBtn">Zavřít</button>
       </div>
     </div>
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_one_pig_icon_v1";
-    const LOGIN_KEY = "crypto_miner_empire_one_pig_icon_v1_flag";
+    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v1";
 
     let playerName = "Miner";
     let coins = 0;
     let diamonds = 0;
     let vipCredits = 0;
-    let referrals = 0;
     let level = 1;
     let prestige = 1;
 
@@ -1253,6 +1193,8 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
+
+    const SHARE_LINK = "https://t.me/cryptominerempire_bot?startapp=start";
 
     const piggies = {
       classic: {
@@ -1311,7 +1253,7 @@
 
     function saveGame() {
       const payload = {
-        playerName, coins, diamonds, vipCredits, referrals, level, prestige,
+        playerName, coins, diamonds, vipCredits, level, prestige,
         clickValue, baseCoinsPerSec, energy, maxEnergy, energyCapBonus,
         boostUntil, vipBoostUntil, buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
         totalClicks, lastDailyClaim,
@@ -1337,7 +1279,6 @@
         coins = data.coins ?? coins;
         diamonds = data.diamonds ?? diamonds;
         vipCredits = data.vipCredits ?? vipCredits;
-        referrals = data.referrals ?? referrals;
         level = data.level ?? level;
         prestige = data.prestige ?? prestige;
         clickValue = data.clickValue ?? clickValue;
@@ -1376,18 +1317,6 @@
       } catch (e) {
         console.error("Load failed", e);
       }
-    }
-
-    function isLoggedIn() {
-      return localStorage.getItem(LOGIN_KEY) === "1";
-    }
-
-    function loginPlayer() {
-      localStorage.setItem(LOGIN_KEY, "1");
-    }
-
-    function logoutPlayer() {
-      localStorage.removeItem(LOGIN_KEY);
     }
 
     function getBoostMultiplier() {
@@ -1434,18 +1363,12 @@
       setTimeout(() => el.remove(), 900);
     }
 
-    function getInviteLink() {
-      const safeName = (playerName || "miner").toLowerCase().replace(/\s+/g, "-");
-      return `https://example.com/invite?user=${safeName}`;
-    }
-
     function getAchievements() {
       return [
         { title: "První klik", desc: "Klikni poprvé na těžební kolo.", done: totalClicks >= 1 },
         { title: "100 kliků", desc: "Dosáhni 100 kliknutí.", done: totalClicks >= 100 },
         { title: "První diamant", desc: "Získej aspoň 1 Diamond.", done: diamonds >= 1 },
         { title: "10K Coins", desc: "Dostaň se na 10 000 Coins.", done: coins >= 10000 },
-        { title: "Pozvánka", desc: "Získej 1 pozvaného člověka.", done: referrals >= 1 },
         { title: "VIP start", desc: "Získej 10 VIP Credits.", done: vipCredits >= 10 },
         { title: "První crypto upgrade", desc: "Upgraduj jakoukoliv kryptoměnu.", done: cryptoData.some(c => c.upgradeLevel > 1) }
       ];
@@ -1638,9 +1561,7 @@
         `${Math.floor(coins).toLocaleString("cs-CZ")} Coins / ${diamonds} Diamonds / ${vipCredits} VIP`;
       document.getElementById("profileCryptosText").textContent =
         cryptoData.filter(c => c.unlocked).map(c => c.name).join(", ");
-
-      document.getElementById("inviteCountText").textContent = referrals.toLocaleString("cs-CZ");
-      document.getElementById("inviteLinkText").textContent = getInviteLink();
+      document.getElementById("shareLinkText").textContent = SHARE_LINK;
 
       document.getElementById("totalCryptoMined").textContent =
         Math.floor(cryptoData.reduce((sum, c) => sum + c.amount, 0)).toLocaleString("cs-CZ");
@@ -1687,12 +1608,11 @@
     document.getElementById("startGameBtn").addEventListener("click", () => {
       const input = document.getElementById("playerNameInput").value.trim();
       if (input) playerName = input;
-      loginPlayer();
-      saveGame();
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
+      saveGame();
     });
 
     document.getElementById("mineCircle").addEventListener("click", mine);
@@ -1839,7 +1759,6 @@
       coins = 0;
       diamonds = 0;
       vipCredits = 0;
-      referrals = 0;
       level = 1;
       clickValue = 1;
       baseCoinsPerSec = 1;
@@ -1903,10 +1822,6 @@
         status.textContent = "Výběr zamítnut: minimální výběr je 100 000 Coins.";
         return;
       }
-      if (referrals < 8) {
-        status.textContent = "Výběr zamítnut: musíš pozvat minimálně 8 lidí.";
-        return;
-      }
       if (coins < amount) {
         status.textContent = "Výběr zamítnut: nemáš dost Coins.";
         return;
@@ -1922,25 +1837,16 @@
       saveGame();
     });
 
-    document.getElementById("copyInviteBtn").addEventListener("click", async () => {
+    document.getElementById("copyShareBtn").addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(getInviteLink());
+        await navigator.clipboard.writeText(SHARE_LINK);
         alert("Odkaz zkopírován.");
       } catch {
         alert("Kopírování se nepovedlo.");
       }
     });
 
-    document.getElementById("simulateInviteBtn").addEventListener("click", () => {
-      referrals += 1;
-      updateUI();
-      saveGame();
-      alert("Simulováno +1 pozvaný člověk.");
-    });
-
     document.getElementById("logoutBtn").addEventListener("click", () => {
-      logoutPlayer();
-      closePigModal();
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById("loginScreen").classList.add("active");
       document.getElementById("bottomNav").classList.add("hidden");
@@ -1949,7 +1855,6 @@
     document.getElementById("resetBtn").addEventListener("click", () => {
       if (!confirm("Opravdu chceš smazat všechna data a začít od 0?")) return;
       localStorage.removeItem(SAVE_KEY);
-      localStorage.removeItem(LOGIN_KEY);
       location.reload();
     });
 
@@ -1960,7 +1865,11 @@
     });
 
     setInterval(() => {
-      if (!isLoggedIn()) return;
+      if (!document.getElementById("homeScreen").classList.contains("active") &&
+          !document.getElementById("shopScreen").classList.contains("active") &&
+          !document.getElementById("bonusScreen").classList.contains("active") &&
+          !document.getElementById("withdrawScreen").classList.contains("active") &&
+          !document.getElementById("profileScreen").classList.contains("active")) return;
 
       const clickSideGain = baseCoinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
       const cryptoSideGainRaw = cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.rate, 0);
@@ -1980,7 +1889,6 @@
     }, 1000);
 
     setInterval(() => {
-      if (!isLoggedIn()) return;
       if (energy < maxEnergy) {
         energy += 1;
         updateUI();
@@ -2014,14 +1922,7 @@
     });
 
     loadGame();
-
-    if (isLoggedIn()) {
-      document.getElementById("loginScreen").classList.remove("active");
-      document.getElementById("homeScreen").classList.add("active");
-      document.getElementById("bottomNav").classList.remove("hidden");
-      updateUI();
-      setMainScreen("home");
-    }
+    updateUI();
   </script>
 </body>
 </html>
