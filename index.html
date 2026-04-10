@@ -1133,7 +1133,8 @@
             </div>
           </div>
 
-          <button class="btn btn-gray" id="logoutBtn" style="margin-top: 12px;">Odhlásit</button>
+          <button class="btn btn-gray" id="changeNameBtn" style="margin-top: 12px;">Změnit jméno</button>
+          <button class="btn btn-gray" id="logoutBtn" style="margin-top: 10px;">Odhlásit</button>
           <button class="btn btn-red" id="resetBtn" style="margin-top: 10px;">Smazat všechna data</button>
         </div>
       </div>
@@ -1167,7 +1168,8 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v1";
+    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v2";
+    const NAME_KEY = "crypto_miner_empire_player_name_v1";
 
     let playerName = "Miner";
     let coins = 0;
@@ -1268,11 +1270,19 @@
         }))
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+      localStorage.setItem(NAME_KEY, playerName);
     }
 
     function loadGame() {
       const raw = localStorage.getItem(SAVE_KEY);
+      const savedName = localStorage.getItem(NAME_KEY);
+
+      if (savedName) {
+        playerName = savedName;
+      }
+
       if (!raw) return;
+
       try {
         const data = JSON.parse(raw);
         playerName = data.playerName ?? playerName;
@@ -1605,14 +1615,25 @@
       document.getElementById("shop-" + group).classList.add("active");
     }
 
-    document.getElementById("startGameBtn").addEventListener("click", () => {
-      const input = document.getElementById("playerNameInput").value.trim();
-      if (input) playerName = input;
+    function showGameScreens() {
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("homeScreen").classList.add("active");
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
       saveGame();
+    }
+
+    document.getElementById("startGameBtn").addEventListener("click", () => {
+      const input = document.getElementById("playerNameInput").value.trim();
+
+      if (!input) {
+        alert("Zadej jméno");
+        return;
+      }
+
+      playerName = input;
+      localStorage.setItem(NAME_KEY, playerName);
+      showGameScreens();
     });
 
     document.getElementById("mineCircle").addEventListener("click", mine);
@@ -1846,6 +1867,14 @@
       }
     });
 
+    document.getElementById("changeNameBtn").addEventListener("click", () => {
+      localStorage.removeItem(NAME_KEY);
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById("loginScreen").classList.add("active");
+      document.getElementById("bottomNav").classList.add("hidden");
+      document.getElementById("playerNameInput").value = "";
+    });
+
     document.getElementById("logoutBtn").addEventListener("click", () => {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById("loginScreen").classList.add("active");
@@ -1855,6 +1884,7 @@
     document.getElementById("resetBtn").addEventListener("click", () => {
       if (!confirm("Opravdu chceš smazat všechna data a začít od 0?")) return;
       localStorage.removeItem(SAVE_KEY);
+      localStorage.removeItem(NAME_KEY);
       location.reload();
     });
 
@@ -1923,6 +1953,15 @@
 
     loadGame();
     updateUI();
+
+    window.addEventListener("load", () => {
+      const savedName = localStorage.getItem(NAME_KEY);
+
+      if (savedName) {
+        playerName = savedName;
+        showGameScreens();
+      }
+    });
   </script>
 </body>
 </html>
