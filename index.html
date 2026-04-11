@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
+  <script src='//libtl.com/sdk.js' data-zone='10860315' data-sdk='show_10860315'></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Crypto Miner Empire</title>
@@ -1038,19 +1039,19 @@
 
           <div class="bonus-item">
             <div class="bonus-item-title">Sledovat reklamu → +1 Diamond</div>
-            <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+            <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-blue" id="adDiamondBtn">Sledovat reklamu</button>
           </div>
 
           <div class="bonus-item">
             <div class="bonus-item-title">Sledovat reklamu → +500 Coins</div>
-            <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+            <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-green" id="adCoinsBtn">Sledovat reklamu</button>
           </div>
 
           <div class="bonus-item">
             <div class="bonus-item-title">Sledovat reklamu → +2 VIP Credits</div>
-            <div class="bonus-item-desc">Fake reklama, jen simulace odměny.</div>
+            <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-purple" id="adVipBtn">Sledovat reklamu</button>
           </div>
 
@@ -1252,6 +1253,37 @@
       { key: "shib", name: "SHIB", icon: "犬", unlocked: false, condition: "1000 kliknutí", type: "clicks", req: 1000, amount: 0, rate: 11, upgradeLevel: 1, upgradeCost: 15000, goal: 330 },
       { key: "matic", name: "MATIC", icon: "M", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000, goal: 360 }
     ];
+
+    function showRewardedAd(rewardType) {
+      if (typeof show_10860315 !== "function") {
+        alert("Reklama teď není dostupná.");
+        return;
+      }
+
+      show_10860315()
+        .then(() => {
+          if (rewardType === "diamond") {
+            diamonds += 1;
+            alert("Získal jsi +1 Diamond.");
+          }
+
+          if (rewardType === "coins") {
+            coins += 500;
+            alert("Získal jsi +500 Coins.");
+          }
+
+          if (rewardType === "vip") {
+            vipCredits += 2;
+            alert("Získal jsi +2 VIP Credits.");
+          }
+
+          updateUI();
+          saveGame();
+        })
+        .catch(() => {
+          alert("Reklama nebyla dokončena nebo není dostupná.");
+        });
+    }
 
     function saveGame() {
       const payload = {
@@ -1735,24 +1767,15 @@
     });
 
     document.getElementById("adDiamondBtn").addEventListener("click", () => {
-      diamonds += 1;
-      updateUI();
-      saveGame();
-      alert("Fake reklama dokončena. Získal jsi +1 Diamond.");
+      showRewardedAd("diamond");
     });
 
     document.getElementById("adCoinsBtn").addEventListener("click", () => {
-      coins += 500;
-      updateUI();
-      saveGame();
-      alert("Fake reklama dokončena. Získal jsi +500 Coins.");
+      showRewardedAd("coins");
     });
 
     document.getElementById("adVipBtn").addEventListener("click", () => {
-      vipCredits += 2;
-      updateUI();
-      saveGame();
-      alert("Fake reklama dokončena. Získal jsi +2 VIP Credits.");
+      showRewardedAd("vip");
     });
 
     document.getElementById("dailyBonusBtn").addEventListener("click", () => {
