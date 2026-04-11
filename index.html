@@ -1426,14 +1426,24 @@
     }
 
     function tryUnlockCryptos() {
-      let changed = false;
-      cryptoData.forEach(c => {
-        if (c.unlocked) return;
-        if (c.type === "level" && level >= c.req) { c.unlocked = true; changed = true; }
-        if (c.type === "clicks" && totalClicks >= c.req) { c.unlocked = true; changed = true; }
-        if (c.type === "coins" && coins >= c.req) { c.unlocked = true; changed = true; }
-      });
-      if (changed) saveGame();
+      for (let i = 0; i < cryptoData.length; i++) {
+        const c = cryptoData[i];
+
+        if (c.unlocked) continue;
+
+        let canUnlock = false;
+
+        if (c.type === "level" && level >= c.req) canUnlock = true;
+        if (c.type === "clicks" && totalClicks >= c.req) canUnlock = true;
+        if (c.type === "coins" && coins >= c.req) canUnlock = true;
+
+        if (canUnlock) {
+          c.unlocked = true;
+          saveGame();
+        }
+
+        break;
+      }
     }
 
     function upgradeCrypto(key) {
