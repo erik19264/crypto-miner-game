@@ -721,6 +721,18 @@
       margin-bottom: 10px;
     }
 
+    .pig-modal-back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
     .pig-modal-icon {
       width: 52px;
       height: 52px;
@@ -1038,21 +1050,27 @@
           </div>
 
           <div class="bonus-item">
-            <div class="bonus-item-title">Sledovat reklamu → +1 Diamond</div>
+            <div class="bonus-item-title">Rewarded Interstitial → +1 Diamond</div>
             <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-blue" id="adDiamondBtn">Sledovat reklamu</button>
           </div>
 
           <div class="bonus-item">
-            <div class="bonus-item-title">Sledovat reklamu → +500 Coins</div>
+            <div class="bonus-item-title">Rewarded Interstitial → +500 Coins</div>
             <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-green" id="adCoinsBtn">Sledovat reklamu</button>
           </div>
 
           <div class="bonus-item">
-            <div class="bonus-item-title">Sledovat reklamu → +2 VIP Credits</div>
+            <div class="bonus-item-title">Rewarded Interstitial → +2 VIP Credits</div>
             <div class="bonus-item-desc">Po zhlédnutí reklamy získáš odměnu.</div>
             <button class="btn btn-purple" id="adVipBtn">Sledovat reklamu</button>
+          </div>
+
+          <div class="bonus-item">
+            <div class="bonus-item-title">Rewarded Popup → +300 Coins</div>
+            <div class="bonus-item-desc">Popup reklama za extra odměnu. Musí být spuštěna kliknutím.</div>
+            <button class="btn btn-pink" id="adPopupBtn">Otevřít popup reklamu</button>
           </div>
 
           <div class="bonus-item">
@@ -1153,6 +1171,7 @@
   <div class="pig-modal-backdrop" id="pigModalBackdrop">
     <div class="pig-modal">
       <div class="pig-modal-head">
+        <button class="pig-modal-back-btn" id="pigBackBtn" title="Zpět">←</button>
         <div class="pig-modal-icon pig-standard">🐷</div>
         <div>
           <div class="pig-modal-title">Prasátka</div>
@@ -1171,6 +1190,13 @@
   <script>
     const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v2";
     const NAME_KEY = "crypto_miner_empire_player_name_v1";
+
+    const AD_COOLDOWN_KEYS = {
+      diamond: "ad_cd_diamond_v1",
+      coins: "ad_cd_coins_v1",
+      vip: "ad_cd_vip_v1",
+      popup: "ad_cd_popup_v1"
+    };
 
     let playerName = "Miner";
     let coins = 0;
@@ -1196,6 +1222,7 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
+    let inAppInitialized = false;
 
     const SHARE_LINK = "https://t.me/cryptominerempire_bot?startapp=start";
 
@@ -1254,34 +1281,121 @@
       { key: "matic", name: "MATIC", icon: "M", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000, goal: 360 }
     ];
 
+    function getUniqueYmid(prefix) {
+      return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+    }
+
+    function getAdCooldownLeft(key, seconds) {
+      const last = Number(localStorage.getItem(key) || 0);
+      const diff = Date.now() - last;
+      const msLeft = seconds * 1000 - diff;
+      return Math.max(0, Math.ceil(msLeft / 1000));
+    }
+
+    function markAdUsed(key) {
+      localStorage.setItem(key, String(Date.now()));
+    }
+
+    function preloadMainAd() {
+      if (typeof show_10860315 !== "function") return;
+      show_10860315({
+        type: "preload",
+        requestVar: "preload_main",
+        timeout: 5
+      }).catch(() => {});
+    }
+
+    function initInAppAds() {
+      if (inAppInitialized) return;
+      if (typeof show_10860315 !== "function") return;
+
+      inAppInitialized = true;
+      show_10860315({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 3,
+          capping: 2,
+          interval: 120,
+          timeout: 15,
+          everyPage: false
+        }
+      }).catch(() => {});
+    }
+
     function showRewardedAd(rewardType) {
       if (typeof show_10860315 !== "function") {
         alert("Reklama teď není dostupná.");
         return;
       }
 
-      show_10860315()
-        .then(() => {
-          if (rewardType === "diamond") {
-            diamonds += 1;
-            alert("Získal jsi +1 Diamond.");
-          }
+      const cdMap = {
+        diamond: { key: AD_COOLDOWN_KEYS.diamond, seconds: 45, rewardText: "+1 Diamond" },
+        coins: { key: AD_COOLDOWN_KEYS.coins, seconds: 35, rewardText: "+500 Coins" },
+        vip: { key: AD_COOLDOWN_KEYS.vip, seconds: 60, rewardText: "+2 VIP Credits" }
+      };
 
-          if (rewardType === "coins") {
-            coins += 500;
-            alert("Získal jsi +500 Coins.");
-          }
+      const cfg = cdMap[rewardType];
+      if (!cfg) return;
 
-          if (rewardType === "vip") {
-            vipCredits += 2;
-            alert("Získal jsi +2 VIP Credits.");
-          }
+      const left = getAdCooldownLeft(cfg.key, cfg.seconds);
+      if (left > 0) {
+        alert(`Tahle reklama půjde znovu za ${left} s.`);
+        return;
+      }
 
-          updateUI();
-          saveGame();
+      show_10860315({
+        type: "end",
+        ymid: getUniqueYmid(rewardType),
+        requestVar: `reward_${rewardType}`,
+        catchIfNoFeed: true
+      })
+        .then((result) => {
+          if (result && result.reward_event_type === "valued") {
+            if (rewardType === "diamond") diamonds += 1;
+            if (rewardType === "coins") coins += 500;
+            if (rewardType === "vip") vipCredits += 2;
+
+            markAdUsed(cfg.key);
+            updateUI();
+            saveGame();
+            preloadMainAd();
+            alert(`Získal jsi ${cfg.rewardText}.`);
+          } else {
+            alert("Reklama se sice otevřela, ale nebyla započtena jako odměněná.");
+          }
         })
         .catch(() => {
           alert("Reklama nebyla dokončena nebo není dostupná.");
+        });
+    }
+
+    function showRewardedPopup() {
+      if (typeof show_10860315 !== "function") {
+        alert("Popup reklama teď není dostupná.");
+        return;
+      }
+
+      const left = getAdCooldownLeft(AD_COOLDOWN_KEYS.popup, 90);
+      if (left > 0) {
+        alert(`Popup reklama půjde znovu za ${left} s.`);
+        return;
+      }
+
+      show_10860315({
+        type: "pop",
+        ymid: getUniqueYmid("popup"),
+        requestVar: "reward_popup",
+        catchIfNoFeed: true
+      })
+        .then(() => {
+          coins += 300;
+          markAdUsed(AD_COOLDOWN_KEYS.popup);
+          updateUI();
+          saveGame();
+          alert("Získal jsi +300 Coins.");
+        })
+        .catch(() => {
+          alert("Popup reklama není dostupná nebo nebyla otevřena.");
         });
     }
 
@@ -1663,6 +1777,8 @@
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
       saveGame();
+      initInAppAds();
+      preloadMainAd();
     }
 
     document.getElementById("startGameBtn").addEventListener("click", () => {
@@ -1786,6 +1902,10 @@
 
     document.getElementById("adVipBtn").addEventListener("click", () => {
       showRewardedAd("vip");
+    });
+
+    document.getElementById("adPopupBtn").addEventListener("click", () => {
+      showRewardedPopup();
     });
 
     document.getElementById("dailyBonusBtn").addEventListener("click", () => {
@@ -1922,6 +2042,7 @@
     });
 
     document.getElementById("pigCloseBtn").addEventListener("click", closePigModal);
+    document.getElementById("pigBackBtn").addEventListener("click", closePigModal);
 
     document.getElementById("pigModalBackdrop").addEventListener("click", (e) => {
       if (e.target.id === "pigModalBackdrop") closePigModal();
@@ -1951,13 +2072,14 @@
       saveGame();
     }, 1000);
 
+    // pomalejší načítání energie než dřív
     setInterval(() => {
       if (energy < maxEnergy) {
         energy += 1;
         updateUI();
         saveGame();
       }
-    }, 500);
+    }, 1500);
 
     let currentPage = 0;
     const swipeWrap = document.getElementById("swipeWrap");
@@ -1993,6 +2115,8 @@
       if (savedName) {
         playerName = savedName;
         showGameScreens();
+      } else {
+        preloadMainAd();
       }
     });
   </script>
