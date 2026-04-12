@@ -911,26 +911,25 @@
                 </div>
               </div>
 
-              <div class="card player-card">
-                <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
-                <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
-                <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
-                <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
-                <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
-              </div>
+             <div class="balance">
+  <div class="balance-label">💎 Zůstatek Coins</div>
+  <div class="balance-value" id="coinsBalance">0</div>
+</div>
 
-              <div class="circle-wrap">
-                <div class="mine-circle" id="mineCircle">
-                  <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
-                  <div class="mine-fallback" id="mineFallback">CM</div>
-                </div>
-              </div>
+<div class="circle-wrap">
+  <div class="mine-circle" id="mineCircle">
+    <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
+    <div class="mine-fallback" id="mineFallback">CM</div>
+  </div>
+</div>
 
-              <div class="balance">
-                <div class="balance-label">💎 Zůstatek Coins</div>
-                <div class="balance-value" id="coinsBalance">0</div>
-              </div>
-
+<div class="card player-card">
+  <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
+  <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
+  <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
+  <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
+  <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
+</div>
               <div class="card">
                 <div class="achievement-title">Achievements</div>
                 <div id="achievementsList"></div>
