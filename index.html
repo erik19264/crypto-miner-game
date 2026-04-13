@@ -860,7 +860,6 @@
 </head>
 <body>
   <div class="app-shell">
-
     <div class="topbar">
       <div class="topbar-title">Crypto Miner Empire</div>
       <div class="topbar-sub">miniaplikace</div>
@@ -890,7 +889,6 @@
     <div class="screen" id="homeScreen">
       <div class="swipe-wrap" id="swipeWrap">
         <div class="swipe-track" id="swipeTrack">
-
           <div class="swipe-page">
             <div class="screen-inner">
               <div class="page-title">Crypto Miner Empire</div>
@@ -911,25 +909,26 @@
                 </div>
               </div>
 
-             <div class="balance">
-  <div class="balance-label">💎 Zůstatek Coins</div>
-  <div class="balance-value" id="coinsBalance">0</div>
-</div>
+              <div class="balance">
+                <div class="balance-label">💎 Zůstatek Coins</div>
+                <div class="balance-value" id="coinsBalance">0</div>
+              </div>
 
-<div class="circle-wrap">
-  <div class="mine-circle" id="mineCircle">
-    <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
-    <div class="mine-fallback" id="mineFallback">CM</div>
-  </div>
-</div>
+              <div class="circle-wrap">
+                <div class="mine-circle" id="mineCircle">
+                  <img src="logo.png" alt="Logo v kole" onerror="this.style.display='none';document.getElementById('mineFallback').style.display='block';">
+                  <div class="mine-fallback" id="mineFallback">CM</div>
+                </div>
+              </div>
 
-<div class="card player-card">
-  <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
-  <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
-  <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
-  <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
-  <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
-</div>
+              <div class="card player-card">
+                <div class="player-line"><b>Hráč:</b> <span id="playerNameStat">Miner</span></div>
+                <div class="player-line"><b>Level:</b> <span id="levelStat">1</span></div>
+                <div class="player-line"><b>Coins/sec:</b> <span id="cpsStat">1</span></div>
+                <div class="player-line"><b>Diamonds:</b> <span id="diamondsStat">0</span></div>
+                <div class="player-line"><b>VIP Credits:</b> <span id="vipStat">0</span></div>
+              </div>
+
               <div class="card">
                 <div class="achievement-title">Achievements</div>
                 <div id="achievementsList"></div>
@@ -958,7 +957,6 @@
               <div class="crypto-board" id="cryptoBoard"></div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -1223,6 +1221,9 @@
     let totalClicks = 0;
     let inAppInitialized = false;
 
+    let adRunning = false;
+    let adCooldown = false;
+
     const SHARE_LINK = "https://t.me/cryptominerempire_bot?startapp=start";
 
     const piggies = {
@@ -1321,62 +1322,21 @@
       }).catch(() => {});
     }
 
-    let adRunning = false;
-let adCooldown = false;
-
-function showRewardedAd(rewardType) {
-
-  if (adRunning) {
-    alert("Reklama už běží...");
-    return;
-  }
-
-  if (adCooldown) {
-    alert("Počkej pár sekund...");
-    return;
-  }
-
-  if (typeof show_10860315 !== "function") {
-    alert("Reklama není dostupná.");
-    return;
-  }
-
-  adRunning = true;
-  adCooldown = true;
-
-  show_10860315()
-    .then(() => {
-
-      if (rewardType === "diamond") {
-        diamonds += 1;
-        alert("+1 Diamond");
+    function showRewardedAd(rewardType) {
+      if (adRunning) {
+        alert("Reklama už běží...");
+        return;
       }
 
-      if (rewardType === "coins") {
-        coins += 500;
-        alert("+500 Coins");
+      if (adCooldown) {
+        alert("Počkej pár sekund...");
+        return;
       }
 
-      if (rewardType === "vip") {
-        vipCredits += 2;
-        alert("+2 VIP Credits");
+      if (typeof show_10860315 !== "function") {
+        alert("Reklama není dostupná.");
+        return;
       }
-
-      updateUI();
-      saveGame();
-
-    })
-    .catch(() => {
-      alert("Reklama se nenačetla.");
-    })
-    .finally(() => {
-      adRunning = false;
-
-      setTimeout(() => {
-        adCooldown = false;
-      }, 5000); // cooldown 5 sekund
-    });
-}
 
       const cdMap = {
         diamond: { key: AD_COOLDOWN_KEYS.diamond, seconds: 45, rewardText: "+1 Diamond" },
@@ -1392,6 +1352,9 @@ function showRewardedAd(rewardType) {
         alert(`Tahle reklama půjde znovu za ${left} s.`);
         return;
       }
+
+      adRunning = true;
+      adCooldown = true;
 
       show_10860315({
         type: "end",
@@ -1411,11 +1374,17 @@ function showRewardedAd(rewardType) {
             preloadMainAd();
             alert(`Získal jsi ${cfg.rewardText}.`);
           } else {
-            alert("Reklama se sice otevřela, ale nebyla započtena jako odměněná.");
+            alert("Reklama se otevřela, ale odměna nebyla započtena.");
           }
         })
         .catch(() => {
           alert("Reklama nebyla dokončena nebo není dostupná.");
+        })
+        .finally(() => {
+          adRunning = false;
+          setTimeout(() => {
+            adCooldown = false;
+          }, 5000);
         });
     }
 
@@ -1592,11 +1561,9 @@ function showRewardedAd(rewardType) {
     function tryUnlockCryptos() {
       for (let i = 0; i < cryptoData.length; i++) {
         const c = cryptoData[i];
-
         if (c.unlocked) continue;
 
         let canUnlock = false;
-
         if (c.type === "level" && level >= c.req) canUnlock = true;
         if (c.type === "clicks" && totalClicks >= c.req) canUnlock = true;
         if (c.type === "coins" && coins >= c.req) canUnlock = true;
@@ -2122,7 +2089,6 @@ function showRewardedAd(rewardType) {
       saveGame();
     }, 1000);
 
-    // pomalejší načítání energie než dřív
     setInterval(() => {
       if (energy < maxEnergy) {
         energy += 1;
