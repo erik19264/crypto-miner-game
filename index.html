@@ -1321,11 +1321,62 @@
       }).catch(() => {});
     }
 
-    function showRewardedAd(rewardType) {
-      if (typeof show_10860315 !== "function") {
-        alert("Reklama teď není dostupná.");
-        return;
+    let adRunning = false;
+let adCooldown = false;
+
+function showRewardedAd(rewardType) {
+
+  if (adRunning) {
+    alert("Reklama už běží...");
+    return;
+  }
+
+  if (adCooldown) {
+    alert("Počkej pár sekund...");
+    return;
+  }
+
+  if (typeof show_10860315 !== "function") {
+    alert("Reklama není dostupná.");
+    return;
+  }
+
+  adRunning = true;
+  adCooldown = true;
+
+  show_10860315()
+    .then(() => {
+
+      if (rewardType === "diamond") {
+        diamonds += 1;
+        alert("+1 Diamond");
       }
+
+      if (rewardType === "coins") {
+        coins += 500;
+        alert("+500 Coins");
+      }
+
+      if (rewardType === "vip") {
+        vipCredits += 2;
+        alert("+2 VIP Credits");
+      }
+
+      updateUI();
+      saveGame();
+
+    })
+    .catch(() => {
+      alert("Reklama se nenačetla.");
+    })
+    .finally(() => {
+      adRunning = false;
+
+      setTimeout(() => {
+        adCooldown = false;
+      }, 5000); // cooldown 5 sekund
+    });
+}
 
       const cdMap = {
         diamond: { key: AD_COOLDOWN_KEYS.diamond, seconds: 45, rewardText: "+1 Diamond" },
