@@ -856,6 +856,10 @@
       flex: 1;
       min-width: 110px;
     }
+
+    .mission-done {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -1071,6 +1075,16 @@
           </div>
 
           <div class="bonus-item">
+            <div class="bonus-item-title">Denní mise</div>
+            <div class="bonus-item-desc" id="dailyMissionsText">
+              Načítání misí...
+            </div>
+            <button class="btn btn-blue" id="claimMissionAdsBtn">Vybrat misi za reklamy</button>
+            <button class="btn btn-green" id="claimMissionClicksBtn" style="margin-top:8px;">Vybrat misi za kliky</button>
+            <button class="btn btn-purple" id="claimMissionCoinsBtn" style="margin-top:8px;">Vybrat misi za výdělek</button>
+          </div>
+
+          <div class="bonus-item">
             <div class="bonus-item-title">Denní bonus</div>
             <div class="bonus-item-desc">Jednou za den +2500 Coins a +5 Diamonds.</div>
             <button class="btn btn-green" id="dailyBonusBtn">Vybrat</button>
@@ -1088,50 +1102,30 @@
     <div class="screen" id="withdrawScreen">
       <div class="panel active">
         <div class="card">
-          <div class="section-title">Výběr kryptoměny</div>
+          <div class="section-title">Výběr</div>
 
           <div class="small" style="margin-bottom: 10px;">
-  <strong>Minimální výběr:</strong> 100 000 crypto (1 crypto = 0,16 Kč)<br>
-  <strong>Minimální částka pro ověření:</strong> 250 Kč<br>
-  <strong>Poplatek za výběr:</strong> 10 %<br>
-</div>
-
-          <label class="label">Kryptoměna</label>
-          <select class="input" id="withdrawCryptoSelect">
-            <option value="btc">BTC</option>
-            <option value="eth">ETH</option>
-            <option value="bnb">BNB</option>
-            <option value="doge">DOGE</option>
-            <option value="sol">SOL</option>
-            <option value="xrp">XRP</option>
-            <option value="ada">ADA</option>
-            <option value="trx">TRX</option>
-            <option value="avax">AVAX</option>
-            <option value="dot">DOT</option>
-            <option value="link">LINK</option>
-            <option value="ton">TON</option>
-            <option value="ltc">LTC</option>
-            <option value="xmr">XMR</option>
-            <option value="shib">SHIB</option>
-            <option value="matic">MATIC</option>
-          </select>
+            <strong>Minimální výběr:</strong> 100 000 crypto (1 crypto = 0,16 Kč)<br>
+            <strong>Minimální částka pro ověření:</strong> 250 Kč<br>
+            <strong>Poplatek za výběr:</strong> 10 %<br>
+          </div>
 
           <label class="label">Jméno příjemce</label>
           <input class="input" id="withdrawNameInput" placeholder="Zadej jméno" />
 
-          <label class="label">Adresa peněženky / účet</label>
-          <input class="input" id="withdrawAccountInput" placeholder="Zadej adresu nebo účet" />
+          <label class="label">Číslo účtu</label>
+          <input class="input" id="withdrawAccountInput" placeholder="123456789/0100" />
 
           <label class="label">Částka k výběru</label>
-          <input class="input" id="withdrawAmountInput" type="number" placeholder="Zadej množství krypta" />
+          <input class="input" id="withdrawAmountInput" type="number" placeholder="Zadej částku crypto" />
 
           <button class="btn btn-purple" id="withdrawBtn">Požádat o výběr</button>
 
           <div class="payment-row">
-            <div class="payment-chip">BTC</div>
-            <div class="payment-chip">ETH</div>
-            <div class="payment-chip">BNB</div>
-            <div class="payment-chip">SIM</div>
+            <div class="payment-chip">VISA</div>
+            <div class="payment-chip">MASTERCARD</div>
+            <div class="payment-chip">ÚČET</div>
+            <div class="payment-chip">WALLET</div>
           </div>
 
           <div class="status" id="withdrawStatus">Zatím žádná žádost.</div>
@@ -1204,8 +1198,29 @@
     </div>
   </div>
 
+  <div class="pig-modal-backdrop" id="offlineModalBackdrop">
+    <div class="pig-modal">
+      <div class="pig-modal-head">
+        <div class="pig-modal-icon pig-premium">⛏️</div>
+        <div>
+          <div class="pig-modal-title">Offline odměna</div>
+          <div class="pig-modal-sub">Vydělal jsi i bez hraní</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 10px;">
+        <div class="small" id="offlineRewardText">Byl jsi pryč a něco jsi vydělal.</div>
+      </div>
+
+      <div class="pig-item-actions">
+        <button class="btn btn-small btn-green" id="claimOfflineBtn">Vybrat</button>
+        <button class="btn btn-small btn-yellow" id="claimOfflineDoubleBtn">2x za reklamu</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v2";
+    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v3";
     const NAME_KEY = "crypto_miner_empire_player_name_v1";
 
     const AD_COOLDOWN_KEYS = {
@@ -1239,6 +1254,18 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
+
+    let pendingOfflineCoins = 0;
+    let lastActiveTime = Date.now();
+
+    let dailyMissionDate = "";
+    let missionAdsWatched = 0;
+    let missionClicksDone = 0;
+    let missionCoinsEarned = 0;
+
+    let missionAdsClaimed = false;
+    let missionClicksClaimed = false;
+    let missionCoinsClaimed = false;
 
     let adRunning = false;
     let adCooldown = false;
@@ -1311,93 +1338,15 @@
       localStorage.setItem(key, String(Date.now()));
     }
 
-    function showRewardedAd(rewardType) {
-      if (adRunning) {
-        alert("Reklama už běží...");
-        return;
-      }
-
-      if (adCooldown) {
-        alert("Počkej pár sekund...");
-        return;
-      }
-
-      if (typeof show_10860315 !== "function") {
-        alert("Reklama není dostupná.");
-        return;
-      }
-
-      const cdMap = {
-        diamond: { key: AD_COOLDOWN_KEYS.diamond, seconds: 45, rewardText: "+1 Diamond" },
-        coins: { key: AD_COOLDOWN_KEYS.coins, seconds: 35, rewardText: "+500 Coins" },
-        vip: { key: AD_COOLDOWN_KEYS.vip, seconds: 60, rewardText: "+2 VIP Credits" }
-      };
-
-      const cfg = cdMap[rewardType];
-      if (!cfg) return;
-
-      const left = getAdCooldownLeft(cfg.key, cfg.seconds);
-      if (left > 0) {
-        alert(`Tahle reklama půjde znovu za ${left} s.`);
-        return;
-      }
-
-      adRunning = true;
-      adCooldown = true;
-
-      show_10860315()
-        .then(() => {
-          if (rewardType === "diamond") diamonds += 1;
-          if (rewardType === "coins") coins += 500;
-          if (rewardType === "vip") vipCredits += 2;
-
-          markAdUsed(cfg.key);
-          updateUI();
-          saveGame();
-          alert(`Získal jsi ${cfg.rewardText}.`);
-        })
-        .catch(() => {
-          alert("Reklama nebyla dokončena nebo není dostupná.");
-        })
-        .finally(() => {
-          adRunning = false;
-          setTimeout(() => {
-            adCooldown = false;
-          }, 5000);
-        });
-    }
-
-    function showRewardedPopup() {
-      if (typeof show_10860315 !== "function") {
-        alert("Popup reklama teď není dostupná.");
-        return;
-      }
-
-      const left = getAdCooldownLeft(AD_COOLDOWN_KEYS.popup, 90);
-      if (left > 0) {
-        alert(`Popup reklama půjde znovu za ${left} s.`);
-        return;
-      }
-
-      show_10860315()
-        .then(() => {
-          coins += 300;
-          markAdUsed(AD_COOLDOWN_KEYS.popup);
-          updateUI();
-          saveGame();
-          alert("Získal jsi +300 Coins.");
-        })
-        .catch(() => {
-          alert("Popup reklama není dostupná nebo nebyla otevřena.");
-        });
-    }
-
     function saveGame() {
       const payload = {
         playerName, coins, diamonds, vipCredits, level, prestige,
         clickValue, baseCoinsPerSec, energy, maxEnergy, energyCapBonus,
         boostUntil, vipBoostUntil, buyClickCost, buyCpsCost, buyEnergyCost, buyDiamondCost,
         totalClicks, lastDailyClaim,
+        pendingOfflineCoins, lastActiveTime,
+        dailyMissionDate, missionAdsWatched, missionClicksDone, missionCoinsEarned,
+        missionAdsClaimed, missionClicksClaimed, missionCoinsClaimed,
         piggies,
         cryptos: cryptoData.map(c => ({
           key: c.key,
@@ -1444,6 +1393,18 @@
         totalClicks = data.totalClicks ?? totalClicks;
         lastDailyClaim = data.lastDailyClaim ?? lastDailyClaim;
 
+        pendingOfflineCoins = data.pendingOfflineCoins ?? pendingOfflineCoins;
+        lastActiveTime = data.lastActiveTime ?? lastActiveTime;
+
+        dailyMissionDate = data.dailyMissionDate ?? dailyMissionDate;
+        missionAdsWatched = data.missionAdsWatched ?? missionAdsWatched;
+        missionClicksDone = data.missionClicksDone ?? missionClicksDone;
+        missionCoinsEarned = data.missionCoinsEarned ?? missionCoinsEarned;
+
+        missionAdsClaimed = data.missionAdsClaimed ?? missionAdsClaimed;
+        missionClicksClaimed = data.missionClicksClaimed ?? missionClicksClaimed;
+        missionCoinsClaimed = data.missionCoinsClaimed ?? missionCoinsClaimed;
+
         if (data.piggies) {
           Object.keys(piggies).forEach(key => {
             if (!data.piggies[key]) return;
@@ -1466,6 +1427,48 @@
       } catch (e) {
         console.error("Load failed", e);
       }
+    }
+
+    function getTodayString() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function resetDailyMissionsIfNeeded() {
+      const today = getTodayString();
+
+      if (dailyMissionDate !== today) {
+        dailyMissionDate = today;
+        missionAdsWatched = 0;
+        missionClicksDone = 0;
+        missionCoinsEarned = 0;
+        missionAdsClaimed = false;
+        missionClicksClaimed = false;
+        missionCoinsClaimed = false;
+        saveGame();
+      }
+    }
+
+    function renderDailyMissions() {
+      const el = document.getElementById("dailyMissionsText");
+      if (!el) return;
+
+      el.innerHTML = `
+        ${missionAdsClaimed ? "✅" : "⬜"} Zhlédni 3 reklamy (${missionAdsWatched}/3) → +1000 Coins<br>
+        ${missionClicksClaimed ? "✅" : "⬜"} Klikni 200× (${missionClicksDone}/200) → +1 Diamond<br>
+        ${missionCoinsClaimed ? "✅" : "⬜"} Vydělej 10000 Coins (${Math.floor(missionCoinsEarned)}/10000) → +2 VIP Credits
+      `;
+
+      const adsBtn = document.getElementById("claimMissionAdsBtn");
+      const clicksBtn = document.getElementById("claimMissionClicksBtn");
+      const coinsBtn = document.getElementById("claimMissionCoinsBtn");
+
+      if (adsBtn) adsBtn.disabled = missionAdsClaimed || missionAdsWatched < 3;
+      if (clicksBtn) clicksBtn.disabled = missionClicksClaimed || missionClicksDone < 200;
+      if (coinsBtn) coinsBtn.disabled = missionCoinsClaimed || missionCoinsEarned < 10000;
     }
 
     function getBoostMultiplier() {
@@ -1686,6 +1689,7 @@
         return;
       }
       coins += value;
+      missionCoinsEarned += value;
       p.fill = 0;
       updateUI();
       saveGame();
@@ -1697,6 +1701,7 @@
     function updateUI() {
       updateLevel();
       tryUnlockCryptos();
+      resetDailyMissionsIfNeeded();
 
       document.getElementById("playerNameStat").textContent = playerName;
       document.getElementById("levelStat").textContent = level;
@@ -1727,15 +1732,18 @@
 
       renderAchievements();
       renderCryptoBoard();
+      renderDailyMissions();
     }
 
     function mine() {
       if (energy <= 0) return;
       const gain = getRealClickValue();
       coins += gain;
+      missionCoinsEarned += gain;
       addToPiggies(gain);
       energy -= 1;
       totalClicks += 1;
+      missionClicksDone += 1;
       createFloatText("+" + gain);
       updateUI();
       saveGame();
@@ -1768,6 +1776,139 @@
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
       saveGame();
+    }
+
+    function showRewardedAd(rewardType) {
+      if (adRunning) {
+        alert("Reklama už běží...");
+        return;
+      }
+
+      if (adCooldown) {
+        alert("Počkej pár sekund...");
+        return;
+      }
+
+      if (typeof show_10860315 !== "function") {
+        alert("Reklama není dostupná.");
+        return;
+      }
+
+      const cdMap = {
+        diamond: { key: AD_COOLDOWN_KEYS.diamond, seconds: 45, rewardText: "+1 Diamond" },
+        coins: { key: AD_COOLDOWN_KEYS.coins, seconds: 35, rewardText: "+500 Coins" },
+        vip: { key: AD_COOLDOWN_KEYS.vip, seconds: 60, rewardText: "+2 VIP Credits" }
+      };
+
+      const cfg = cdMap[rewardType];
+      if (!cfg) return;
+
+      const left = getAdCooldownLeft(cfg.key, cfg.seconds);
+      if (left > 0) {
+        alert(`Tahle reklama půjde znovu za ${left} s.`);
+        return;
+      }
+
+      adRunning = true;
+      adCooldown = true;
+
+      show_10860315()
+        .then(() => {
+          if (rewardType === "diamond") diamonds += 1;
+          if (rewardType === "coins") {
+            coins += 500;
+            missionCoinsEarned += 500;
+          }
+          if (rewardType === "vip") vipCredits += 2;
+
+          missionAdsWatched += 1;
+
+          markAdUsed(cfg.key);
+          updateUI();
+          saveGame();
+          alert(`Získal jsi ${cfg.rewardText}.`);
+        })
+        .catch(() => {
+          alert("Reklama nebyla dokončena nebo není dostupná.");
+        })
+        .finally(() => {
+          adRunning = false;
+          setTimeout(() => {
+            adCooldown = false;
+          }, 5000);
+        });
+    }
+
+    function showRewardedPopup() {
+      if (typeof show_10860315 !== "function") {
+        alert("Popup reklama teď není dostupná.");
+        return;
+      }
+
+      const left = getAdCooldownLeft(AD_COOLDOWN_KEYS.popup, 90);
+      if (left > 0) {
+        alert(`Popup reklama půjde znovu za ${left} s.`);
+        return;
+      }
+
+      show_10860315()
+        .then(() => {
+          coins += 300;
+          missionCoinsEarned += 300;
+          missionAdsWatched += 1;
+          markAdUsed(AD_COOLDOWN_KEYS.popup);
+          updateUI();
+          saveGame();
+          alert("Získal jsi +300 Coins.");
+        })
+        .catch(() => {
+          alert("Popup reklama není dostupná nebo nebyla otevřena.");
+        });
+    }
+
+    function checkOfflineEarnings() {
+      const now = Date.now();
+      const secondsAway = Math.floor((now - lastActiveTime) / 1000);
+
+      if (secondsAway < 30) {
+        lastActiveTime = now;
+        saveGame();
+        return;
+      }
+
+      const cappedSeconds = Math.min(secondsAway, 8 * 60 * 60);
+      pendingOfflineCoins = Math.floor(getTotalCoinsPerSec() * cappedSeconds);
+
+      if (pendingOfflineCoins > 0) {
+        const text = document.getElementById("offlineRewardText");
+        if (text) {
+          const mins = Math.floor(cappedSeconds / 60);
+          text.textContent = `Byl jsi pryč ${mins} minut a vydělal jsi ${pendingOfflineCoins.toLocaleString("cs-CZ")} Coins.`;
+        }
+        document.getElementById("offlineModalBackdrop").classList.add("active");
+      }
+
+      lastActiveTime = now;
+      saveGame();
+    }
+
+    function closeOfflineModal() {
+      document.getElementById("offlineModalBackdrop").classList.remove("active");
+    }
+
+    function claimOfflineReward(multiplier = 1) {
+      if (pendingOfflineCoins <= 0) {
+        closeOfflineModal();
+        return;
+      }
+
+      const reward = pendingOfflineCoins * multiplier;
+      coins += reward;
+      missionCoinsEarned += reward;
+      pendingOfflineCoins = 0;
+      updateUI();
+      saveGame();
+      closeOfflineModal();
     }
 
     document.getElementById("startGameBtn").addEventListener("click", () => {
@@ -1861,6 +2002,7 @@
       if (vipCredits < 5) return alert("Nemáš dost VIP Credits.");
       vipCredits -= 5;
       coins += 5000;
+      missionCoinsEarned += 5000;
       updateUI();
       saveGame();
     });
@@ -1897,6 +2039,54 @@
       showRewardedPopup();
     });
 
+    document.getElementById("claimMissionAdsBtn").addEventListener("click", () => {
+      if (missionAdsClaimed || missionAdsWatched < 3) return;
+      missionAdsClaimed = true;
+      coins += 1000;
+      missionCoinsEarned += 1000;
+      updateUI();
+      saveGame();
+      alert("Získal jsi +1000 Coins za denní misi.");
+    });
+
+    document.getElementById("claimMissionClicksBtn").addEventListener("click", () => {
+      if (missionClicksClaimed || missionClicksDone < 200) return;
+      missionClicksClaimed = true;
+      diamonds += 1;
+      updateUI();
+      saveGame();
+      alert("Získal jsi +1 Diamond za denní misi.");
+    });
+
+    document.getElementById("claimMissionCoinsBtn").addEventListener("click", () => {
+      if (missionCoinsClaimed || missionCoinsEarned < 10000) return;
+      missionCoinsClaimed = true;
+      vipCredits += 2;
+      updateUI();
+      saveGame();
+      alert("Získal jsi +2 VIP Credits za denní misi.");
+    });
+
+    document.getElementById("claimOfflineBtn").addEventListener("click", () => {
+      claimOfflineReward(1);
+    });
+
+    document.getElementById("claimOfflineDoubleBtn").addEventListener("click", () => {
+      if (typeof show_10860315 !== "function") {
+        alert("Reklama není dostupná.");
+        return;
+      }
+
+      show_10860315()
+        .then(() => {
+          missionAdsWatched += 1;
+          claimOfflineReward(2);
+        })
+        .catch(() => {
+          alert("Reklama nebyla dokončena.");
+        });
+    });
+
     document.getElementById("dailyBonusBtn").addEventListener("click", () => {
       const now = Date.now();
       const oneDay = 24 * 60 * 60 * 1000;
@@ -1907,6 +2097,7 @@
       lastDailyClaim = now;
       coins += 2500;
       diamonds += 5;
+      missionCoinsEarned += 2500;
       updateUI();
       saveGame();
       alert("Denní bonus získán.");
@@ -1935,6 +2126,13 @@
       buyEnergyCost = 75;
       buyDiamondCost = 500;
       totalClicks = 0;
+      missionClicksDone = 0;
+      missionCoinsEarned = 0;
+      missionAdsWatched = 0;
+      missionAdsClaimed = false;
+      missionClicksClaimed = false;
+      missionCoinsClaimed = false;
+      pendingOfflineCoins = 0;
 
       Object.keys(piggies).forEach(key => {
         piggies[key].fill = 0;
@@ -1971,46 +2169,31 @@
       const name = document.getElementById("withdrawNameInput").value.trim();
       const account = document.getElementById("withdrawAccountInput").value.trim();
       const amount = Number(document.getElementById("withdrawAmountInput").value || 0);
-      const cryptoKey = document.getElementById("withdrawCryptoSelect").value;
       const status = document.getElementById("withdrawStatus");
 
-      const crypto = cryptoData.find(c => c.key === cryptoKey);
-
       if (!name) {
-        status.textContent = "Zadej jméno.";
+        status.textContent = "Výběr zamítnut: zadej jméno.";
         return;
       }
-
       if (!account) {
-        status.textContent = "Zadej adresu peněženky / účet.";
+        status.textContent = "Výběr zamítnut: zadej číslo účtu.";
+        return;
+      }
+      if (amount < 100000) {
+        status.textContent = "Výběr zamítnut: minimální výběr je 100 000 crypto.";
+        return;
+      }
+      if (coins < amount) {
+        status.textContent = "Výběr zamítnut: nemáš dost crypto.";
         return;
       }
 
-      if (!crypto || !crypto.unlocked) {
-        status.textContent = "Tahle kryptoměna není odemčená.";
-        return;
-      }
-
-      if (amount <= 0) {
-        status.textContent = "Zadej částku.";
-        return;
-      }
-
-      if (amount < 50) {
-        status.textContent = "Minimální výběr je 50 jednotek kryptoměny.";
-        return;
-      }
-
-      if (crypto.amount < amount) {
-        status.textContent = `Nemáš dost ${crypto.name}.`;
-        return;
-      }
-
-      crypto.amount -= amount;
-
+      const fee = amount * 0.10;
+      const finalCrypto = amount - fee;
+      const finalCzk = finalCrypto * 0.16;
+      coins -= amount;
       status.textContent =
-        `Žádost o výběr ${amount} ${crypto.name} přijata pro ${name}. Toto je pouze simulace.`;
-
+        `Žádost přijata pro ${name} na účet ${account}. Po odečtení 10 % zbývá ${finalCrypto.toFixed(0)} crypto, což je přibližně ${finalCzk.toFixed(2)} Kč.`;
       updateUI();
       saveGame();
     });
@@ -2033,6 +2216,8 @@
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
+      lastActiveTime = Date.now();
+      saveGame();
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById("loginScreen").classList.add("active");
       document.getElementById("bottomNav").classList.add("hidden");
@@ -2042,6 +2227,7 @@
       if (!confirm("Opravdu chceš smazat všechna data a začít od 0?")) return;
       localStorage.removeItem(SAVE_KEY);
       localStorage.removeItem(NAME_KEY);
+      Object.values(AD_COOLDOWN_KEYS).forEach(k => localStorage.removeItem(k));
       location.reload();
     });
 
@@ -2065,6 +2251,7 @@
       const totalGain = clickSideGain + cryptoSideGain;
 
       coins += totalGain;
+      missionCoinsEarned += totalGain;
       addToPiggies(totalGain);
 
       cryptoData.forEach(c => {
@@ -2109,6 +2296,18 @@
       else if (deltaX > 50) setSwipePage(0);
     });
 
+    window.addEventListener("beforeunload", () => {
+      lastActiveTime = Date.now();
+      saveGame();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        lastActiveTime = Date.now();
+        saveGame();
+      }
+    });
+
     loadGame();
     updateUI();
 
@@ -2118,6 +2317,7 @@
       if (savedName) {
         playerName = savedName;
         showGameScreens();
+        checkOfflineEarnings();
       }
     });
   </script>
