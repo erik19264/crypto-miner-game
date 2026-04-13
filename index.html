@@ -1088,30 +1088,50 @@
     <div class="screen" id="withdrawScreen">
       <div class="panel active">
         <div class="card">
-          <div class="section-title">Výběr</div>
+          <div class="section-title">Výběr kryptoměny</div>
 
           <div class="small" style="margin-bottom: 10px;">
-            <strong>Minimální výběr:</strong> 100 000 Coins (1 Coins je 0,16 Kč)<br>
-            <strong>Minimální vklad pro ověření účtu:</strong> 250 Kč<br>
-            <strong>Poplatek:</strong> 10 %
+            <strong>Minimální výběr:</strong> 50 jednotek kryptoměny<br>
+            <strong>Typ:</strong> pouze simulace, nic se reálně neposílá<br>
+            <strong>Poznámka:</strong> odečte se ti vybrané crypto ze hry
           </div>
+
+          <label class="label">Kryptoměna</label>
+          <select class="input" id="withdrawCryptoSelect">
+            <option value="btc">BTC</option>
+            <option value="eth">ETH</option>
+            <option value="bnb">BNB</option>
+            <option value="doge">DOGE</option>
+            <option value="sol">SOL</option>
+            <option value="xrp">XRP</option>
+            <option value="ada">ADA</option>
+            <option value="trx">TRX</option>
+            <option value="avax">AVAX</option>
+            <option value="dot">DOT</option>
+            <option value="link">LINK</option>
+            <option value="ton">TON</option>
+            <option value="ltc">LTC</option>
+            <option value="xmr">XMR</option>
+            <option value="shib">SHIB</option>
+            <option value="matic">MATIC</option>
+          </select>
 
           <label class="label">Jméno příjemce</label>
           <input class="input" id="withdrawNameInput" placeholder="Zadej jméno" />
 
-          <label class="label">Číslo účtu</label>
-          <input class="input" id="withdrawAccountInput" placeholder="123456789/0100" />
+          <label class="label">Adresa peněženky / účet</label>
+          <input class="input" id="withdrawAccountInput" placeholder="Zadej adresu nebo účet" />
 
           <label class="label">Částka k výběru</label>
-          <input class="input" id="withdrawAmountInput" type="number" placeholder="Zadej částku Coins" />
+          <input class="input" id="withdrawAmountInput" type="number" placeholder="Zadej množství krypta" />
 
           <button class="btn btn-purple" id="withdrawBtn">Požádat o výběr</button>
 
           <div class="payment-row">
-            <div class="payment-chip">VISA</div>
-            <div class="payment-chip">MASTERCARD</div>
-            <div class="payment-chip">ÚČET</div>
-            <div class="payment-chip">WALLET</div>
+            <div class="payment-chip">BTC</div>
+            <div class="payment-chip">ETH</div>
+            <div class="payment-chip">BNB</div>
+            <div class="payment-chip">SIM</div>
           </div>
 
           <div class="status" id="withdrawStatus">Zatím žádná žádost.</div>
@@ -1951,31 +1971,46 @@
       const name = document.getElementById("withdrawNameInput").value.trim();
       const account = document.getElementById("withdrawAccountInput").value.trim();
       const amount = Number(document.getElementById("withdrawAmountInput").value || 0);
+      const cryptoKey = document.getElementById("withdrawCryptoSelect").value;
       const status = document.getElementById("withdrawStatus");
 
+      const crypto = cryptoData.find(c => c.key === cryptoKey);
+
       if (!name) {
-        status.textContent = "Výběr zamítnut: zadej jméno.";
-        return;
-      }
-      if (!account) {
-        status.textContent = "Výběr zamítnut: zadej číslo účtu.";
-        return;
-      }
-      if (amount < 100000) {
-        status.textContent = "Výběr zamítnut: minimální výběr je 100 000 Coins.";
-        return;
-      }
-      if (coins < amount) {
-        status.textContent = "Výběr zamítnut: nemáš dost Coins.";
+        status.textContent = "Zadej jméno.";
         return;
       }
 
-      const fee = amount * 0.10;
-      const finalCoins = amount - fee;
-      const finalCzk = finalCoins * 0.16;
-      coins -= amount;
+      if (!account) {
+        status.textContent = "Zadej adresu peněženky / účet.";
+        return;
+      }
+
+      if (!crypto || !crypto.unlocked) {
+        status.textContent = "Tahle kryptoměna není odemčená.";
+        return;
+      }
+
+      if (amount <= 0) {
+        status.textContent = "Zadej částku.";
+        return;
+      }
+
+      if (amount < 50) {
+        status.textContent = "Minimální výběr je 50 jednotek kryptoměny.";
+        return;
+      }
+
+      if (crypto.amount < amount) {
+        status.textContent = `Nemáš dost ${crypto.name}.`;
+        return;
+      }
+
+      crypto.amount -= amount;
+
       status.textContent =
-        `Žádost přijata pro ${name} na účet ${account}. Po odečtení 10 % zbývá ${finalCoins.toFixed(0)} Coins, což je přibližně ${finalCzk.toFixed(2)} Kč.`;
+        `Žádost o výběr ${amount} ${crypto.name} přijata pro ${name}. Toto je pouze simulace.`;
+
       updateUI();
       saveGame();
     });
