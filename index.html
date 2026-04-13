@@ -1219,7 +1219,6 @@
 
     let lastDailyClaim = 0;
     let totalClicks = 0;
-    let inAppInitialized = false;
 
     let adRunning = false;
     let adCooldown = false;
@@ -1281,10 +1280,6 @@
       { key: "matic", name: "MATIC", icon: "M", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000, goal: 360 }
     ];
 
-    function getUniqueYmid(prefix) {
-      return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
-    }
-
     function getAdCooldownLeft(key, seconds) {
       const last = Number(localStorage.getItem(key) || 0);
       const diff = Date.now() - last;
@@ -1294,32 +1289,6 @@
 
     function markAdUsed(key) {
       localStorage.setItem(key, String(Date.now()));
-    }
-
-    function preloadMainAd() {
-      if (typeof show_10860315 !== "function") return;
-      show_10860315({
-        type: "preload",
-        requestVar: "preload_main",
-        timeout: 5
-      }).catch(() => {});
-    }
-
-    function initInAppAds() {
-      if (inAppInitialized) return;
-      if (typeof show_10860315 !== "function") return;
-
-      inAppInitialized = true;
-      show_10860315({
-        type: "inApp",
-        inAppSettings: {
-          frequency: 3,
-          capping: 2,
-          interval: 120,
-          timeout: 15,
-          everyPage: false
-        }
-      }).catch(() => {});
     }
 
     function showRewardedAd(rewardType) {
@@ -1356,26 +1325,16 @@
       adRunning = true;
       adCooldown = true;
 
-      show_10860315({
-        type: "end",
-        ymid: getUniqueYmid(rewardType),
-        requestVar: `reward_${rewardType}`,
-        catchIfNoFeed: true
-      })
-        .then((result) => {
-          if (result && result.reward_event_type === "valued") {
-            if (rewardType === "diamond") diamonds += 1;
-            if (rewardType === "coins") coins += 500;
-            if (rewardType === "vip") vipCredits += 2;
+      show_10860315()
+        .then(() => {
+          if (rewardType === "diamond") diamonds += 1;
+          if (rewardType === "coins") coins += 500;
+          if (rewardType === "vip") vipCredits += 2;
 
-            markAdUsed(cfg.key);
-            updateUI();
-            saveGame();
-            preloadMainAd();
-            alert(`Získal jsi ${cfg.rewardText}.`);
-          } else {
-            alert("Reklama se otevřela, ale odměna nebyla započtena.");
-          }
+          markAdUsed(cfg.key);
+          updateUI();
+          saveGame();
+          alert(`Získal jsi ${cfg.rewardText}.`);
         })
         .catch(() => {
           alert("Reklama nebyla dokončena nebo není dostupná.");
@@ -1400,12 +1359,7 @@
         return;
       }
 
-      show_10860315({
-        type: "pop",
-        ymid: getUniqueYmid("popup"),
-        requestVar: "reward_popup",
-        catchIfNoFeed: true
-      })
+      show_10860315()
         .then(() => {
           coins += 300;
           markAdUsed(AD_COOLDOWN_KEYS.popup);
@@ -1794,8 +1748,6 @@
       document.getElementById("bottomNav").classList.remove("hidden");
       updateUI();
       saveGame();
-      initInAppAds();
-      preloadMainAd();
     }
 
     document.getElementById("startGameBtn").addEventListener("click", () => {
@@ -2131,8 +2083,6 @@
       if (savedName) {
         playerName = savedName;
         showGameScreens();
-      } else {
-        preloadMainAd();
       }
     });
   </script>
