@@ -1220,7 +1220,7 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v3";
+    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v4";
     const NAME_KEY = "crypto_miner_empire_player_name_v1";
 
     const AD_COOLDOWN_KEYS = {
@@ -1483,9 +1483,16 @@
       return cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.rate, 0);
     }
 
+    function getClickCoinsPerSec() {
+      return Math.floor(baseCoinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige);
+    }
+
+    function getCryptoCoinsPerSec() {
+      return Math.floor(getCryptoMiningPerSecRaw() * getBoostMultiplier() * getVipMultiplier() * prestige);
+    }
+
     function getTotalCoinsPerSec() {
-      const total = (baseCoinsPerSec + getCryptoMiningPerSecRaw()) * getBoostMultiplier() * getVipMultiplier() * prestige;
-      return Math.floor(total);
+      return getClickCoinsPerSec() + getCryptoCoinsPerSec();
     }
 
     function getRealClickValue() {
@@ -1705,7 +1712,7 @@
 
       document.getElementById("playerNameStat").textContent = playerName;
       document.getElementById("levelStat").textContent = level;
-      document.getElementById("cpsStat").textContent = getTotalCoinsPerSec().toLocaleString("cs-CZ");
+      document.getElementById("cpsStat").textContent = getClickCoinsPerSec().toLocaleString("cs-CZ");
       document.getElementById("diamondsStat").textContent = diamonds.toLocaleString("cs-CZ");
       document.getElementById("vipStat").textContent = vipCredits.toLocaleString("cs-CZ");
 
@@ -1728,7 +1735,7 @@
       document.getElementById("totalCryptoMined").textContent =
         Math.floor(cryptoData.reduce((sum, c) => sum + c.amount, 0)).toLocaleString("cs-CZ");
       document.getElementById("totalCryptoPerSec").textContent =
-        getCryptoMiningPerSecRaw().toLocaleString("cs-CZ");
+        getCryptoCoinsPerSec().toLocaleString("cs-CZ");
 
       renderAchievements();
       renderCryptoBoard();
@@ -2245,9 +2252,8 @@
           !document.getElementById("withdrawScreen").classList.contains("active") &&
           !document.getElementById("profileScreen").classList.contains("active")) return;
 
-      const clickSideGain = baseCoinsPerSec * getBoostMultiplier() * getVipMultiplier() * prestige;
-      const cryptoSideGainRaw = cryptoData.filter(c => c.unlocked).reduce((sum, c) => sum + c.rate, 0);
-      const cryptoSideGain = cryptoSideGainRaw * getBoostMultiplier() * getVipMultiplier() * prestige;
+      const clickSideGain = getClickCoinsPerSec();
+      const cryptoSideGain = getCryptoCoinsPerSec();
       const totalGain = clickSideGain + cryptoSideGain;
 
       coins += totalGain;
