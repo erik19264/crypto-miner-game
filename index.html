@@ -1220,7 +1220,7 @@
   </div>
 
   <script>
-    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v4";
+    const SAVE_KEY = "crypto_miner_empire_no_ref_big_ui_v5";
     const NAME_KEY = "crypto_miner_empire_player_name_v1";
 
     const AD_COOLDOWN_KEYS = {
@@ -1326,6 +1326,105 @@
       { key: "shib", name: "SHIB", icon: "犬", unlocked: false, condition: "1000 kliknutí", type: "clicks", req: 1000, amount: 0, rate: 11, upgradeLevel: 1, upgradeCost: 15000, goal: 330 },
       { key: "matic", name: "MATIC", icon: "M", unlocked: false, condition: "75 000 Coins", type: "coins", req: 75000, amount: 0, rate: 13, upgradeLevel: 1, upgradeCost: 18000, goal: 360 }
     ];
+
+    function getDefaultCryptoConfig() {
+      return {
+        btc: { unlocked: true, rate: 1, cost: 100 },
+        eth: { unlocked: false, rate: 2, cost: 250 },
+        bnb: { unlocked: false, rate: 3, cost: 500 },
+        doge: { unlocked: false, rate: 2, cost: 450 },
+        sol: { unlocked: false, rate: 4, cost: 900 },
+        xrp: { unlocked: false, rate: 3, cost: 1200 },
+        ada: { unlocked: false, rate: 4, cost: 1600 },
+        trx: { unlocked: false, rate: 5, cost: 2200 },
+        avax: { unlocked: false, rate: 6, cost: 3000 },
+        dot: { unlocked: false, rate: 7, cost: 4200 },
+        link: { unlocked: false, rate: 8, cost: 5600 },
+        ton: { unlocked: false, rate: 9, cost: 7600 },
+        ltc: { unlocked: false, rate: 10, cost: 9800 },
+        xmr: { unlocked: false, rate: 12, cost: 12500 },
+        shib: { unlocked: false, rate: 11, cost: 15000 },
+        matic: { unlocked: false, rate: 13, cost: 18000 }
+      };
+    }
+
+    function hardResetGameState() {
+      playerName = "Miner";
+      coins = 0;
+      diamonds = 0;
+      vipCredits = 0;
+      level = 1;
+      prestige = 1;
+
+      clickValue = 1;
+      baseCoinsPerSec = 1;
+
+      energy = 100;
+      maxEnergy = 100;
+      energyCapBonus = 0;
+
+      boostUntil = 0;
+      vipBoostUntil = 0;
+
+      buyClickCost = 50;
+      buyCpsCost = 100;
+      buyEnergyCost = 75;
+      buyDiamondCost = 500;
+
+      lastDailyClaim = 0;
+      totalClicks = 0;
+
+      pendingOfflineCoins = 0;
+      lastActiveTime = Date.now();
+
+      dailyMissionDate = "";
+      missionAdsWatched = 0;
+      missionClicksDone = 0;
+      missionCoinsEarned = 0;
+
+      missionAdsClaimed = false;
+      missionClicksClaimed = false;
+      missionCoinsClaimed = false;
+
+      adRunning = false;
+      adCooldown = false;
+
+      Object.keys(piggies).forEach(key => {
+        piggies[key].purchased = false;
+        piggies[key].fill = 0;
+      });
+
+      const defaults = getDefaultCryptoConfig();
+
+      cryptoData.forEach(c => {
+        c.unlocked = defaults[c.key].unlocked;
+        c.amount = 0;
+        c.rate = defaults[c.key].rate;
+        c.upgradeLevel = 1;
+        c.upgradeCost = defaults[c.key].cost;
+      });
+
+      const playerNameInput = document.getElementById("playerNameInput");
+      const withdrawNameInput = document.getElementById("withdrawNameInput");
+      const withdrawAccountInput = document.getElementById("withdrawAccountInput");
+      const withdrawAmountInput = document.getElementById("withdrawAmountInput");
+      const withdrawStatus = document.getElementById("withdrawStatus");
+
+      if (playerNameInput) playerNameInput.value = "";
+      if (withdrawNameInput) withdrawNameInput.value = "";
+      if (withdrawAccountInput) withdrawAccountInput.value = "";
+      if (withdrawAmountInput) withdrawAmountInput.value = "";
+      if (withdrawStatus) withdrawStatus.textContent = "Zatím žádná žádost.";
+
+      closePigModal();
+      closeOfflineModal();
+
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById("loginScreen").classList.add("active");
+      document.getElementById("bottomNav").classList.add("hidden");
+
+      updateUI();
+    }
 
     function getAdCooldownLeft(key, seconds) {
       const last = Number(localStorage.getItem(key) || 0);
@@ -1676,6 +1775,10 @@
       document.getElementById("pigModalBackdrop").classList.remove("active");
     }
 
+    function closeOfflineModal() {
+      document.getElementById("offlineModalBackdrop").classList.remove("active");
+    }
+
     function buyPiggy(key) {
       const p = piggies[key];
       if (!p) return;
@@ -1897,10 +2000,6 @@
 
       lastActiveTime = now;
       saveGame();
-    }
-
-    function closeOfflineModal() {
-      document.getElementById("offlineModalBackdrop").classList.remove("active");
     }
 
     function claimOfflineReward(multiplier = 1) {
@@ -2146,23 +2245,13 @@
         piggies[key].purchased = false;
       });
 
+      const defaults = getDefaultCryptoConfig();
+
       cryptoData.forEach(c => {
-        c.unlocked = c.key === "btc";
+        c.unlocked = defaults[c.key].unlocked;
         c.amount = 0;
-        c.upgradeLevel = 1;
-      });
-
-      const defaults = {
-        btc: { rate: 1, cost: 100 }, eth: { rate: 2, cost: 250 }, bnb: { rate: 3, cost: 500 },
-        doge: { rate: 2, cost: 450 }, sol: { rate: 4, cost: 900 }, xrp: { rate: 3, cost: 1200 },
-        ada: { rate: 4, cost: 1600 }, trx: { rate: 5, cost: 2200 }, avax: { rate: 6, cost: 3000 },
-        dot: { rate: 7, cost: 4200 }, link: { rate: 8, cost: 5600 }, ton: { rate: 9, cost: 7600 },
-        ltc: { rate: 10, cost: 9800 }, xmr: { rate: 12, cost: 12500 }, shib: { rate: 11, cost: 15000 },
-        matic: { rate: 13, cost: 18000 }
-      };
-
-      cryptoData.forEach(c => {
         c.rate = defaults[c.key].rate;
+        c.upgradeLevel = 1;
         c.upgradeCost = defaults[c.key].cost;
       });
 
@@ -2231,11 +2320,17 @@
     });
 
     document.getElementById("resetBtn").addEventListener("click", () => {
-      if (!confirm("Opravdu chceš smazat všechna data a začít od 0?")) return;
+      if (!confirm("Opravdu chceš začít od 0?")) return;
+
       localStorage.removeItem(SAVE_KEY);
       localStorage.removeItem(NAME_KEY);
       Object.values(AD_COOLDOWN_KEYS).forEach(k => localStorage.removeItem(k));
-      location.reload();
+
+      hardResetGameState();
+
+      setTimeout(() => {
+        window.location.href = window.location.pathname + "?reset=" + Date.now();
+      }, 100);
     });
 
     document.getElementById("pigCloseBtn").addEventListener("click", closePigModal);
@@ -2318,12 +2413,23 @@
     updateUI();
 
     window.addEventListener("load", () => {
+      const url = new URL(window.location.href);
+      const wasReset = url.searchParams.has("reset");
+
+      if (wasReset) {
+        history.replaceState({}, document.title, window.location.pathname);
+      }
+
       const savedName = localStorage.getItem(NAME_KEY);
 
       if (savedName) {
         playerName = savedName;
         showGameScreens();
         checkOfflineEarnings();
+      } else {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        document.getElementById("loginScreen").classList.add("active");
+        document.getElementById("bottomNav").classList.add("hidden");
       }
     });
   </script>
