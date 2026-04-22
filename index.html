@@ -2434,4 +2434,41 @@
     });
   </script>
 </body>
+  <!-- ===== HUDBA SYSTEM ===== -->
+<audio id="bgMusic"></audio>
+
+<script>
+const songs = [
+  "mroneilovealot-neon-overdrive-cyberpunk.mp3",
+  "allicante-chill-gaming-vibes.mp3",
+  "humanstudioedm-cyberpunk-gaming.mp3"
+];
+
+let musicPlayer = document.getElementById("bgMusic");
+let lastPlayed = -1;
+
+function getNextSong() {
+  let next;
+  do {
+    next = Math.floor(Math.random() * songs.length);
+  } while (next === lastPlayed);
+  lastPlayed = next;
+  return songs[next];
+}
+
+function playNextSong() {
+  const nextSong = getNextSong();
+  musicPlayer.src = nextSong;
+  musicPlayer.volume = 0.5;
+  musicPlayer.play().catch(() => {});
+}
+
+musicPlayer.addEventListener("ended", playNextSong);
+
+document.addEventListener("click", () => {
+  if (musicPlayer.paused) {
+    playNextSong();
+  }
+}, { once: true });
+</script>
 </html>
