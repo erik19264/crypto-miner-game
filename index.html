@@ -2434,8 +2434,7 @@
     });
   </script>
 </body>
-  <!-- ===== HUDBA SYSTEM ===== -->
-<audio id="bgMusic"></audio>
+<audio id="bgMusic" loop></audio>
 
 <script>
 const songs = [
@@ -2444,30 +2443,41 @@ const songs = [
   "Song3.mp3"
 ];
 
-let musicPlayer = document.getElementById("bgMusic");
-let lastPlayed = -1;
+let currentSong = 0;
+let audio = document.getElementById("bgMusic");
 
-function getNextSong() {
-  let next;
-  do {
-    next = Math.floor(Math.random() * songs.length);
-  } while (next === lastPlayed);
-  lastPlayed = next;
-  return songs[next];
+// zamíchání pořadí
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
-function playNextSong() {
-  const nextSong = getNextSong();
-  musicPlayer.src = nextSong;
-  musicPlayer.volume = 0.5;
-  musicPlayer.play().catch(() => {});
+shuffle(songs);
+
+// přehrání první písničky
+function playMusic() {
+  audio.src = songs[currentSong];
+  audio.volume = 0.5;
+  audio.play().catch(() => {});
 }
 
-musicPlayer.addEventListener("ended", playNextSong);
+// další písnička
+audio.addEventListener("ended", () => {
+  currentSong++;
+  if (currentSong >= songs.length) {
+    currentSong = 0;
+    shuffle(songs);
+  }
+  audio.src = songs[currentSong];
+  audio.play();
+});
 
+// SPUŠTĚNÍ PO KLIKU (nutné kvůli mobilu)
 document.addEventListener("click", () => {
-  if (musicPlayer.paused) {
-    playNextSong();
+  if (audio.paused) {
+    playMusic();
   }
 }, { once: true });
 </script>
